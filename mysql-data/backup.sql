@@ -446,7 +446,9 @@ INSERT INTO `permission` VALUES
 ('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp'),
 ('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp'),
 ('alrmbell-ring-0000-0000-000000000000','Ring Alarm Bell',NULL,0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp'),
-('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp');
+('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp'),
+('orion000-vrsn-0000-0000-000000000000','Orion Version',NULL,0,'GET','/version',NULL,'tutorial-dckr-site-0000-xpresswebapp');
+
 /*!40000 ALTER TABLE `permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -544,7 +546,7 @@ CREATE TABLE `role_permission` (
   KEY `permission_id` (`permission_id`),
   CONSTRAINT `role_permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE,
   CONSTRAINT `role_permission_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -560,7 +562,9 @@ INSERT INTO `role_permission` VALUES
 (9,'security-role-0000-0000-000000000000','entrance-open-0000-0000-000000000000'),
 (10,'managers-role-0000-0000-000000000000','alrmbell-ring-0000-0000-000000000000'),
 (11,'managers-role-0000-0000-000000000000','increase-stck-0000-0000-000000000000'),
-(12,'managers-role-0000-0000-000000000000','pricechg-stck-0000-0000-000000000000');
+(12,'managers-role-0000-0000-000000000000','pricechg-stck-0000-0000-000000000000'),
+(13,'security-role-0000-0000-000000000000','orion000-vrsn-0000-0000-000000000000'),
+(14,'managers-role-0000-0000-000000000000','orion000-vrsn-0000-0000-000000000000');
 
 
 
