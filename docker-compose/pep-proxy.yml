@@ -34,6 +34,7 @@ services:
     container_name: fiware-iot-agent
     depends_on:
         - mongo-db
+        - orion
     networks:
         - default
     ports:
@@ -56,6 +57,10 @@ services:
     image: fiware/tutorials.context-provider
     hostname: context-provider
     container_name: context-provider
+    depends_on:
+        - orion
+        - iot-agent
+        - keyrock
     networks:
       default:
         ipv4_address: 172.18.1.7
@@ -156,7 +161,7 @@ services:
       - "MYSQL_ROOT_HOST=172.18.1.5"
     volumes:
       - mysql-db:/var/lib/mysql
-      - ./mysql-data:/docker-entrypoint-initdb.d/:ro
+      - ../mysql-data:/docker-entrypoint-initdb.d/:ro
     secrets:                
       - my_secret_data
 
@@ -171,5 +176,5 @@ volumes:
 
 secrets:
   my_secret_data:
-    file: ./secrets.txt
+    file: ../secrets.txt
 
