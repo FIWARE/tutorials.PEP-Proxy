@@ -71,10 +71,10 @@ CREATE TABLE `auth_token` (
 LOCK TABLES `auth_token` WRITE;
 /*!40000 ALTER TABLE `auth_token` DISABLE KEYS */;
 INSERT INTO `auth_token` VALUES 
-('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','2016-07-30 12:04:45',1,'aaaaaaaa-good-0000-0000-000000000000',NULL),
-('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','2016-07-30 12:38:13',1,'bbbbbbbb-good-0000-0000-000000000000',NULL),
-('cccccccc-cccc-cccc-cccc-cccccccccccc','2016-07-31 09:36:13',1,'cccccccc-good-0000-0000-000000000000',NULL),
-('51f2e380-c959-4dee-a0af-380f730137c3','2016-07-30 13:02:37',1,'admin',NULL);
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','2036-07-30 12:04:45',1,'aaaaaaaa-good-0000-0000-000000000000',NULL),
+('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','2036-07-30 12:38:13',1,'bbbbbbbb-good-0000-0000-000000000000',NULL),
+('cccccccc-cccc-cccc-cccc-cccccccccccc','2036-07-31 09:36:13',1,'cccccccc-good-0000-0000-000000000000',NULL),
+('51f2e380-c959-4dee-a0af-380f730137c3','2036-07-30 13:02:37',1,'admin',NULL);
 /*!40000 ALTER TABLE `auth_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,6 +152,7 @@ DROP TABLE IF EXISTS `iot`;
 CREATE TABLE `iot` (
   `id` varchar(255) NOT NULL,
   `password` varchar(40) DEFAULT NULL,
+  `salt` varchar(40) DEFAULT NULL,
   `oauth_client_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `oauth_client_id` (`oauth_client_id`),
@@ -165,6 +166,7 @@ CREATE TABLE `iot` (
 
 LOCK TABLES `iot` WRITE;
 /*!40000 ALTER TABLE `iot` DISABLE KEYS */;
+INSERT INTO `iot` VALUES ('iot_sensor_00000000-0000-0000-0000-000000000000','e9f7c64ec2895eec281f8fd36e588d1bc762bcca',NULL,'tutorial-dckr-site-0000-xpresswebapp');
 /*!40000 ALTER TABLE `iot` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -391,6 +393,7 @@ DROP TABLE IF EXISTS `pep_proxy`;
 CREATE TABLE `pep_proxy` (
   `id` varchar(255) NOT NULL,
   `password` varchar(40) DEFAULT NULL,
+  `salt` varchar(40) DEFAULT NULL,
   `oauth_client_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `oauth_client_id` (`oauth_client_id`),
@@ -404,8 +407,7 @@ CREATE TABLE `pep_proxy` (
 
 LOCK TABLES `pep_proxy` WRITE;
 /*!40000 ALTER TABLE `pep_proxy` DISABLE KEYS */;
-INSERT INTO `pep_proxy` VALUES 
-('pep_proxy_00000000-0000-0000-0000-000000000000','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','tutorial-dckr-site-0000-xpresswebapp');
+INSERT INTO `pep_proxy` VALUES ('pep_proxy_00000000-0000-0000-0000-000000000000','e9f7c64ec2895eec281f8fd36e588d1bc762bcca',NULL,'tutorial-dckr-site-0000-xpresswebapp');
 /*!40000 ALTER TABLE `pep_proxy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -446,9 +448,7 @@ INSERT INTO `permission` VALUES
 ('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp'),
 ('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp'),
 ('alrmbell-ring-0000-0000-000000000000','Ring Alarm Bell',NULL,0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp'),
-('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp'),
-('orion000-vrsn-0000-0000-000000000000','Orion Version',NULL,0,'GET','/version',NULL,'tutorial-dckr-site-0000-xpresswebapp');
-
+('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp');
 /*!40000 ALTER TABLE `permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -546,7 +546,7 @@ CREATE TABLE `role_permission` (
   KEY `permission_id` (`permission_id`),
   CONSTRAINT `role_permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE,
   CONSTRAINT `role_permission_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -562,9 +562,7 @@ INSERT INTO `role_permission` VALUES
 (9,'security-role-0000-0000-000000000000','entrance-open-0000-0000-000000000000'),
 (10,'managers-role-0000-0000-000000000000','alrmbell-ring-0000-0000-000000000000'),
 (11,'managers-role-0000-0000-000000000000','increase-stck-0000-0000-000000000000'),
-(12,'managers-role-0000-0000-000000000000','pricechg-stck-0000-0000-000000000000'),
-(13,'security-role-0000-0000-000000000000','orion000-vrsn-0000-0000-000000000000'),
-(14,'managers-role-0000-0000-000000000000','orion000-vrsn-0000-0000-000000000000');
+(12,'managers-role-0000-0000-000000000000','pricechg-stck-0000-0000-000000000000');
 
 
 
@@ -617,6 +615,7 @@ CREATE TABLE `user` (
   `gravatar` tinyint(1) DEFAULT '0',
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(40) DEFAULT NULL,
+  `salt` varchar(40) DEFAULT NULL,
   `date_password` datetime DEFAULT NULL,
   `enabled` tinyint(1) DEFAULT '0',
   `admin` tinyint(1) DEFAULT '0',
@@ -636,16 +635,16 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES 
-('aaaaaaaa-good-0000-0000-000000000000','alice', 'Alice is the admin',NULL,'default',0,'alice-the-admin@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,1,NULL,NULL,0,NULL),
-('bbbbbbbb-good-0000-0000-000000000000','bob','Bob is the regional manager',NULL,'default',0,'bob-the-manager@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('cccccccc-good-0000-0000-000000000000','charlie','Charlie is head of security',NULL,'default',0,'charlie-security@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('manager1-good-0000-0000-000000000000','manager1','Manager works for Bob',NULL,'default',0,'manager1@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('manager2-good-0000-0000-000000000000','manager2','Manager works for Bob',NULL,'default',0,'manager2@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('detective1-good-0000-0000-000000000000','detective1','Detective works for Charlie',NULL,'default',0,'detective1@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('detective2-good-0000-0000-000000000000','detective2','Detective works for Charlie',NULL,'default',0,'detective2@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('eve-evil-0000-0000-000000000000','eve','Eve the Eavesdropper',NULL,'default',0,'eve@example.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('mallory-evil-0000-0000-000000000000','mallory','Mallory the malicious attacker',NULL,'default',0,'mallory@example.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('rob-evil-0000-0000-000000000000','rob','Rob the Robber' ,NULL,'default',0,'rob@example.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca','2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL);/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+('aaaaaaaa-good-0000-0000-000000000000','alice', 'Alice is the admin',NULL,'default',0,'alice-the-admin@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,1,NULL,NULL,0,NULL),
+('bbbbbbbb-good-0000-0000-000000000000','bob','Bob is the regional manager',NULL,'default',0,'bob-the-manager@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
+('cccccccc-good-0000-0000-000000000000','charlie','Charlie is head of security',NULL,'default',0,'charlie-security@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
+('manager1-good-0000-0000-000000000000','manager1','Manager works for Bob',NULL,'default',0,'manager1@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
+('manager2-good-0000-0000-000000000000','manager2','Manager works for Bob',NULL,'default',0,'manager2@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
+('detective1-good-0000-0000-000000000000','detective1','Detective works for Charlie',NULL,'default',0,'detective1@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
+('detective2-good-0000-0000-000000000000','detective2','Detective works for Charlie',NULL,'default',0,'detective2@test.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
+('eve-evil-0000-0000-000000000000','eve','Eve the Eavesdropper',NULL,'default',0,'eve@example.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
+('mallory-evil-0000-0000-000000000000','mallory','Mallory the malicious attacker',NULL,'default',0,'mallory@example.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
+('rob-evil-0000-0000-000000000000','rob','Rob the Robber' ,NULL,'default',0,'rob@example.com','e9f7c64ec2895eec281f8fd36e588d1bc762bcca', NULL, '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL);/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

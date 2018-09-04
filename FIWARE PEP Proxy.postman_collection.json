@@ -1,0 +1,585 @@
+{
+	"info": {
+		"_postman_id": "8ddc19dc-bc5f-47a4-82a9-94640db14a62",
+		"name": "FIWARE PEP Proxy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Logging In to Keyrock",
+			"description": "",
+			"item": [
+				{
+					"name": "Create token with Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"alice-the-admin@test.com\",\n  \"password\": \"test\"\n}"
+						},
+						"url": {
+							"raw": "http://{{keyrock}}/v1/auth/tokens",
+							"protocol": "http",
+							"host": [
+								"{{keyrock}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"tokens"
+							]
+						},
+						"description": "The following example logs in using the Admin Super-User - it is the equivalent of using the log-in screen of the GUI.\n\nThe response header returns an `X-Subject-token` which identifies who has logged on the application.\nThis token is required in all subsequent requests to gain access."
+					},
+					"response": []
+				},
+				{
+					"name": "Get token info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Auth-token",
+								"value": "{{X-Auth-token}}"
+							},
+							{
+								"key": "X-Subject-token",
+								"value": "{{X-Subject-token}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "http://{{keyrock}}/v1/auth/tokens",
+							"protocol": "http",
+							"host": [
+								"{{keyrock}}"
+							],
+							"path": [
+								"v1",
+								"auth",
+								"tokens"
+							]
+						},
+						"description": "You can use the long-lasting  `X-Auth-token=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa` to pretend to be Alice throughout this\ntutorial. \n\nThe presence of a (time-limited) token is sufficient to find out more information about the user.\nTo find information about Bob, use the long-lasting token `X-Subject-token=bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb`\n\nThis request indicates that *the\nuser authorized with the token `{{X-Auth-token}}` (i.e Alice) is enquiring about the user holding the token  `{{X-Subject-token}}`* i.e Bob \n\nThe response will return the details of the associated user. As you can see Bob holds a long-lasting token until 2026."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Defining Other Actors within an Application",
+			"description": "",
+			"item": [
+				{
+					"name": "PEP Proxy CRUD Actions",
+					"description": "",
+					"item": [
+						{
+							"name": "Info Pep Proxy",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"pep_proxies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create a Pep Proxy",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"pep_proxies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password of Pep Proxy",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "{{Content-Type}}"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"pep_proxies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Pep Proxy",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "{{Content-Type}}"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"pep_proxies"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "IoT Agent CRUD Actions",
+					"description": "",
+					"item": [
+						{
+							"name": "List of Iot Agents",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"iot_agents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create an Iot Agent",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "{{Content-Type}}"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"iot_agents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Read Iot agent details",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"iot_agents",
+										"{{iot-agent-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password of Iot Agent",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "{{Content-Type}}"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete an Iot Agent",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/permissions/{{iot-agent-id}}",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"permissions",
+										"{{iot-agent-id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "Logging in to an Application",
+			"description": "",
+			"item": [
+				{
+					"name": "OAuth Password Flow",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic {{Authorization}}",
+								"description": "base64 concatenation of Client Id and Client Secret"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "username=alice-the-admin@test.com&password=test&grant_type=password"
+						},
+						"url": {
+							"raw": "http://{{keyrock}}/oauth2/token",
+							"protocol": "http",
+							"host": [
+								"{{keyrock}}"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						},
+						"description": "To log in using the user-credentials flow send a POST request to the `oauth2/token` endpoint with the `grant_type=password`\n\n  The response returns an access code to identify the user\n\n  The access code can then be used with a GET request to the `/user` endpoint to obtain user details."
+					},
+					"response": []
+				},
+				{
+					"name": "Accessing Orion via a PEP Proxy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Access-token}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:1027/v2/entities/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1027",
+							"path": [
+								"v2",
+								"entities",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f32d4f4e-6a77-4b0a-9cd1-7fdc58c14247",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "453a7383-bb2a-4e01-8ed4-7355fb12520f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "250897c9-2958-4bad-868e-fa7ebf1e09d4",
+			"key": "keyrock",
+			"value": "localhost:3005",
+			"type": "string",
+			"description": ""
+		},
+		{
+			"id": "636f357f-2800-4f8b-b602-b36d26906a3a",
+			"key": "X-Auth-token",
+			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+			"type": "string",
+			"description": ""
+		},
+		{
+			"id": "8719025b-dff7-4413-bb26-b7adb75c2da3",
+			"key": "X-Subject-token",
+			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+			"type": "string",
+			"description": ""
+		},
+		{
+			"id": "6cebf877-3aef-4830-a9ed-5c70bd0b9128",
+			"key": "application-id",
+			"value": "tutorial-dckr-site-0000-xpresswebapp",
+			"type": "string",
+			"description": ""
+		},
+		{
+			"id": "ed6c23e4-fbd1-49b3-99dd-75efad9c6bce",
+			"key": "X-Access-token",
+			"value": "9216167571cfa44d21fd1bac58b2bdaaf440f08c",
+			"type": "string",
+			"description": ""
+		},
+		{
+			"id": "df7a3ed2-dd56-4108-99cc-425abe01afd3",
+			"key": "Authorization",
+			"value": "dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==",
+			"type": "string",
+			"description": ""
+		},
+		{
+			"id": "3c49006c-37e8-42c0-9dac-7471b6939dd1",
+			"key": "iot-agent-id",
+			"value": "iot_sensor_00000000-0000-0000-0000-000000000000",
+			"type": "string",
+			"description": ""
+		}
+	]
+}

@@ -29,7 +29,7 @@ services:
     command: -dbhost mongo-db -logLevel DEBUG
 
   iot-agent:
-    image: fiware/iotagent-ul:1.6.0
+    image: fiware/iotagent-ul
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
@@ -87,7 +87,7 @@ services:
         - "CALLBACK_URL=http://localhost:3000/login"
 
   keyrock:
-    image: fiware-idm-params
+    image: fiware/idm
     container_name: fiware-keyrock
     hostname: keyrock
     networks:
@@ -104,9 +104,11 @@ services:
       - IDM_DB_USER=root
       - IDM_HOST=http://localhost:3005
       - IDM_PORT=3005
+      - IDM_HTTPS_ENABLED=${IDM_HTTPS_ENABLED}
+      - IDM_HTTPS_PORT=3443
       - IDM_ADMIN_USER=alice
       - IDM_ADMIN_EMAIL=alice-the-admin@test.com
-      - IDM_ADMIN_PASS=fiware 
+      - IDM_ADMIN_PASS=test
     secrets:                
       - my_secret_data
 
