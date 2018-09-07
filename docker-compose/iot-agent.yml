@@ -34,15 +34,16 @@ services:
     container_name: fiware-iot-agent
     depends_on:
         - mongo-db
-        - wilma
+        - orion
+        - iot-sensors-proxy
     networks:
         - default
     ports:
         - "4041:4041"
         - "7896:7896"
     environment:
-        - "IOTA_CB_HOST=wilma" # name of the PEP Proxy fronting the context broker to update context
-        - "IOTA_CB_PORT=1027" # port the PEP Proxy listens on to update context
+        - "IOTA_CB_HOST=orion" # name of the PEP Proxy fronting the context broker to update context
+        - "IOTA_CB_PORT=1026" # port the PEP Proxy listens on to update context
         - "IOTA_NORTH_PORT=4041"
         - "IOTA_REGISTRY_TYPE=mongodb" #Whether to hold IoT device info in memory or in a database
         - "IOTA_LOG_LEVEL=DEBUG" #The log level of the IoT Agent
@@ -52,18 +53,23 @@ services:
         - "IOTA_MONGO_DB=iotagentul" # The name of the database used in mongoDB
         - "IOTA_HTTP_PORT=7896" # The port used for device traffic over HTTP
         - "IOTA_PROVIDER_URL=http://iot-agent:4041"
+    volumes:
+        - ../iot-agent/config.js:/opt/iotaul/config-blank.js:ro
 
-  context-provider:
+  tutorial-app:
     image: fiware/tutorials.context-provider
-    hostname: context-provider
-    container_name: context-provider
+    hostname: tutorial-app
+    container_name: tutorial-app
     depends_on:
-        - wilma
+        - orion-proxy
         - iot-agent
         - keyrock
     networks:
       default:
         ipv4_address: 172.18.1.7
+        aliases:
+          - iot-sensors
+          - context-provider
     expose:
         - "3000"
         - "3001"
@@ -78,7 +84,7 @@ services:
         - "DUMMY_DEVICES_PORT=3001" # Port used by the dummy IOT devices to receive commands
         - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy Io devices
         - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
-        - "CONTEXT_BROKER=http://wilma:1027/v2" # URL of the PEP Proxy to update context
+        - "CONTEXT_BROKER=http://orion-proxy:1027/v2" # URL of the PEP Proxy to update context
         - "OPENWEATHERMAP_KEY_ID=<ADD_YOUR_KEY_ID>"
         - "TWITTER_CONSUMER_KEY=<ADD_YOUR_CONSUMER_KEY>"
         - "TWITTER_CONSUMER_SECRET=<ADD_YOUR_CONSUMER_SECRET>"
@@ -117,13 +123,13 @@ services:
     secrets:                
       - my_secret_data
 
-  wilma:
+  orion-proxy:
     image: fiware/pep-proxy
-    container_name: fiware-wilma
-    hostname: wilma
+    container_name: fiware-orion-proxy
+    hostname: orion-proxy
     networks:
       default:
-        ipv4_address: 172.18.1.8
+        ipv4_address: 172.18.1.10
     depends_on:
       - keyrock
     ports:
@@ -137,6 +143,32 @@ services:
       - PEP_PROXY_IDM_PORT=3005
       - PEP_PROXY_APP_HOST=172.18.1.9
       - PEP_PROXY_APP_PORT=1026
+      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
+      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
+      - PEP_PASSWORD=test
+      - PEP_PROXY_PDP=idm
+      - PEP_PROXY_MAGIC_KEY=1234
+
+  iot-sensors-proxy:
+    image: fiware/pep-proxy
+    container_name: fiware-iot-sensors-proxy
+    hostname: iot-sensor-proxy
+    networks:
+      default:
+        ipv4_address: 172.18.1.11
+    depends_on:
+      - keyrock
+    ports:
+      - "3002:3002"
+    environment:
+      - PEP_PROXY_PORT=3002
+      - PEP_PROXY_IDM_HOST=172.18.1.5
+      - PEP_PROXY_HTTPS_ENABLED=false
+      - PEP_PROXY_AUTH_ENABLED=false
+      - PEP_PROXY_IDM_SSL_ENABLED=false
+      - PEP_PROXY_IDM_PORT=3005
+      - PEP_PROXY_APP_HOST=172.18.1.7
+      - PEP_PROXY_APP_PORT=3001
       - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
       - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
       - PEP_PASSWORD=test
@@ -173,6 +205,7 @@ networks:
 volumes:
   mysql-db:
   mongo-db:
+  iot-agent:
 
 secrets:
   my_secret_data:
