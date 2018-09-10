@@ -120,33 +120,6 @@ services:
     secrets:                
       - my_secret_data
 
-  orion-proxy:
-    image: fiware/pep-proxy
-    container_name: fiware-wilma
-    hostname: orion-proxy
-    networks:
-      default:
-        ipv4_address: 172.18.1.8
-    depends_on:
-      - keyrock
-    ports:
-      - "1027:1027"
-    environment:
-      - PEP_PROXY_PORT=1027
-      - PEP_PROXY_IDM_HOST=172.18.1.5
-      - PEP_PROXY_HTTPS_ENABLED=false
-      - PEP_PROXY_AUTH_ENABLED=false
-      - PEP_PROXY_IDM_SSL_ENABLED=false
-      - PEP_PROXY_IDM_PORT=3005
-      - PEP_PROXY_APP_HOST=172.18.1.9
-      - PEP_PROXY_APP_PORT=1026
-      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
-      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
-      - PEP_PASSWORD=test
-      - PEP_PROXY_PDP=idm
-      - PEP_PROXY_MAGIC_KEY=1234
-
-
   mysql-db:
     restart: always
     image: mysql:5.7
@@ -167,6 +140,32 @@ services:
       - ../mysql-data:/docker-entrypoint-initdb.d/:ro
     secrets:                
       - my_secret_data
+
+  orion-proxy:
+    image: fiware/pep-proxy
+    container_name: fiware-orion-proxy
+    hostname: orion-proxy
+    networks:
+      default:
+        ipv4_address: 172.18.1.10
+    depends_on:
+      - keyrock
+    ports:
+      - "1027:1027"
+    environment:
+      - PEP_PROXY_APP_HOST=orion
+      - PEP_PROXY_APP_PORT=1026
+      - PEP_PROXY_PORT=1027
+      - PEP_PROXY_IDM_HOST=keyrock
+      - PEP_PROXY_HTTPS_ENABLED=false
+      - PEP_PROXY_AUTH_ENABLED=false
+      - PEP_PROXY_IDM_SSL_ENABLED=false
+      - PEP_PROXY_IDM_PORT=3005
+      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
+      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
+      - PEP_PASSWORD=test
+      - PEP_PROXY_PDP=idm
+      - PEP_PROXY_MAGIC_KEY=1234
 
 networks:
   default:

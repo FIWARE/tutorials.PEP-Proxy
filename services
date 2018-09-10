@@ -12,7 +12,7 @@ loadData () {
 	./import-data
 	echo -e " \033[1;32mdone\033[0m"
 	printf "Provisioning IoT devices "
-	"$1"/provision-devices
+	./provision-devices
 	echo -e " \033[1;32mdone\033[0m"
 	waitToConnect
 	echo ""
@@ -37,21 +37,21 @@ startContainers () {
 
 stoppingContainers () {
 	echo "Stopping containers"
-	docker-compose --log-level ERROR -f docker-compose/pep-proxy.yml  -p fiware down -v --remove-orphans
+	docker-compose --log-level ERROR -f docker-compose/iot-agent.yml  -p fiware down -v --remove-orphans
 }
 
 if (( $# != 1 )); then
     echo "Illegal number of parameters"
-    echo "usage: services [create|pep-proxy|iot-agent]"
+    echo "usage: services [create|orion|iot-agent]"
     exit 1
 fi
 
 command="$1"
 case "${command}" in
 	"help")
-        echo "usage: services [create|pep-proxy|iot-agent]"
+        echo "usage: services [create|orion|iot-agent]"
         ;;
-    "pep-proxy")
+    "orion")
 		stoppingContainers
 		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;31mKeyrock\033[0m, \033[1;31mWilma\033[0m, \033[1;30mTutorial\033[0m and \033[1;30mMongoDB\033[0m and \033[1;30mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
@@ -59,8 +59,8 @@ case "${command}" in
 		echo -e "- \033[1;30mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo -e "- \033[1;31mKeyrock\033[0m is an Identity Management Front-End"
 		echo -e "- \033[1;31mWilma\033[0m is a PEP Proxy for Orion"
-		startContainers false pep-proxy.yml
-		loadData .
+		startContainers false orion.yml
+		loadData
 		echo ""
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
@@ -71,9 +71,9 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1;30mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo -e "- \033[1;31mKeyrock\033[0m is an Identity Management Front-End"
-		echo -e "- 2 instances of \033[1;31mWilma\033[0m as a PEP Proxy for Orion and IoT Sensors"
+		echo -e "- 2 instances of \033[1;31mWilma\033[0m as a PEP Proxy for Orion and IoT Agent"
 		startContainers false iot-agent.yml
-		loadData iot-agent
+		loadData
 		echo ""
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
@@ -96,7 +96,7 @@ case "${command}" in
 		;;
 	*)
 		echo "Command not Found."
-		echo "usage: services [create|pep-proxy|iot-agent|stop]"
+		echo "usage: services [create|orion|iot-agent|stop]"
 		exit 127;
 		;;
 esac
