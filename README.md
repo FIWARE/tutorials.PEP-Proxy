@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Time-Series-Data.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://readthedocs.org/projects/fiware-tutorials/badge/?version=latest)](https://fiware-tutorials.readthedocs.io/en/latest)
 
-This tutorial uses a PEP Proxy combined with the Keyrock to secure access to endpoints exposed by
+This tutorial uses the FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy combined with **Keyrock** to secure access to endpoints exposed by
 FIWARE generic enablers. Users (or other actors) must log-in and use a token to gain access to services. The application
 code created in the [previous tutorial](https://github.com/Fiware/tutorials.Securing-Access) is expanded to authenticate
 users throughout a distributed system. The design of FIWARE Wilma - a PEP Proxy is discussed, and the parts of the
@@ -25,6 +25,21 @@ TBD
 >
 >  — Gandalf (The Fellowship of the Ring by J.R.R Tolkien)
 
+The [previous tutorial](https://github.com/Fiware/tutorials.Securing-Access) demonstrated that it is possible to Permit or Deny access
+to resources based on an authenticated user identifying themselves within an application.  It was simply a matter of the code following
+a different line of execution if the `access_token` was not found (Level 1 - Authentication Access), or confirming that a given `access_token`
+had appropriate rights (Level  2 - Basic Authorization). The same method of securing access can be applied by placing a Policy Enforcement
+Point (PEP) in front of other services within a FIWARE-based Smart solution.
+
+A PEP Proxy is a "well-known" public location which lies in front of a secured resource and serves as a gatekeeper for resource access.
+Users or other actors must supply sufficient information to the PEP Proxy to allow their request to succeed and pass through the PEP proxy.
+The PEP proxy then passes the request on to the real location of the real resource itself - the actual location of the secured resource is
+unknown to the outside user - it could be held in a private network behind the PEP proxy or found on a different machine altogether.
+
+FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a simple implentation of a PEP proxy designed to work with the FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler. Whenever a user tries to gain access to the resource behind the PEP proxy, the
+PEP will describe the user's attributes to the Policy Decision Point (PDP), request a security decision, and enforce the decision.
+(Permit or Deny). There is mimimal disruption of access for authorized users  - the reponse received is the same as if they had
+accessed the secured service directly. Unauthorized users are simply returned a **401 - Unauthorized** response.
 
 
 
@@ -82,9 +97,10 @@ command line functionality similar to a Linux distribution on Windows.
 # Architecture
 
 
-This application adds OAuth2-driven security into the existing Stock Management and Sensors-based application
-created in [previous tutorials](https://github.com/Fiware/tutorials.IoT-Agent/) by using the data created in the first [security tutorial](https://github.com/Fiware/tutorials.Identity-Management/) and reading it programmatically. It
-will make use of three FIWARE components - the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),the [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) and integrates the use of the [Keyrock](http://fiware-idm.readthedocs.io/) Generic enabler. Usage of the Orion Context Broker is sufficient for an application to qualify as *“Powered by FIWARE”*.
+This application protects access to the existing Stock Management and Sensors-based application by adding PEP Proxy instances around the services created in previous tutorials and uses data pre-populated into the **MySQL** database used by **Keyrock**. It
+will make use of four FIWARE components - the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),the [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/), the [Keyrock](http://fiware-idm.readthedocs.io/) Generic enabler
+and adds one or two instances [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy dependent upon which interfaces are to be secured.
+Usage of the Orion Context Broker is sufficient for an application to qualify as *“Powered by FIWARE”*.
 
 Both the Orion Context Broker and the IoT Agent rely on open source [MongoDB](https://www.mongodb.com/) technology to keep persistence of the information they hold. We will also be using the dummy IoT devices created in the [previous tutorial](https://github.com/Fiware/tutorials.IoT-Sensors/). **Keyrock** uses its own [MySQL](https://www.mysql.com/) database.
 
@@ -96,6 +112,7 @@ Therefore the overall architecture will consist of the following elements:
     * An OAuth2 authentication system for Applications and Users
     * A website graphical front-end for Identity Management Administration
     * An equivalent REST API for Identity Management via HTTP requests
+* FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a PEP Proxy securing access to the **Orion** and/or **IoT Agent** microservices
 * The underlying [MongoDB](https://www.mongodb.com/) database :
     * Used by the **Orion Context Broker** to hold context data information such as data entities, subscriptions and registrations
     * Used by the **IoT Agent** to hold device information such as device URLs and Keys
@@ -111,16 +128,7 @@ Therefore the overall architecture will consist of the following elements:
 
 Since all interactions between the elements are initiated by HTTP requests, the entities can be containerized and run from exposed ports.
 
-![](https://fiware.github.io/tutorials.PEP-Proxy/img/architecture.png)
-
-The necessary configuration information for adding security to the **Stock Management Frontend**  can be found in the `tutorial` section of the associated `docker-compose.yml` file - only the relevant variables are shown below:
-
-
-
-
-
-
-
+The specific architecture of each section of the tutorial is discussed below.
 
 
 # Start Up
@@ -128,8 +136,8 @@ The necessary configuration information for adding security to the **Stock Manag
 To start the installation, do the following:
 
 ```console
-git clone git@github.com:Fiware/tutorials.Securing-Access.git
-cd tutorials.Securing-Access
+git clone git@github.com:Fiware/tutorials.PEP-Proxy.git
+cd tutorials.PEP-Proxy
 
 ./services create
 ```
@@ -137,7 +145,7 @@ cd tutorials.Securing-Access
 >**Note** The initial creation of Docker images can take up to three minutes
 
 
-Thereafter, all services can be initialized from the command line by running the [services](https://github.com/Fiware/tutorials.Securing-Access/blob/master/services) Bash script provided within the repository:
+Thereafter, all services can be initialized from the command line by running the [services](https://github.com/Fiware/tutorials.PEP-PRoxy/blob/master/services) Bash script provided within the repository:
 
 ```console
 ./services <command>
@@ -216,13 +224,221 @@ The complete database relationship diagram can be found [here](https://fiware.gi
 To refresh your memory about how to create users and organizations and applications, you can log in at `http://localhost:3005/idm`
 using the account `alice-the-admin@test.com` with a password of `test`.
 
-![](https://fiware.github.io/tutorials.Securing-Access/img/keyrock-log-in.png)
+![](https://fiware.github.io/tutorials.PEP-Proxy/img/keyrock-log-in.png)
 
 and look around.
 
 
 
+# Securing Orion
 
+![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-orion.png)
+
+## Securing Orion - PEP Proxy Configuration
+
+The `orion-proxy` container is an instance of FIWARE **Wilma** listening on port `1027`, it is configured to forward traffic to
+`orion` on port `1026`, which is the default port that the context broker is listening to for NGSI Requests.
+
+```yaml
+  orion-proxy:
+    image: fiware/pep-proxy
+    container_name: fiware-orion-proxy
+    hostname: orion-proxy
+    networks:
+      default:
+        ipv4_address: 172.18.1.10
+    depends_on:
+      - keyrock
+    ports:
+      - "1027:1027"
+    expose:
+      - "1027"
+    environment:
+      - PEP_PROXY_APP_HOST=orion
+      - PEP_PROXY_APP_PORT=1026
+      - PEP_PROXY_PORT=1027
+      - PEP_PROXY_IDM_HOST=keyrock
+      - PEP_PROXY_HTTPS_ENABLED=false
+      - PEP_PROXY_AUTH_ENABLED=false
+      - PEP_PROXY_IDM_SSL_ENABLED=false
+      - PEP_PROXY_IDM_PORT=3005
+      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
+      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
+      - PEP_PASSWORD=test
+      - PEP_PROXY_PDP=idm
+      - PEP_PROXY_MAGIC_KEY=1234
+```
+
+The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by adding new entries to the application in **Keyrock**,
+however, in this tutorial, they have been pre-defined by populating the **MySQL** database with data on start-up.
+
+The `orion-proxy` container is listening on a single port:
+
+* The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to the **Wilma** instance
+  without being part of the same network.
+
+## Securing Orion - Tutorial Configuration
+
+```yaml
+  tutorial-app:
+    image: fiware/tutorials.context-provider
+    hostname: tutorial-app
+    container_name: tutorial-app
+    depends_on:
+        - orion-proxy
+        - iot-agent
+        - keyrock
+    networks:
+      default:
+        ipv4_address: 172.18.1.7
+        aliases:
+          - iot-sensors
+    expose:
+        - "3000"
+        - "3001"
+    ports:
+        - "3000:3000"
+        - "3001:3001"
+    environment:
+        - "WEB_APP_PORT=3000"
+        - "SECURE_ENDPOINTS=true"
+        - "CONTEXT_BROKER=http://orion-proxy:1027/v2"
+        - "KEYROCK_URL=http://localhost"
+        - "KEYROCK_IP_ADDRESS=http://172.18.1.5"
+        - "KEYROCK_PORT=3005"
+        - "KEYROCK_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp"
+        - "KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret"
+        - "CALLBACK_URL=http://localhost:3000/login"
+```
+All of the `tutorial` container settings have been described in previous tutorials. One important change is necessary however,
+rather than accessing **Orion** directly on the default port `1026` as shown in all previous tutorials, all context broker
+traffic is now sent to `orion-proxy` on port `1027`. As a reminder, the relevant settings are detailed below:
+
+| Key |Value|Description|
+|-----|-----|-----------|
+|WEB_APP_PORT|`3000`|Port used by web-app which displays the login screen & etc.|
+|KEYROCK_URL|`http://localhost`| This is URL of the **Keyrock** Web Front-End itself, used for redirection when forwarding users |
+|KEYROCK_IP_ADDRESS|`http://172.18.1.5`| This is URL of the **Keyrock** OAuth Communications |
+|KEYROCK_PORT|`3005` | This is the port that **Keyrock** is listening on.|
+|KEYROCK_CLIENT_ID|`tutorial-dckr-site-0000-xpresswebapp`| The Client ID defined by Keyrock for this application |
+|KEYROCK_CLIENT_SECRET|`tutorial-dckr-site-0000-clientsecret`| The Client Secret defined by Keyrock for this application |
+|CALLBACK_URL|`http://localhost:3000/login`| The callback URL used by Keyrock when a challenge has succeeded.|
+
+## Securing Orion - Start up
+
+To start the system with a PEP Proxy protecting  access to **Orion**, run the following command:
+
+```console
+./services orion
+```
+
+
+# Securing an IoT Agent
+
+![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-iot-agent.png)
+
+
+## Securing IoT Agent - PEP Proxy Configuration
+
+The `iot-agent-proxy` container is an instance of FIWARE **Wilma** listening on port `7897`, it is configured to forward traffic to
+`iot-agent` on port `7896`, which is the default port that the Ultralight agent is listening to for HTTP Requests.
+
+```yaml
+  iot-agent-proxy:
+    image: fiware/pep-proxy
+    container_name: fiware-iot-agent-proxy
+    hostname: iot-agent-proxy
+    networks:
+      default:
+        ipv4_address: 172.18.1.11
+    depends_on:
+      - keyrock
+    ports:
+      - "7897:7897"
+    expose:
+      - "7897"
+    environment:
+      - PEP_PROXY_APP_HOST=iot-agent
+      - PEP_PROXY_APP_PORT=7896
+      - PEP_PROXY_PORT=7897
+      - PEP_PROXY_IDM_HOST=keyrock
+      - PEP_PROXY_HTTPS_ENABLED=false
+      - PEP_PROXY_AUTH_ENABLED=false
+      - PEP_PROXY_IDM_SSL_ENABLED=false
+      - PEP_PROXY_IDM_PORT=3005
+      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
+      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
+      - PEP_PASSWORD=test
+      - PEP_PROXY_PDP=idm
+      - PEP_PROXY_MAGIC_KEY=1234
+```
+
+The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by adding new entries to the application in **Keyrock**,
+however, in this tutorial, they have been pre-defined by populating the **MySQL** database with data on start-up.
+
+The `iot-agent-proxy` container is listening on a single port:
+
+* The PEP Proxy Port - `7897` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to this **Wilma** instance
+  without being part of the same network.
+
+
+## Securing IoT Agent - Tutorial Configuration
+
+
+```yaml
+  tutorial-app:
+    image: fiware/tutorials.context-provider
+    hostname: tutorial-app
+    container_name: tutorial-app
+    depends_on:
+        - orion-proxy
+        - iot-agent-proxy
+        - keyrock
+    networks:
+      default:
+        ipv4_address: 172.18.1.7
+        aliases:
+          - iot-sensors
+    expose:
+        - "3000"
+        - "3001"
+    ports:
+        - "3000:3000"
+        - "3001:3001"
+    environment:
+        - "IOTA_HTTP_HOST=iot-agent-proxy"
+        - "IOTA_HTTP_PORT=7897"
+        - "DUMMY_DEVICES_PORT=3001" # Port used by the dummy IOT devices to receive commands
+        - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy Io devices
+        - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
+        - "DUMMY_DEVICES_USER=iot_sensor_00000000-0000-0000-0000-000000000000"
+        - "DUMMY_DEVICES_PASSWORD=test"
+```
+
+The `tutorial` container also hosts the dummy Ultralight sensors. Rather than accessing the **IoT Agent** directly on port `7896` as
+shown in all previous tutorials, all traffic is forwarded to `iot-agent-proxy` on port `7897`.
+
+
+| Key |Value|Description|
+|-----|-----|-----------|
+|IOTA_HTTP_HOST|`iot-agent-proxy`| The host name of the Wilma PEP Proxy protecting the IoT Agent for UltraLight 2.0 |
+|IOTA_HTTP_PORT|`7896` | The port that the Wilma PEP Proxy protecting the IoT Agent is listenting on|
+|DUMMY_DEVICES_PORT|`3001`| Port used by the dummy IOT devices to receive commands|
+|DUMMY_DEVICES_TRANSPORT|`HTTP`|Default transport used by dummy Io devices|
+|DUMMY_DEVICES_API_KEY|`4jggokgpepnvsb2uv4s40d59ov`| Random security key used for UltraLight interactions - ensures the integrity of interactions between the devices and the IoT Agent |
+|DUMMY_DEVICES_USER|`iot_sensor_00000000-0000-0000-0000-000000000000` | Username assigned to the device(s) in **Keyrock** |
+|DUMMY_DEVICES_PASSWORD|`test` | Password assigned to the device(s) in **Keyrock** |
+
+The `DUMMY_DEVICES_USER` and `DUMMY_DEVICES_PASSWORD` would usually be obtained by adding new entries to the application in **Keyrock**,
+however, in this tutorial, they have been pre-defined by populating the **MySQL** database with data on start-up.
+
+## Securing IoT Agent - Start up
+
+To start the system with a PEP Proxies protecting access to both **Orion** and the **IoT Agent** run the following command:
+
+```console
+./services iot-agent
+```
 
 ---
 

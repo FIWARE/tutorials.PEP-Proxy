@@ -152,6 +152,8 @@ services:
       - keyrock
     ports:
       - "1027:1027"
+    expose:
+      - "1027"
     environment:
       - PEP_PROXY_APP_HOST=orion
       - PEP_PROXY_APP_PORT=1026

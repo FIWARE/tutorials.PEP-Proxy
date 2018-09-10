@@ -155,6 +155,8 @@ services:
       - keyrock
     ports:
       - "1027:1027"
+    expose:
+      - "1027"
     environment:
       - PEP_PROXY_APP_HOST=orion
       - PEP_PROXY_APP_PORT=1026
@@ -181,6 +183,8 @@ services:
       - keyrock
     ports:
       - "7897:7897"
+    expose:
+      - "7897"
     environment:
       - PEP_PROXY_APP_HOST=iot-agent
       - PEP_PROXY_APP_PORT=7896
