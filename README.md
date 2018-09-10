@@ -38,7 +38,7 @@ unknown to the outside user - it could be held in a private network behind the P
 
 FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a simple implentation of a PEP proxy designed to work with the FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler. Whenever a user tries to gain access to the resource behind the PEP proxy, the
 PEP will describe the user's attributes to the Policy Decision Point (PDP), request a security decision, and enforce the decision.
-(Permit or Deny). There is mimimal disruption of access for authorized users  - the reponse received is the same as if they had
+(Permit or Deny). There is mimimal disruption of access for authorized users  - the response received is the same as if they had
 accessed the secured service directly. Unauthorized users are simply returned a **401 - Unauthorized** response.
 
 
@@ -70,6 +70,12 @@ Additionally two further non-human application objects can be secured within a F
  The relationship between the objects can be seen below - the entities marked in red are used directly within this tutorial:
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/entities.png)
+
+## :arrow_forward: Video : Introduction to Wilma PEP Proxy
+
+[![](http://img.youtube.com/vi/8tGbUI18udM/0.jpg)](https://www.youtube.com/watch?v=8tGbUI18udM "Introduction")
+
+Click on the image above to see an introductory video
 
 
 # Prerequisites
@@ -277,6 +283,14 @@ The `orion-proxy` container is listening on a single port:
 * The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to the **Wilma** instance
   without being part of the same network.
 
+### :arrow_forward: Video : Wilma PEP Proxy Configuration
+
+[![](http://img.youtube.com/vi/b4sYU78skrw/0.jpg)](https://www.youtube.com/watch?v=b4sYU78skrw "PEP Proxy Configuration")
+
+Click on the image above to see a video about configuring the Wilma PEP Proxy
+
+
+
 ## Securing Orion - Tutorial Configuration
 
 ```yaml
@@ -332,6 +346,12 @@ To start the system with a PEP Proxy protecting  access to **Orion**, run the fo
 ./services orion
 ```
 
+
+### :arrow_forward: Video : Wilma PEP Proxy Configuration
+
+[![](http://img.youtube.com/vi/coxFQEY0_So/0.jpg)](https://www.youtube.com/watch?v=coxFQEY0_So "Securing a REST API")
+
+Click on the image above to see a video about securing a REST API the Wilma PEP Proxy
 
 # Securing an IoT Agent
 
