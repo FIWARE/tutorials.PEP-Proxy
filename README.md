@@ -17,7 +17,49 @@ Keyrock GUI and REST API relevant to authenticating other services are described
 
 # Contents
 
-TBD
+- [Securing Microservices with a PEP Proxy](#securing-microservices-with-a-pep-proxy)
+  * [Standard Concepts of Identity Management](#standard-concepts-of-identity-management)
+  * [:arrow_forward: Video : Introduction to Wilma PEP Proxy](#arrow_forward-video--introduction-to-wilma-pep-proxy)
+- [Prerequisites](#prerequisites)
+  * [Docker](#docker)
+  * [Cygwin](#cygwin)
+- [Architecture](#architecture)
+- [Start Up](#start-up)
+  * [Dramatis Personae](#dramatis-personae)
+  * [Logging In to Keyrock using the REST API](#logging-in-to-keyrock-using-the-rest-api)
+    + [Create Token with Password](#create-token-with-password)
+    + [Get Token Info](#get-token-info)
+- [Managing PEP Proxies and IoT Agents](#managing-pep-proxies-and-iot-agents)
+  * [:arrow_forward: Video : Wilma PEP Proxy Configuration](#arrow_forward-video--wilma-pep-proxy-configuration)
+  * [PEP Proxy CRUD Actions](#pep-proxy-crud-actions)
+    + [Create a PEP Proxy](#create-a-pep-proxy)
+    + [Read PEP Proxy details](#read-pep-proxy-details)
+    + [List PEP Proxies](#list-pep-proxies)
+    + [Reset Password of a PEP Proxy](#reset-password-of-a-pep-proxy)
+    + [Delete a PEP Proxy](#delete-a-pep-proxy)
+  * [IoT Agent CRUD Actions](#iot-agent-crud-actions)
+    + [Create an IoT Agent](#create-an-iot-agent)
+    + [Read IoT Agent details](#read-iot-agent-details)
+    + [List IoT Agents](#list-iot-agents)
+    + [Reset Password of an IoT Agent](#reset-password-of-an-iot-agent)
+    + [Delete an IoT Agent](#delete-an-iot-agent)
+- [Securing the Orion Context Broker](#securing-the-orion-context-broker)
+  * [Securing Orion - PEP Proxy Configuration](#securing-orion---pep-proxy-configuration)
+  * [Securing Orion - Application Configuration](#securing-orion---tutorial-configuration)
+  * [Securing Orion - Start up](#securing-orion---start-up)
+    + [:arrow_forward: Video : Wilma PEP Proxy Configuration](#arrow_forward-video--wilma-pep-proxy-configuration-1)
+  * [User Logs In to the Application using the REST API](#user-logs-in-to-the-application-using-the-rest-api)
+    + [Keyrock - User Obtains an Access Token](#keyrock---user-obtains-an-access-token)
+    + [PEP Proxy - Accessing Orion with an Access Token](#pep-proxy---accessing-orion-with-an-access-token)
+  * [Securing Orion - Sample Code](#securing-orion---sample-code)
+- [Securing an IoT Agent](#securing-an-iot-agent)
+  * [Securing an IoT Agent - PEP Proxy Configuration](#securing-an-iot-agent---pep-proxy-configuration)
+  * [Securing an IoT Agent - Application Configuration](#securing-an-iot-agent---tutorial-configuration)
+  * [Securing IoT Agent - Start up](#securing-iot-agent---start-up)
+  * [IoT Sensor Logs In to the Application using the REST API](#iot-sensor-logs-in-to-the-application-using-the-rest-api)
+    + [Keyrock - IoT Sensor Obtains an Access Token](#keyrock---iot-sensor-obtains-an-access-token)
+    + [PEP Proxy - Accessing IoT Agent with an Access Token](#pep-proxy---accessing-iot-agent-with-an-access-token)
+  * [Securing an IoT Agent - Sample Code](#securing-an-iot-agent----sample-code)
 
 # Securing Microservices with a PEP Proxy
 
@@ -27,21 +69,20 @@ TBD
 
 The [previous tutorial](https://github.com/Fiware/tutorials.Securing-Access) demonstrated that it is possible to Permit or Deny access
 to resources based on an authenticated user identifying themselves within an application.  It was simply a matter of the code following
-a different line of execution if the `access_token` was not found (Level 1 - Authentication Access), or confirming that a given `access_token`
-had appropriate rights (Level  2 - Basic Authorization). The same method of securing access can be applied by placing a Policy Enforcement
-Point (PEP) in front of other services within a FIWARE-based Smart solution.
+a different line of execution if the `access_token` was not found (Level 1 - *Authentication Access*), or confirming that a given `access_token`
+had appropriate rights (Level  2 - *Basic Authorization*). The same method of securing access can be applied by placing a Policy Enforcement
+Point (PEP) in front of other services within a FIWARE-based Smart Solution.
 
-A PEP Proxy is a "well-known" public location which lies in front of a secured resource and serves as a gatekeeper for resource access.
-Users or other actors must supply sufficient information to the PEP Proxy to allow their request to succeed and pass through the PEP proxy.
-The PEP proxy then passes the request on to the real location of the real resource itself - the actual location of the secured resource is
-unknown to the outside user - it could be held in a private network behind the PEP proxy or found on a different machine altogether.
+A **PEP Proxy** lies in front of a secured resource  and is an endpoint found at "well-known" public location. It serves
+as a gatekeeper for resource access. Users or other actors must supply sufficient information to the **PEP Proxy** to allow their request
+to succeed and pass through the **PEP proxy**. The **PEP proxy** then passes the request on to the real location of the
+secured resource itself - the actual location of the secured resource is unknown to the outside user - it could be held
+in a private network behind the **PEP proxy** or found on a different machine altogether.
 
-FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a simple implentation of a PEP proxy designed to work with the FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler. Whenever a user tries to gain access to the resource behind the PEP proxy, the
+FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a simple implentation of a **PEP proxy** designed to work with the FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler. Whenever a user tries to gain access to the resource behind the **PEP proxy**, the
 PEP will describe the user's attributes to the Policy Decision Point (PDP), request a security decision, and enforce the decision.
 (Permit or Deny). There is mimimal disruption of access for authorized users  - the response received is the same as if they had
 accessed the secured service directly. Unauthorized users are simply returned a **401 - Unauthorized** response.
-
-
 
 
 ## Standard Concepts of Identity Management
@@ -167,7 +208,7 @@ Where `<command>` will vary depending upon the exercise we wish to activate.
 >
 
 
-### Dramatis Personae
+## Dramatis Personae
 
 The following people at `test.com` legitimately have accounts within the Application
 
@@ -235,15 +276,64 @@ using the account `alice-the-admin@test.com` with a password of `test`.
 and look around.
 
 
+## Logging In to Keyrock using the REST API
 
-# Securing Orion
+
+Enter a username and password to enter the application. The default super-user has the values `alice-the-admin@test.com` and `test`. The URL `https://localhost:3443/v1/auth/tokens` should also work in a secure system.
+
+### Create Token with Password
+
+The following example logs in using the Admin Super-User:
+
+#### :one: Request:
+```console
+curl -iX POST \
+  'http://localhost:3005/v1/auth/tokens' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "alice-the-admin@test.com",
+  "password": "test"
+}'
+```
+
+### Get Token Info
+
+# Managing PEP Proxies and IoT Agents
+
+
+## :arrow_forward: Video : Wilma PEP Proxy Configuration
+
+[![](http://img.youtube.com/vi/b4sYU78skrw/0.jpg)](https://www.youtube.com/watch?v=b4sYU78skrw "PEP Proxy Configuration")
+
+Click on the image above to see a video about configuring the Wilma PEP Proxy using the **Keyrock** GUI
+
+## PEP Proxy CRUD Actions
+
+### Create a PEP Proxy
+### Read PEP Proxy details
+### List PEP Proxies
+### Reset Password of a PEP Proxy
+### Delete a PEP Proxy
+
+
+## IoT Agent CRUD Actions
+
+### Create an IoT Agent
+### Read IoT Agent details
+### List IoT Agents
+### Reset Password of an IoT Agent
+### Delete an IoT Agent
+
+
+
+# Securing the Orion Context Broker
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-orion.png)
 
 ## Securing Orion - PEP Proxy Configuration
 
 The `orion-proxy` container is an instance of FIWARE **Wilma** listening on port `1027`, it is configured to forward traffic to
-`orion` on port `1026`, which is the default port that the context broker is listening to for NGSI Requests.
+`orion` on port `1026`, which is the default port that the Orion Context Broker is listening to for NGSI Requests.
 
 ```yaml
   orion-proxy:
@@ -283,15 +373,11 @@ The `orion-proxy` container is listening on a single port:
 * The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to the **Wilma** instance
   without being part of the same network.
 
-### :arrow_forward: Video : Wilma PEP Proxy Configuration
-
-[![](http://img.youtube.com/vi/b4sYU78skrw/0.jpg)](https://www.youtube.com/watch?v=b4sYU78skrw "PEP Proxy Configuration")
-
-Click on the image above to see a video about configuring the Wilma PEP Proxy
 
 
 
-## Securing Orion - Tutorial Configuration
+
+## Securing Orion - Application Configuration
 
 ```yaml
   tutorial-app:
@@ -353,12 +439,28 @@ To start the system with a PEP Proxy protecting  access to **Orion**, run the fo
 
 Click on the image above to see a video about securing a REST API the Wilma PEP Proxy
 
+
+## User Logs In to the Application using the REST API
+
+### Keyrock - User Obtains an Access Token
+
+User of the application
+OAuth Password Flow
+
+### PEP Proxy - Accessing Orion with an Access Token
+
+
+## Securing Orion - Sample Code
+
+
+
+
 # Securing an IoT Agent
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-iot-agent.png)
 
 
-## Securing IoT Agent - PEP Proxy Configuration
+## Securing an IoT Agent - PEP Proxy Configuration
 
 The `iot-agent-proxy` container is an instance of FIWARE **Wilma** listening on port `7897`, it is configured to forward traffic to
 `iot-agent` on port `7896`, which is the default port that the Ultralight agent is listening to for HTTP Requests.
@@ -402,7 +504,7 @@ The `iot-agent-proxy` container is listening on a single port:
   without being part of the same network.
 
 
-## Securing IoT Agent - Tutorial Configuration
+## Securing an IoT Agent - Application Configuration
 
 
 ```yaml
@@ -459,6 +561,19 @@ To start the system with a PEP Proxies protecting access to both **Orion** and t
 ```console
 ./services iot-agent
 ```
+
+
+## IoT Sensor Logs In to the Application using the REST API
+
+### Keyrock - IoT Sensor Obtains an Access Token
+
+User of the application
+OAuth Password Flow
+
+### PEP Proxy - Accessing IoT Agent with an Access Token
+
+
+## Securing an IoT Agent -  Sample Code
 
 ---
 
