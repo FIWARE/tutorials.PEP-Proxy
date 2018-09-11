@@ -372,6 +372,7 @@ The `orion-proxy` container is listening on a single port:
 * The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to the **Wilma** instance
   without being part of the same network.
 
+
 | Key |Value|Description|
 |-----|-----|-----------|
 | PEP_PROXY_APP_HOST |`orion` | The hostname of the service behind the PEP Proxy |
@@ -379,7 +380,7 @@ The `orion-proxy` container is listening on a single port:
 | PEP_PROXY_PORT |`1027` | The port that the PEP Proxy is listening on |
 | PEP_PROXY_IDM_HOST | `keyrock`| The hostname for the Identity Manager |
 | PEP_PROXY_HTTPS_ENABLED | `false`| Whether the PEP Proxy itself is running under HTTPS |
-| PEP_PROXY_AUTH_ENABLED | `false`| |
+| PEP_PROXY_AUTH_ENABLED | `false`| Whether the PEP Proxy is checking for Authorization |
 | PEP_PROXY_IDM_SSL_ENABLED | `false`| Whether the Identity Manager is running under HTTPS |
 | PEP_PROXY_IDM_PORT | `3005`|  The Port for the Identity Manager instance|
 | PEP_PROXY_APP_ID | `tutorial-dckr-site-0000-xpresswebapp`| |
@@ -387,6 +388,9 @@ The `orion-proxy` container is listening on a single port:
 | PEP_PASSWORD | `test`|  The Password for the PEP Proxy |
 | PEP_PROXY_PDP | `idm`| The Type of service offering the Policy Decision Point|
 | PEP_PROXY_MAGIC_KEY | `1234` | |
+
+For this example, the PEP Proxy is checking for Level 1 - *Authentication Access* not  Level 2 - *Basic Authorization* or
+Level 3 - *Advanced Authorization*.
 
 
 
@@ -470,6 +474,58 @@ OAuth Password Flow
 
 ## Securing Orion - Sample Code
 
+When a User logs in to the application using the User Credentials Grant, an `access_token` is obtained which identifies the User.
+The  `access_token`  is stored in session:
+
+```javascript
+function userCredentialGrant(req, res){
+    debug('userCredentialGrant');
+
+    const email = req.body.email;
+    const password = req.body.password;
+
+    oa.getOAuthPasswordCredentials(email, password)
+    .then(results => {
+        req.session.access_token =  results.access_token;
+        return;
+    })
+}
+```
+
+For each subsequent request, the `access_token` is supplied in the `X-Auth-Token` Header
+
+```javascript
+function setAuthHeaders(req){
+  const headers = {};
+  if (req.session.access_token) {
+    headers['X-Auth-Token'] = req.session.access_token;
+  }
+  return headers;
+}
+```
+
+For example, when buying an item, two requests are made, the same  `X-Auth-Token` Header must be added to each request - therefore
+the User can be identified and access granted.
+
+```javascript
+async function buyItem(req, res) {
+
+  const inventory = await retrieveEntity(req.params.inventoryId, {
+    options: 'keyValues',
+    type: 'InventoryItem',
+  }, setAuthHeaders(req));
+  const count = inventory.shelfCount - 1;
+
+  await updateExistingEntityAttributes(
+    req.params.inventoryId,
+    { shelfCount: { type: 'Integer', value: count } },
+    {
+      type: 'InventoryItem',
+    }, setAuthHeaders(req)
+  );
+  res.redirect(`/app/store/${inventory.refStore}/till`);
+}
+```
 
 
 
@@ -528,7 +584,7 @@ The `iot-agent-proxy` container is listening on a single port:
 | PEP_PROXY_PORT | `7897`| The port that the PEP Proxy is listening on |
 | PEP_PROXY_IDM_HOST | `keyrock`| The hostname for the Identity Manager |
 | PEP_PROXY_HTTPS_ENABLED | `false`| Whether the PEP Proxy is running under HTTPS |
-| PEP_PROXY_AUTH_ENABLED | `false`| |
+| PEP_PROXY_AUTH_ENABLED | `false`|  Whether the PEP Proxy is checking for Authorization|
 | PEP_PROXY_IDM_SSL_ENABLED | `false`|  Whether the Identity Manager is running under HTTPS |
 | PEP_PROXY_IDM_PORT | `3005`|  The Port for the Identity Manager instance|
 | PEP_PROXY_APP_ID | `tutorial-dckr-site-0000-xpresswebapp`| |
@@ -536,6 +592,9 @@ The `iot-agent-proxy` container is listening on a single port:
 | PEP_PASSWORD | `test`|  The Password for the PEP Proxy |
 | PEP_PROXY_PDP | `idm`| The Type of service offering the Policy Decision Point|
 | PEP_PROXY_MAGIC_KEY | `1234` | |
+
+For this example, the PEP Proxy is checking for Level 1 - *Authentication Access* not  Level 2 - *Basic Authorization* or
+Level 3 - *Advanced Authorization*.
 
 
 ## Securing an IoT Agent - Application Configuration
@@ -615,6 +674,44 @@ OAuth Password Flow
 
 
 ## Securing an IoT Agent -  Sample Code
+
+
+When an IoT Sensor starts up, it must log-in like any other user to obtain an access token:
+
+```javascript
+const DUMMY_DEVICE_HTTP_HEADERS = { 'Content-Type': 'text/plain' };
+```
+```javascript
+function initSecureDevices(){
+    Security.oa.getOAuthPasswordCredentials(process.env.DUMMY_DEVICES_USER, process.env.DUMMY_DEVICES_PASSWORD)
+    .then(results => {
+        DUMMY_DEVICE_HTTP_HEADERS['X-Auth-Token'] = results.access_token;
+        return;
+    })
+    .catch(error => {
+        debug(error);
+        return;
+    });
+}
+```
+
+Each HTTP request thereafter includes the `X-Auth-Token` Header in the request identifying the IoT Sensor:
+
+```javascript
+const options = { method: 'POST',
+  url: UL_URL,
+  qs: { k: UL_API_KEY, i: deviceId },
+  headers: DUMMY_DEVICE_HTTP_HEADERS,
+  body: state };
+
+request(options,  (error) => {
+  if (error){
+    debug( debugText +  " " + error.code)
+  }
+});
+```
+
+
 
 ---
 
