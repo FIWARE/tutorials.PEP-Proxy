@@ -45,16 +45,16 @@ Keyrock GUI and REST API relevant to authenticating other services are described
     + [Delete an IoT Agent](#delete-an-iot-agent)
 - [Securing the Orion Context Broker](#securing-the-orion-context-broker)
   * [Securing Orion - PEP Proxy Configuration](#securing-orion---pep-proxy-configuration)
-  * [Securing Orion - Application Configuration](#securing-orion---tutorial-configuration)
+  * [Securing Orion - Application Configuration](#securing-orion---application-configuration)
   * [Securing Orion - Start up](#securing-orion---start-up)
-    + [:arrow_forward: Video : Wilma PEP Proxy Configuration](#arrow_forward-video--wilma-pep-proxy-configuration-1)
+    + [:arrow_forward: Video : Securing a REST API](#arrow_forward-video--securing-a-rest-api)
   * [User Logs In to the Application using the REST API](#user-logs-in-to-the-application-using-the-rest-api)
     + [Keyrock - User Obtains an Access Token](#keyrock---user-obtains-an-access-token)
     + [PEP Proxy - Accessing Orion with an Access Token](#pep-proxy---accessing-orion-with-an-access-token)
   * [Securing Orion - Sample Code](#securing-orion---sample-code)
 - [Securing an IoT Agent](#securing-an-iot-agent)
   * [Securing an IoT Agent - PEP Proxy Configuration](#securing-an-iot-agent---pep-proxy-configuration)
-  * [Securing an IoT Agent - Application Configuration](#securing-an-iot-agent---tutorial-configuration)
+  * [Securing an IoT Agent - Application Configuration](#securing-an-iot-agent---application-configuration)
   * [Securing IoT Agent - Start up](#securing-iot-agent---start-up)
   * [IoT Sensor Logs In to the Application using the REST API](#iot-sensor-logs-in-to-the-application-using-the-rest-api)
     + [Keyrock - IoT Sensor Obtains an Access Token](#keyrock---iot-sensor-obtains-an-access-token)
@@ -117,7 +117,6 @@ Additionally two further non-human application objects can be secured within a F
 [![](http://img.youtube.com/vi/8tGbUI18udM/0.jpg)](https://www.youtube.com/watch?v=8tGbUI18udM "Introduction")
 
 Click on the image above to see an introductory video
-
 
 # Prerequisites
 
@@ -373,11 +372,29 @@ The `orion-proxy` container is listening on a single port:
 * The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to the **Wilma** instance
   without being part of the same network.
 
-
+| Key |Value|Description|
+|-----|-----|-----------|
+| PEP_PROXY_APP_HOST |`orion` | The hostname of the service behind the PEP Proxy |
+| PEP_PROXY_APP_PORT |`1026` | The port of the service behind the PEP Proxy |
+| PEP_PROXY_PORT |`1027` | The port that the PEP Proxy is listening on |
+| PEP_PROXY_IDM_HOST | `keyrock`| The hostname for the Identity Manager |
+| PEP_PROXY_HTTPS_ENABLED | `false`| Whether the PEP Proxy itself is running under HTTPS |
+| PEP_PROXY_AUTH_ENABLED | `false`| |
+| PEP_PROXY_IDM_SSL_ENABLED | `false`| Whether the Identity Manager is running under HTTPS |
+| PEP_PROXY_IDM_PORT | `3005`|  The Port for the Identity Manager instance|
+| PEP_PROXY_APP_ID | `tutorial-dckr-site-0000-xpresswebapp`| |
+| PEP_PROXY_USERNAME | `pep_proxy_00000000-0000-0000-0000-000000000000`|  The Username for the PEP Proxy |
+| PEP_PASSWORD | `test`|  The Password for the PEP Proxy |
+| PEP_PROXY_PDP | `idm`| The Type of service offering the Policy Decision Point|
+| PEP_PROXY_MAGIC_KEY | `1234` | |
 
 
 
 ## Securing Orion - Application Configuration
+
+The tutorial application has already been registered in **Keyrock**, programmatically the tutorial application will
+be making requests to the **Wilma** PEP Proxy in front of the **Orion Conext Broker**. Every request must now include
+an additional `access_token` header.
 
 ```yaml
   tutorial-app:
@@ -410,6 +427,7 @@ The `orion-proxy` container is listening on a single port:
         - "KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret"
         - "CALLBACK_URL=http://localhost:3000/login"
 ```
+
 All of the `tutorial` container settings have been described in previous tutorials. One important change is necessary however,
 rather than accessing **Orion** directly on the default port `1026` as shown in all previous tutorials, all context broker
 traffic is now sent to `orion-proxy` on port `1027`. As a reminder, the relevant settings are detailed below:
@@ -433,11 +451,11 @@ To start the system with a PEP Proxy protecting  access to **Orion**, run the fo
 ```
 
 
-### :arrow_forward: Video : Wilma PEP Proxy Configuration
+### :arrow_forward: Video : Securing A REST API
 
 [![](http://img.youtube.com/vi/coxFQEY0_So/0.jpg)](https://www.youtube.com/watch?v=coxFQEY0_So "Securing a REST API")
 
-Click on the image above to see a video about securing a REST API the Wilma PEP Proxy
+Click on the image above to see a video about securing a REST API using the Wilma PEP Proxy
 
 
 ## User Logs In to the Application using the REST API
@@ -503,8 +521,29 @@ The `iot-agent-proxy` container is listening on a single port:
 * The PEP Proxy Port - `7897` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to this **Wilma** instance
   without being part of the same network.
 
+| Key |Value|Description|
+|-----|-----|-----------|
+| PEP_PROXY_APP_HOST | `iot-agent`| The hostname of the service behind the PEP Proxy |
+| PEP_PROXY_APP_PORT | `7896`| The port of the service behind the PEP Proxy |
+| PEP_PROXY_PORT | `7897`| The port that the PEP Proxy is listening on |
+| PEP_PROXY_IDM_HOST | `keyrock`| The hostname for the Identity Manager |
+| PEP_PROXY_HTTPS_ENABLED | `false`| Whether the PEP Proxy is running under HTTPS |
+| PEP_PROXY_AUTH_ENABLED | `false`| |
+| PEP_PROXY_IDM_SSL_ENABLED | `false`|  Whether the Identity Manager is running under HTTPS |
+| PEP_PROXY_IDM_PORT | `3005`|  The Port for the Identity Manager instance|
+| PEP_PROXY_APP_ID | `tutorial-dckr-site-0000-xpresswebapp`| |
+| PEP_PROXY_USERNAME | `pep_proxy_00000000-0000-0000-0000-000000000000`|  The Username for the PEP Proxy |
+| PEP_PASSWORD | `test`|  The Password for the PEP Proxy |
+| PEP_PROXY_PDP | `idm`| The Type of service offering the Policy Decision Point|
+| PEP_PROXY_MAGIC_KEY | `1234` | |
+
 
 ## Securing an IoT Agent - Application Configuration
+
+The tutorial application also plays the role of providing data from our dummy IoT Sensors. The IoT Sensors are
+making HTTP request containing commands and measurements in Ultralight syntax. An IoT Sensor username and password
+have already been registered in **Keyrock**, programmatically each sensor must obtain an OAuth2 access token and
+will then make requests to  a second **Wilma** PEP Proxy in front of the **IoT Agent**.
 
 
 ```yaml
@@ -537,8 +576,10 @@ The `iot-agent-proxy` container is listening on a single port:
         - "DUMMY_DEVICES_PASSWORD=test"
 ```
 
-The `tutorial` container also hosts the dummy Ultralight sensors. Rather than accessing the **IoT Agent** directly on port `7896` as
-shown in all previous tutorials, all traffic is forwarded to `iot-agent-proxy` on port `7897`.
+The `tutorial` container hosts the dummy Ultralight sensors. Rather than accessing the **IoT Agent** directly on port `7896` as
+shown in all previous tutorials, all traffic is forwarded to `iot-agent-proxy` on port `7897`. Most of the relevant `tutorial`
+container settings have been described in previous tutorials, the `DUMMY_DEVICES_USER` and `DUMMY_DEVICES_PASSWORD` are new
+additions.
 
 
 | Key |Value|Description|
