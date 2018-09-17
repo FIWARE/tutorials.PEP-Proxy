@@ -83,6 +83,29 @@
 					},
 					"response": []
 				}
+			],
+			"description": "Enter a username and password to enter the application. The default super-user has the values `alice-the-admin@test.com` and `test`. The URL `https://localhost:3443/v1/auth/tokens` should also work in a secure system.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b886ca21-2e87-489c-be24-cfa0df809954",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "30bf17a0-2033-4794-8351-f34ce2b67811",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
 			]
 		},
 		{
@@ -122,7 +145,8 @@
 										"{{application-id}}",
 										"pep_proxies"
 									]
-								}
+								},
+								"description": "To create a new PEP Proxy account within an application , send a POST request to the `//v1/applications/{{application-id}}/pep_proxies` endpoint  along with the `X-Auth-token` header from a previously logged in administrative user.\n\nProvided there is no previously existing PEP Proxy account associated with the application, a new account will be created with a unique `id` and `password` and the values will be returned in the response."
 							},
 							"response": []
 						},
@@ -133,11 +157,13 @@
 								"header": [
 									{
 										"key": "Accept",
-										"value": "application/json"
+										"value": "application/json",
+										"disabled": true
 									},
 									{
 										"key": "Content-Type",
-										"value": "application/json"
+										"value": "application/json",
+										"disabled": true
 									},
 									{
 										"key": "X-Auth-token",
@@ -146,7 +172,7 @@
 								],
 								"body": {},
 								"url": {
-									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies",
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies/",
 									"protocol": "http",
 									"host": [
 										"{{keyrock}}"
@@ -155,44 +181,11 @@
 										"v1",
 										"applications",
 										"{{application-id}}",
-										"pep_proxies"
+										"pep_proxies",
+										""
 									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "List PEP Proxies",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "X-Auth-token",
-										"value": "{{X-Auth-token}}"
-									}
-								],
-								"body": {},
-								"url": {
-									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies",
-									"protocol": "http",
-									"host": [
-										"{{keyrock}}"
-									],
-									"path": [
-										"v1",
-										"applications",
-										"{{application-id}}",
-										"pep_proxies"
-									]
-								}
+								},
+								"description": "Making a GET request the `/v1/applications/{{application-id}}/pep_proxies/` endpoint will return the details of the associated PEP Proxy Account. The `X-Auth-token` must be supplied in the headers."
 							},
 							"response": []
 						},
@@ -203,15 +196,12 @@
 								"header": [
 									{
 										"key": "Accept",
-										"value": "application/json"
+										"value": "application/json",
+										"disabled": true
 									},
 									{
 										"key": "Content-Type",
 										"value": "application/json"
-									},
-									{
-										"key": "Content-Type",
-										"value": "{{Content-Type}}"
 									},
 									{
 										"key": "X-Auth-token",
@@ -231,7 +221,8 @@
 										"{{application-id}}",
 										"pep_proxies"
 									]
-								}
+								},
+								"description": "To renew the password of a PEP Proxy Account, make a PATCH request to the  `/v1/applications/{{application-id}}/pep_proxies` endpoint will return the details of the associated PEP Proxy Account. The `X-Auth-token` must be supplied in the headers.\n\nThe response returns a new password."
 							},
 							"response": []
 						},
@@ -270,9 +261,33 @@
 										"{{application-id}}",
 										"pep_proxies"
 									]
-								}
+								},
+								"description": "An existing PEP Proxy Account can be deleted by making a DELETE request to the  `/v1/applications/{{application-id}}/pep_proxies` endpoint. The `X-Auth-token` must be supplied in the headers."
 							},
 							"response": []
+						}
+					],
+					"description": "#### GUI\n\nOnce signed-in, users are able to create and update PEP Proxies associated to their applications for themselves.\n\n![](https://fiware.github.io/tutorials.PEP-Proxy/img/create-pep-proxy.png)\n\n#### REST API\n\nAlternatively, the standard CRUD actions are assigned to the appropriate HTTP verbs (POST, GET, PATCH and DELETE) under the `/v1/applications/{{application-id}}/pep_proxies` endpoint.\n",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "387e4c2b-2ca2-4f82-9062-5cad900bcb98",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "2b873967-538b-4fe3-839c-e7eeffb7d9ba",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
 						}
 					],
 					"_postman_isSubFolder": true
@@ -281,42 +296,7 @@
 					"name": "IoT Agent CRUD Actions",
 					"item": [
 						{
-							"name": "List of Iot Agents",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "X-Auth-token",
-										"value": "{{X-Auth-token}}"
-									}
-								],
-								"body": {},
-								"url": {
-									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents",
-									"protocol": "http",
-									"host": [
-										"{{keyrock}}"
-									],
-									"path": [
-										"v1",
-										"applications",
-										"{{application-id}}",
-										"iot_agents"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Create an Iot Agent",
+							"name": "Create an IoT Agent",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -350,12 +330,13 @@
 										"{{application-id}}",
 										"iot_agents"
 									]
-								}
+								},
+								"description": "To create a new IoT Agent account within an application, send a POST request to the `/v1/applications/{{application-id}}/iot_agents` endpoint  along with the `X-Auth-token` header from a previously logged in administrative user.\n\nA new account will be created with a unique `id` and `password` and the values will be returned in the response."
 							},
 							"response": []
 						},
 						{
-							"name": "Read Iot agent details",
+							"name": "Read IoT Agent details",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -386,52 +367,15 @@
 										"iot_agents",
 										"{{iot-agent-id}}"
 									]
-								}
+								},
+								"description": "Making a GET request the `/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` endpoint will return the details of the associated IoT Agent Account. The `X-Auth-token` must be supplied in the headers."
 							},
 							"response": []
 						},
 						{
-							"name": "Reset Password of Iot Agent",
+							"name": "List of IoT Agents",
 							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Accept",
-										"value": "application/json"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Content-Type",
-										"value": "{{Content-Type}}"
-									},
-									{
-										"key": "X-Auth-token",
-										"value": "{{X-Auth-token}}"
-									}
-								],
-								"body": {},
-								"url": {
-									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}",
-									"protocol": "http",
-									"host": [
-										"{{keyrock}}"
-									],
-									"path": [
-										"v1",
-										"applications",
-										"{{application-id}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Delete an Iot Agent",
-							"request": {
-								"method": "DELETE",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Accept",
@@ -448,7 +392,7 @@
 								],
 								"body": {},
 								"url": {
-									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/permissions/{{iot-agent-id}}",
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents",
 									"protocol": "http",
 									"host": [
 										"{{keyrock}}"
@@ -457,18 +401,117 @@
 										"v1",
 										"applications",
 										"{{application-id}}",
-										"permissions",
-										"{{iot-agent-id}}"
+										"iot_agents"
 									]
-								}
+								},
+								"description": "A list of all IoT Agents associated with an application can be obtained by making a GET request the `/v1/applications/{{application-id}}/iot_agents` endpoint. The `X-Auth-token` must be supplied in the headers."
 							},
 							"response": []
+						},
+						{
+							"name": "Reset Password of IoT Agent",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"iot_agents",
+										"{{iot-agent-id}}"
+									]
+								},
+								"description": "To renew the password of an individual IoT Agent Account, make a PATCH request to the  `/v1/applications/{{application-id}}//iot_agents/{{iot-agent-id}}` endpoint. \nThe `X-Auth-token` must be supplied in the headers.\n\nThe response returns a new password."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete an IoT Agent",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"disabled": true
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-Auth-token",
+										"value": "{{X-Auth-token}}"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}",
+									"protocol": "http",
+									"host": [
+										"{{keyrock}}"
+									],
+									"path": [
+										"v1",
+										"applications",
+										"{{application-id}}",
+										"iot_agents",
+										"{{iot-agent-id}}"
+									]
+								},
+								"description": "An existing IoT Agent Account can be deleted by making a DELETE request to the  `/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` endpoint. \nThe `X-Auth-token` must be supplied in the headers."
+							},
+							"response": []
+						}
+					],
+					"description": "#### GUI\n\nIn a similar manner to PEP Proxy creation, signed-in, users are able to create and update IoT Sensor Accounts associated to their \napplications.\n\n![](https://fiware.github.io/tutorials.PEP-Proxy/img/create-iot-sensor.png)\n\n#### REST API\n\nAlternatively, the standard CRUD actions are assigned to the ",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "19ac2874-e6e9-43d4-8560-de18473d7a3a",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b544eada-13d0-40bd-b53c-b715a1f94dd2",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
 						}
 					],
 					"_postman_isSubFolder": true
 				}
 			],
-			"description": "## Video : Wilma PEP Proxy Configuration\n\n[![](http://img.youtube.com/vi/b4sYU78skrw/0.jpg)](https://www.youtube.com/watch?v=b4sYU78skrw \"PEP Proxy Configuration\")\n\nClick on the image above to see a video about configuring the Wilma PEP Proxy using the **Keyrock** GUI\n",
+			"description": "User accounts have been created in a [previous tutorial](https://github.com/Fiware/tutorials.Identity-Management). Non-human\nactors such as a PEP Proxy can be set up in the same manner. The account for each PEP Proxy, IoT Agent or IoT Sensor will \nmerely consist of a Username and password linked to an application within Keyrock. PEP Proxy and IoT Agents accounts can\nbe created by using either the Keyrock GUI or by using the REST API.\n\n## Video : Wilma PEP Proxy Configuration\n\n[![](http://img.youtube.com/vi/b4sYU78skrw/0.jpg)](https://www.youtube.com/watch?v=b4sYU78skrw \"PEP Proxy Configuration\")\n\nClick on the image above to see a video about configuring the Wilma PEP Proxy using the **Keyrock** GUI\n\n## Managing PEP Proxies and IoT Agents - Start Up\n\nTo start the system run the following command:\n\n```console\n./services orion\n```\n\nThis will start up **Keyrock** with a series of users. There are already two existing applications \nand an existing PEP Proxy Account associated with the application.\n",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -495,6 +538,34 @@
 		{
 			"name": "Securing the Orion Context Broker",
 			"item": [
+				{
+					"name": "PEP Proxy - No Access to Orion without an Access Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Access-token}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:1027/v2/entities/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1027",
+							"path": [
+								"v2",
+								"entities",
+								""
+							]
+						},
+						"description": "Secured Access can be ensured by requiring all requests to the secured service are made indirectly via a PEP Proxy (in this case the PEP Proxy is found in front of the Context Broker). Requests must include an `X-Auth-Token`, failure to present a valid token results in a denial of access.\n\nif a request to the PEP Proxy is made without any access token as shown, the response is a **401 Unauthorized** error code, with a text explanation."
+					},
+					"response": []
+				},
 				{
 					"name": "Keyrock - User Obtains an Access Token",
 					"request": {
@@ -529,7 +600,7 @@
 								"token"
 							]
 						},
-						"description": "To log in using the user-credentials flow send a POST request to the `oauth2/token` endpoint with the `grant_type=password`\n\n  The response returns an access code to identify the user\n\n  The access code can then be used with a GET request to the `/user` endpoint to obtain user details."
+						"description": "To log in to an application using the user-credentials flow send a POST request to the `oauth2/token` endpoint with the `grant_type=password`\n\nThe response returns an `access_code` to identify the user.\n\nAn `access_code` can also be done by entering the Tutorial Application on http:/localhost and logging in using any of the OAuth2 grants\non the page. A successful log-in will return an access token."
 					},
 					"response": []
 				},
@@ -609,7 +680,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "username=alice-the-admin@test.com&password=test&grant_type=password"
+							"raw": "username=iot_sensor_00000000-0000-0000-0000-000000000000&password=test&grant_type=password"
 						},
 						"url": {
 							"raw": "http://{{keyrock}}/oauth2/token",
@@ -622,14 +693,14 @@
 								"token"
 							]
 						},
-						"description": "To log in using the user-credentials flow send a POST request to the `oauth2/token` endpoint with the `grant_type=password`\n\n  The response returns an access code to identify the user\n\n  The access code can then be used with a GET request to the `/user` endpoint to obtain user details."
+						"description": "Logging in as an IoT Sensor follows the same  user-credentials flow as for a User.\nTo log in and identify the sensor `iot_sensor_00000000-0000-0000-0000-000000000000` with password `test`\n\nThe response returns an access code to identify the IoT Device"
 					},
 					"response": []
 				},
 				{
 					"name": "PEP Proxy - Accessing IoT Agent with an Access Token",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "X-Auth-Token",
@@ -638,18 +709,28 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "http://localhost:1027/v2/entities/",
+							"raw": "http://localhost:7897/iot/d?k=4jggokgpepnvsb2uv4s40d59ov&i=motion001",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "1027",
+							"port": "7897",
 							"path": [
-								"v2",
-								"entities",
-								""
+								"iot",
+								"d"
+							],
+							"query": [
+								{
+									"key": "k",
+									"value": "4jggokgpepnvsb2uv4s40d59ov"
+								},
+								{
+									"key": "i",
+									"value": "motion001"
+								}
 							]
-						}
+						},
+						"description": "This example simulates a secured request coming from the device `motion001`\n\nThe POST request to a PEP Proxy in front to the Ultralight IoT Agent identifies\na previously provisioned resource `iot/d`endpoint and passes a measurement for\ndevice `motion001`. The addition of the `X-Auth-Token` Header identifies the source\nof the request as being registered in Keyrock, and therefore the measurement will \nbe passed on to the IoT Agent itself."
 					},
 					"response": []
 				}
@@ -703,45 +784,51 @@
 	],
 	"variable": [
 		{
-			"id": "6445c76a-7765-49df-865b-ca67460d18fd",
+			"id": "e3f1909b-87aa-4c1f-80f8-3dc7f3ed2c4a",
 			"key": "keyrock",
 			"value": "localhost:3005",
 			"type": "string"
 		},
 		{
-			"id": "efa29b69-d3ab-4917-8a0e-ac478cd8290b",
+			"id": "d8d3b396-a65d-4e13-9f0a-e2279c7346c5",
 			"key": "X-Auth-token",
 			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
 			"type": "string"
 		},
 		{
-			"id": "af6a53ee-1d4e-46db-b0c4-849f56b7c16e",
+			"id": "341a850c-e1e2-40d7-b7b0-5ea55d63dd8f",
 			"key": "X-Subject-token",
 			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
 			"type": "string"
 		},
 		{
-			"id": "d430e6f5-b804-4922-9740-2b99af5b7bd6",
+			"id": "b7380ef2-4ce0-4540-a166-0e2cc2780513",
 			"key": "application-id",
 			"value": "tutorial-dckr-site-0000-xpresswebapp",
 			"type": "string"
 		},
 		{
-			"id": "9a77a22e-2908-4f6b-8c78-40ae6ad21f70",
+			"id": "bc824eba-66f4-4702-8906-774697abd0a0",
 			"key": "X-Access-token",
-			"value": "48dc154172bf651053f4811210d6918cce1e7b8f",
+			"value": "f713fac1962de865016312dc0f7796b8a6bf3869",
 			"type": "string"
 		},
 		{
-			"id": "8fadd552-b42d-4046-9b6e-678aa47b9d95",
+			"id": "5e06e7c0-4451-4eb2-8d34-80b298b93c56",
 			"key": "Authorization",
 			"value": "dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==",
 			"type": "string"
 		},
 		{
-			"id": "f0ce2eef-0413-4b4f-81a6-e19627b08d6e",
+			"id": "98bd54af-49c3-4aa0-a34c-e598e44bc48b",
 			"key": "iot-agent-id",
 			"value": "iot_sensor_00000000-0000-0000-0000-000000000000",
+			"type": "string"
+		},
+		{
+			"id": "99553037-7126-4e8f-a87f-92cfed891184",
+			"key": "pep-proxy-id",
+			"value": "pep_proxy_00000000-0000-0000-0000-000000000000",
 			"type": "string"
 		}
 	]
