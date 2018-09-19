@@ -14,6 +14,7 @@ Keyrock GUI and REST API relevant to authenticating other services are described
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/6b143a6b3ad8bcba69cf)
 
+* このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
 
 # Contents
 
@@ -80,9 +81,9 @@ to succeed and pass through the **PEP proxy**. The **PEP proxy** then passes the
 secured resource itself - the actual location of the secured resource is unknown to the outside user - it could be held
 in a private network behind the **PEP proxy** or found on a different machine altogether.
 
-FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a simple implentation of a **PEP proxy** designed to work with the FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler. Whenever a user tries to gain access to the resource behind the **PEP proxy**, the
+FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a simple implementation of a **PEP proxy** designed to work with the FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler. Whenever a user tries to gain access to the resource behind the **PEP proxy**, the
 PEP will describe the user's attributes to the Policy Decision Point (PDP), request a security decision, and enforce the decision.
-(Permit or Deny). There is mimimal disruption of access for authorized users  - the response received is the same as if they had
+(Permit or Deny). There is minimal disruption of access for authorized users  - the response received is the same as if they had
 accessed the secured service directly. Unauthorized users are simply returned a **401 - Unauthorized** response.
 
 
@@ -145,7 +146,7 @@ command line functionality similar to a Linux distribution on Windows.
 
 
 This application protects access to the existing Stock Management and Sensors-based application by adding PEP Proxy instances around the services created in previous tutorials and uses data pre-populated into the **MySQL** database used by **Keyrock**. It
-will make use of four FIWARE components - the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),the [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/), the [Keyrock](http://fiware-idm.readthedocs.io/) Generic enabler
+will make use of four FIWARE components - the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), the [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/), the [Keyrock](http://fiware-idm.readthedocs.io/) Generic enabler
 and adds one or two instances [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy dependent upon which interfaces are to be secured.
 Usage of the Orion Context Broker is sufficient for an application to qualify as *“Powered by FIWARE”*.
 
@@ -265,7 +266,7 @@ One application, with appropriate roles and permissions has also been created:
 To save time, the data creating users and organizations from the [previous tutorial](https://github.com/Fiware/tutorials.Roles-Permissions) has been downloaded and is automatically persisted to the MySQL
 database on start-up so the assigned UUIDs do not change and the data does not need to be entered again.
 
-The **Keyrock** MySQL database deals with all aspects of application security including storing users, password etc; defining access rights and dealing with OAuth2 authorization protocols.
+The **Keyrock** MySQL database deals with all aspects of application security including storing users, password etc.; defining access rights and dealing with OAuth2 authorization protocols.
 The complete database relationship diagram can be found [here](https://fiware.github.io/tutorials.Securing-Access/img/keyrock-db.png)
 
 To refresh your memory about how to create users and organizations and applications, you can log in at `http://localhost:3005/idm`
@@ -468,7 +469,7 @@ curl -X PATCH \
 
 #### Response:
 
-The repsonse returns a new password for the PEP Proxy Account
+The response returns a new password for the PEP Proxy Account
 
 ```json
 {
@@ -691,7 +692,7 @@ Level 3 - *Advanced Authorization*.
 ## Securing Orion - Application Configuration
 
 The tutorial application has already been registered in **Keyrock**, programmatically the tutorial application will
-be making requests to the **Wilma** PEP Proxy in front of the **Orion Conext Broker**. Every request must now include
+be making requests to the **Wilma** PEP Proxy in front of the **Orion Context Broker**. Every request must now include
 an additional `access_token` header.
 
 ```yaml
@@ -787,7 +788,7 @@ Auth-token not found in request header
 
 #### :one::three: Request
 
-To log in to the application using the user-credentials flow send a POST request to **Keyock** using the `oauth2/token` endpoint
+To log in to the application using the user-credentials flow send a POST request to **Keyrock** using the `oauth2/token` endpoint
 with the `grant_type=password`. For example to log-in as Alice the Admin:
 
 ```console
@@ -1008,8 +1009,8 @@ will then make requests to  a second **Wilma** PEP Proxy in front of the **IoT A
     environment:
         - "IOTA_HTTP_HOST=iot-agent-proxy"
         - "IOTA_HTTP_PORT=7897"
-        - "DUMMY_DEVICES_PORT=3001" # Port used by the dummy IOT devices to receive commands
-        - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy Io devices
+        - "DUMMY_DEVICES_PORT=3001" # Port used by the dummy IoT devices to receive commands
+        - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy IoT devices
         - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
         - "DUMMY_DEVICES_USER=iot_sensor_00000000-0000-0000-0000-000000000000"
         - "DUMMY_DEVICES_PASSWORD=test"
@@ -1024,9 +1025,9 @@ additions.
 | Key |Value|Description|
 |-----|-----|-----------|
 |IOTA_HTTP_HOST|`iot-agent-proxy`| The host name of the Wilma PEP Proxy protecting the IoT Agent for UltraLight 2.0 |
-|IOTA_HTTP_PORT|`7896` | The port that the Wilma PEP Proxy protecting the IoT Agent is listenting on|
-|DUMMY_DEVICES_PORT|`3001`| Port used by the dummy IOT devices to receive commands|
-|DUMMY_DEVICES_TRANSPORT|`HTTP`|Default transport used by dummy Io devices|
+|IOTA_HTTP_PORT|`7896` | The port that the Wilma PEP Proxy protecting the IoT Agent is listening on|
+|DUMMY_DEVICES_PORT|`3001`| Port used by the dummy IoT devices to receive commands|
+|DUMMY_DEVICES_TRANSPORT|`HTTP`|Default transport used by dummy IoT devices|
 |DUMMY_DEVICES_API_KEY|`4jggokgpepnvsb2uv4s40d59ov`| Random security key used for UltraLight interactions - ensures the integrity of interactions between the devices and the IoT Agent |
 |DUMMY_DEVICES_USER|`iot_sensor_00000000-0000-0000-0000-000000000000` | Username assigned to the device(s) in **Keyrock** |
 |DUMMY_DEVICES_PASSWORD|`test` | Password assigned to the device(s) in **Keyrock** |
@@ -1049,7 +1050,7 @@ To start the system with a PEP Proxies protecting access to both **Orion** and t
 
 Logging in as an IoT Sensor follows the same  user-credentials flow as for a User.
 To log in and identify the sensor `iot_sensor_00000000-0000-0000-0000-000000000000` with password `test`
-send a POST request to **Keyock** using the `oauth2/token` endpoint
+send a POST request to **Keyrock** using the `oauth2/token` endpoint
 with the `grant_type=password`:
 
 #### :one::five: Request:
@@ -1082,7 +1083,7 @@ The response returns an access code to identify the device:
 This example simulates a secured request coming from the device `motion001`
 
 The POST request to a PEP Proxy in front to the Ultralight IoT Agent identifies
-a previously provisioned resource `iot/d`endpoint and passes a measurement for
+a previously provisioned resource `iot/d` endpoint and passes a measurement for
 device `motion001`. The addition of the `X-Auth-Token` Header identifies the source
 of the request as being registered in Keyrock, and therefore the measurement will
 be successfully passed on to the IoT Agent itself.
