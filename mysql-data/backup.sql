@@ -271,6 +271,8 @@ CREATE TABLE `oauth_client` (
   `client_type` varchar(15) DEFAULT NULL,
   `scope` varchar(80) DEFAULT NULL,
   `extra` json DEFAULT NULL,
+  `token_type` varchar(15) DEFAULT 'bearer',
+  `jwt_secret` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -285,11 +287,11 @@ INSERT INTO `oauth_client` VALUES
 ('tutorial-dckr-site-0000-xpresswebapp','FIWARE Tutorial',
   'FIWARE Application protected by OAuth2 and Keyrock','tutorial-dckr-site-0000-clientsecret',
   'http://localhost:3000','http://localhost:3000/login','default',
-  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL),
+  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer', NULL),
 ('tutorial-lcal-host-0000-xpresswebapp','localhost App',
   'Localhost Callback protected by OAuth2 and Keyrock','tutorial-lcal-host-0000-clientsecret',
   'http://localhost:3000','http://localhost:3000/login','default',
-  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL);
+  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer', NULL);
 
 /*!40000 ALTER TABLE `oauth_client` ENABLE KEYS */;
 UNLOCK TABLES;
