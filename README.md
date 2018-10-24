@@ -4,113 +4,139 @@
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Time-Series-Data.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://readthedocs.org/projects/fiware-tutorials/badge/?version=latest)](https://fiware-tutorials.readthedocs.io/en/latest)
 
-This tutorial uses the FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy combined with **Keyrock** to secure access to endpoints exposed by
-FIWARE generic enablers. Users (or other actors) must log-in and use a token to gain access to services. The application
-code created in the [previous tutorial](https://github.com/Fiware/tutorials.Securing-Access) is expanded to authenticate
-users throughout a distributed system. The design of FIWARE Wilma - a PEP Proxy is discussed, and the parts of the
-Keyrock GUI and REST API relevant to authenticating other services are described in detail.
+This tutorial uses the FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP
+Proxy combined with **Keyrock** to secure access to endpoints exposed by FIWARE
+generic enablers. Users (or other actors) must log-in and use a token to gain
+access to services. The application code created in the
+[previous tutorial](https://github.com/Fiware/tutorials.Securing-Access) is
+expanded to authenticate users throughout a distributed system. The design of
+FIWARE Wilma - a PEP Proxy is discussed, and the parts of the Keyrock GUI and
+REST API relevant to authenticating other services are described in detail.
 
-[cUrl](https://ec.haxx.se/) commands are used throughout to access the **Keyrock** and **Wilma** REST APIs - [Postman documentation](http://fiware.github.io/tutorials.PEP-Proxy/) for these calls is also available.
+[cUrl](https://ec.haxx.se/) commands are used throughout to access the
+**Keyrock** and **Wilma** REST APIs -
+[Postman documentation](http://fiware.github.io/tutorials.PEP-Proxy/) for these
+calls is also available.
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/6b143a6b3ad8bcba69cf)
 
-* このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
+-   このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
 
 # Contents
 
-- [Securing Microservices with a PEP Proxy](#securing-microservices-with-a-pep-proxy)
-  * [Standard Concepts of Identity Management](#standard-concepts-of-identity-management)
-  * [:arrow_forward: Video : Introduction to Wilma PEP Proxy](#arrow_forward-video--introduction-to-wilma-pep-proxy)
-- [Prerequisites](#prerequisites)
-  * [Docker](#docker)
-  * [Cygwin](#cygwin)
-- [Architecture](#architecture)
-- [Start Up](#start-up)
-  * [Dramatis Personae](#dramatis-personae)
-  * [Logging In to Keyrock using the REST API](#logging-in-to-keyrock-using-the-rest-api)
-    + [Create Token with Password](#create-token-with-password)
-    + [Get Token Info](#get-token-info)
-- [Managing PEP Proxies and IoT Agents](#managing-pep-proxies-and-iot-agents)
-  * [:arrow_forward: Video : Wilma PEP Proxy Configuration](#arrow_forward-video--wilma-pep-proxy-configuration)
-  * [Managing PEP Proxies and IoT Agents - Start Up](#managing-pep-proxies-and-iot-agents---start-up)
-  * [PEP Proxy CRUD Actions](#pep-proxy-crud-actions)
-    + [Create a PEP Proxy](#create-a-pep-proxy)
-    + [Read PEP Proxy details](#read-pep-proxy-details)
-    + [Reset Password of a PEP Proxy](#reset-password-of-a-pep-proxy)
-    + [Delete a PEP Proxy](#delete-a-pep-proxy)
-  * [IoT Agent CRUD Actions](#iot-agent-crud-actions)
-    + [Create an IoT Agent](#create-an-iot-agent)
-    + [Read IoT Agent details](#read-iot-agent-details)
-    + [List IoT Agents](#list-iot-agents)
-    + [Reset Password of an IoT Agent](#reset-password-of-an-iot-agent)
-    + [Delete an IoT Agent](#delete-an-iot-agent)
-- [Securing the Orion Context Broker](#securing-the-orion-context-broker)
-  * [Securing Orion - PEP Proxy Configuration](#securing-orion---pep-proxy-configuration)
-  * [Securing Orion - Application Configuration](#securing-orion---application-configuration)
-  * [Securing Orion - Start up](#securing-orion---start-up)
-    + [:arrow_forward: Video : Securing A REST API](#arrow_forward-video--securing-a-rest-api)
-  * [User Logs In to the Application using the REST API](#user-logs-in-to-the-application-using-the-rest-api)
-    + [PEP Proxy - No Access to Orion without an Access Token](#pep-proxy---no-access-to-orion-without-an-access-token)
-    + [Keyrock - User Obtains an Access Token](#keyrock---user-obtains-an-access-token)
-    + [PEP Proxy - Accessing Orion with an Access Token](#pep-proxy---accessing-orion-with-an-access-token)
-  * [Securing Orion - Sample Code](#securing-orion---sample-code)
-- [Securing an IoT Agent](#securing-an-iot-agent)
-  * [Securing an IoT Agent - PEP Proxy Configuration](#securing-an-iot-agent---pep-proxy-configuration)
-  * [Securing an IoT Agent - Application Configuration](#securing-an-iot-agent---application-configuration)
-  * [Securing IoT Agent - Start up](#securing-iot-agent---start-up)
-  * [IoT Sensor Logs In to the Application using the REST API](#iot-sensor-logs-in-to-the-application-using-the-rest-api)
-    + [Keyrock - IoT Sensor Obtains an Access Token](#keyrock---iot-sensor-obtains-an-access-token)
-    + [PEP Proxy - Accessing IoT Agent with an Access Token](#pep-proxy---accessing-iot-agent-with-an-access-token)
-  * [Securing an IoT Agent - Sample Code](#securing-an-iot-agent----sample-code)
+-   [Securing Microservices with a PEP Proxy](#securing-microservices-with-a-pep-proxy)
+    -   [Standard Concepts of Identity Management](#standard-concepts-of-identity-management)
+    -   [:arrow_forward: Video : Introduction to Wilma PEP Proxy](#arrow_forward-video--introduction-to-wilma-pep-proxy)
+-   [Prerequisites](#prerequisites)
+    -   [Docker](#docker)
+    -   [Cygwin](#cygwin)
+-   [Architecture](#architecture)
+-   [Start Up](#start-up)
+    -   [Dramatis Personae](#dramatis-personae)
+    -   [Logging In to Keyrock using the REST API](#logging-in-to-keyrock-using-the-rest-api)
+        -   [Create Token with Password](#create-token-with-password)
+        -   [Get Token Info](#get-token-info)
+-   [Managing PEP Proxies and IoT Agents](#managing-pep-proxies-and-iot-agents)
+    -   [:arrow_forward: Video : Wilma PEP Proxy Configuration](#arrow_forward-video--wilma-pep-proxy-configuration)
+    -   [Managing PEP Proxies and IoT Agents - Start Up](#managing-pep-proxies-and-iot-agents---start-up)
+    -   [PEP Proxy CRUD Actions](#pep-proxy-crud-actions)
+        -   [Create a PEP Proxy](#create-a-pep-proxy)
+        -   [Read PEP Proxy details](#read-pep-proxy-details)
+        -   [Reset Password of a PEP Proxy](#reset-password-of-a-pep-proxy)
+        -   [Delete a PEP Proxy](#delete-a-pep-proxy)
+    -   [IoT Agent CRUD Actions](#iot-agent-crud-actions)
+        -   [Create an IoT Agent](#create-an-iot-agent)
+        -   [Read IoT Agent details](#read-iot-agent-details)
+        -   [List IoT Agents](#list-iot-agents)
+        -   [Reset Password of an IoT Agent](#reset-password-of-an-iot-agent)
+        -   [Delete an IoT Agent](#delete-an-iot-agent)
+-   [Securing the Orion Context Broker](#securing-the-orion-context-broker)
+    -   [Securing Orion - PEP Proxy Configuration](#securing-orion---pep-proxy-configuration)
+    -   [Securing Orion - Application Configuration](#securing-orion---application-configuration)
+    -   [Securing Orion - Start up](#securing-orion---start-up)
+        -   [:arrow_forward: Video : Securing A REST API](#arrow_forward-video--securing-a-rest-api)
+    -   [User Logs In to the Application using the REST API](#user-logs-in-to-the-application-using-the-rest-api)
+        -   [PEP Proxy - No Access to Orion without an Access Token](#pep-proxy---no-access-to-orion-without-an-access-token)
+        -   [Keyrock - User Obtains an Access Token](#keyrock---user-obtains-an-access-token)
+        -   [PEP Proxy - Accessing Orion with an Access Token](#pep-proxy---accessing-orion-with-an-access-token)
+    -   [Securing Orion - Sample Code](#securing-orion---sample-code)
+-   [Securing an IoT Agent](#securing-an-iot-agent)
+    -   [Securing an IoT Agent - PEP Proxy Configuration](#securing-an-iot-agent---pep-proxy-configuration)
+    -   [Securing an IoT Agent - Application Configuration](#securing-an-iot-agent---application-configuration)
+    -   [Securing IoT Agent - Start up](#securing-iot-agent---start-up)
+    -   [IoT Sensor Logs In to the Application using the REST API](#iot-sensor-logs-in-to-the-application-using-the-rest-api)
+        -   [Keyrock - IoT Sensor Obtains an Access Token](#keyrock---iot-sensor-obtains-an-access-token)
+        -   [PEP Proxy - Accessing IoT Agent with an Access Token](#pep-proxy---accessing-iot-agent-with-an-access-token)
+    -   [Securing an IoT Agent - Sample Code](#securing-an-iot-agent----sample-code)
 
 # Securing Microservices with a PEP Proxy
 
-> "Oh, it's quite simple. If you are a friend, you speak the password, and the doors will open."
+> "Oh, it's quite simple. If you are a friend, you speak the password, and the
+> doors will open."
 >
->  — Gandalf (The Fellowship of the Ring by J.R.R Tolkien)
+> — Gandalf (The Fellowship of the Ring by J.R.R Tolkien)
 
-The [previous tutorial](https://github.com/Fiware/tutorials.Securing-Access) demonstrated that it is possible to Permit or Deny access
-to resources based on an authenticated user identifying themselves within an application.  It was simply a matter of the code following
-a different line of execution if the `access_token` was not found (Level 1 - *Authentication Access*), or confirming that a given `access_token`
-had appropriate rights (Level  2 - *Basic Authorization*). The same method of securing access can be applied by placing a Policy Enforcement
-Point (PEP) in front of other services within a FIWARE-based Smart Solution.
+The [previous tutorial](https://github.com/Fiware/tutorials.Securing-Access)
+demonstrated that it is possible to Permit or Deny access to resources based on
+an authenticated user identifying themselves within an application. It was
+simply a matter of the code following a different line of execution if the
+`access_token` was not found (Level 1 - _Authentication Access_), or confirming
+that a given `access_token` had appropriate rights (Level 2 - _Basic
+Authorization_). The same method of securing access can be applied by placing a
+Policy Enforcement Point (PEP) in front of other services within a FIWARE-based
+Smart Solution.
 
-A **PEP Proxy** lies in front of a secured resource  and is an endpoint found at "well-known" public location. It serves
-as a gatekeeper for resource access. Users or other actors must supply sufficient information to the **PEP Proxy** to allow their request
-to succeed and pass through the **PEP proxy**. The **PEP proxy** then passes the request on to the real location of the
-secured resource itself - the actual location of the secured resource is unknown to the outside user - it could be held
-in a private network behind the **PEP proxy** or found on a different machine altogether.
+A **PEP Proxy** lies in front of a secured resource and is an endpoint found at
+"well-known" public location. It serves as a gatekeeper for resource access.
+Users or other actors must supply sufficient information to the **PEP Proxy** to
+allow their request to succeed and pass through the **PEP proxy**. The **PEP
+proxy** then passes the request on to the real location of the secured resource
+itself - the actual location of the secured resource is unknown to the outside
+user - it could be held in a private network behind the **PEP proxy** or found
+on a different machine altogether.
 
-FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a simple implementation of a **PEP proxy** designed to work with the FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler. Whenever a user tries to gain access to the resource behind the **PEP proxy**, the
-PEP will describe the user's attributes to the Policy Decision Point (PDP), request a security decision, and enforce the decision.
-(Permit or Deny). There is minimal disruption of access for authorized users  - the response received is the same as if they had
-accessed the secured service directly. Unauthorized users are simply returned a **401 - Unauthorized** response.
-
+FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a simple implementation of
+a **PEP proxy** designed to work with the FIWARE
+[Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler. Whenever a user
+tries to gain access to the resource behind the **PEP proxy**, the PEP will
+describe the user's attributes to the Policy Decision Point (PDP), request a
+security decision, and enforce the decision. (Permit or Deny). There is minimal
+disruption of access for authorized users - the response received is the same as
+if they had accessed the secured service directly. Unauthorized users are simply
+returned a **401 - Unauthorized** response.
 
 ## Standard Concepts of Identity Management
 
-The following common objects are found with the **Keyrock** Identity Management database:
+The following common objects are found with the **Keyrock** Identity Management
+database:
 
-* **User** - Any signed up user able to identify themselves with an eMail and password. Users can be assigned
- rights individually or as a group
-* **Application** -  Any securable FIWARE application consisting of a series of microservices
-* **Organization** - A group of users who can be assigned a series of rights. Altering the rights of the organization
- effects the access of all users of that organization
-* **OrganizationRole** - Users can either be members or admins of an organization - Admins are able to add and remove users
- from their organization, members merely gain the roles and permissions of an organization. This allows each organization
- to be responsible for their members and removes the need for a super-admin to administer all rights
-* **Role** - A role is a descriptive bucket for a set of permissions. A role can be assigned to either a single user
- or an organization. A signed-in user gains all the permissions from all of their own roles plus all of the roles associated
- to their organization
-* **Permission** - An ability to do something on a resource within the system
+-   **User** - Any signed up user able to identify themselves with an eMail and
+    password. Users can be assigned rights individually or as a group
+-   **Application** - Any securable FIWARE application consisting of a series of
+    microservices
+-   **Organization** - A group of users who can be assigned a series of rights.
+    Altering the rights of the organization effects the access of all users of
+    that organization
+-   **OrganizationRole** - Users can either be members or admins of an
+    organization - Admins are able to add and remove users from their
+    organization, members merely gain the roles and permissions of an
+    organization. This allows each organization to be responsible for their
+    members and removes the need for a super-admin to administer all rights
+-   **Role** - A role is a descriptive bucket for a set of permissions. A role
+    can be assigned to either a single user or an organization. A signed-in user
+    gains all the permissions from all of their own roles plus all of the roles
+    associated to their organization
+-   **Permission** - An ability to do something on a resource within the system
 
-Additionally two further non-human application objects can be secured within a FIWARE application:
+Additionally two further non-human application objects can be secured within a
+FIWARE application:
 
-* **IoTAgent** - a proxy between IoT Sensors and  the Context Broker
-* **PEPProxy** - a middleware for use between generic enablers challenging the rights of a user.
+-   **IoTAgent** - a proxy between IoT Sensors and the Context Broker
+-   **PEPProxy** - a middleware for use between generic enablers challenging the
+    rights of a user.
 
-
- The relationship between the objects can be seen below - the entities marked in red are used directly within this tutorial:
+The relationship between the objects can be seen below - the entities marked in
+red are used directly within this tutorial:
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/entities.png)
 
@@ -124,60 +150,93 @@ Click on the image above to see an introductory video
 
 ## Docker
 
-To keep things simple both components will be run using [Docker](https://www.docker.com). **Docker** is a
-container technology which allows to different components isolated into their respective environments.
+To keep things simple both components will be run using
+[Docker](https://www.docker.com). **Docker** is a container technology which
+allows to different components isolated into their respective environments.
 
-* To install Docker on Windows follow the instructions [here](https://docs.docker.com/docker-for-windows/)
-* To install Docker on Mac follow the instructions [here](https://docs.docker.com/docker-for-mac/)
-* To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
+-   To install Docker on Windows follow the instructions
+    [here](https://docs.docker.com/docker-for-windows/)
+-   To install Docker on Mac follow the instructions
+    [here](https://docs.docker.com/docker-for-mac/)
+-   To install Docker on Linux follow the instructions
+    [here](https://docs.docker.com/install/)
 
-**Docker Compose** is a tool for defining and running multi-container Docker applications. A
-[YAML file](https://raw.githubusercontent.com/Fiware/tutorials.Identity-Management/master/docker-compose.yml) is used
-configure the required services for the application. This means all container services can be brought up in a single
-command. Docker Compose is installed by default as part of Docker for Windows and  Docker for Mac, however Linux users
-will need to follow the instructions found  [here](https://docs.docker.com/compose/install/)
+**Docker Compose** is a tool for defining and running multi-container Docker
+applications. A
+[YAML file](https://raw.githubusercontent.com/Fiware/tutorials.Identity-Management/master/docker-compose.yml)
+is used configure the required services for the application. This means all
+container services can be brought up in a single command. Docker Compose is
+installed by default as part of Docker for Windows and Docker for Mac, however
+Linux users will need to follow the instructions found
+[here](https://docs.docker.com/compose/install/)
 
 ## Cygwin
 
-We will start up our services using a simple bash script. Windows users should download [cygwin](http://www.cygwin.com/) to provide a
-command-line functionality similar to a Linux distribution on Windows.
+We will start up our services using a simple bash script. Windows users should
+download [cygwin](http://www.cygwin.com/) to provide a command-line
+functionality similar to a Linux distribution on Windows.
 
 # Architecture
 
+This application protects access to the existing Stock Management and
+Sensors-based application by adding PEP Proxy instances around the services
+created in previous tutorials and uses data pre-populated into the **MySQL**
+database used by **Keyrock**. It will make use of four FIWARE components - the
+[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), the
+[IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/),
+the [Keyrock](http://fiware-idm.readthedocs.io/) Generic enabler and adds one or
+two instances [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy dependent
+upon which interfaces are to be secured. Usage of the Orion Context Broker is
+sufficient for an application to qualify as _“Powered by FIWARE”_.
 
-This application protects access to the existing Stock Management and Sensors-based application by adding PEP Proxy instances around the services created in previous tutorials and uses data pre-populated into the **MySQL** database used by **Keyrock**. It
-will make use of four FIWARE components - the [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), the [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/), the [Keyrock](http://fiware-idm.readthedocs.io/) Generic enabler
-and adds one or two instances [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy dependent upon which interfaces are to be secured.
-Usage of the Orion Context Broker is sufficient for an application to qualify as *“Powered by FIWARE”*.
-
-Both the Orion Context Broker and the IoT Agent rely on open source [MongoDB](https://www.mongodb.com/) technology to keep persistence of the information they hold. We will also be using the dummy IoT devices created in the [previous tutorial](https://github.com/Fiware/tutorials.IoT-Sensors/). **Keyrock** uses its own [MySQL](https://www.mysql.com/) database.
+Both the Orion Context Broker and the IoT Agent rely on open source
+[MongoDB](https://www.mongodb.com/) technology to keep persistence of the
+information they hold. We will also be using the dummy IoT devices created in
+the [previous tutorial](https://github.com/Fiware/tutorials.IoT-Sensors/).
+**Keyrock** uses its own [MySQL](https://www.mysql.com/) database.
 
 Therefore the overall architecture will consist of the following elements:
 
-* The FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests using [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
-* The FIWARE [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) which will receive southbound requests using [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) and convert them to  [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) commands for the devices
-* FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) offer a complement Identity Management System including:
-    * An OAuth2 authentication system for Applications and Users
-    * A site graphical frontend for Identity Management Administration
-    * An equivalent REST API for Identity Management via HTTP requests
-* FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a PEP Proxy securing access to the **Orion** and/or **IoT Agent** microservices
-* The underlying [MongoDB](https://www.mongodb.com/) database :
-    * Used by the **Orion Context Broker** to hold context data information such as data entities, subscriptions and registrations
-    * Used by the **IoT Agent** to hold device information such as device URLs and Keys
-* A [MySQL](https://www.mysql.com/) database :
-    * Used to persist user identities, applications, roles and permissions
-* The **Stock Management Frontend** does the following:
-   * Displays store information
-   * Shows which products can be bought at each store
-   * Allows users to "buy" products and reduce the stock count.
-   * Allows authorized users into restricted areas
-* A webserver acting as set of [dummy IoT devices](https://github.com/Fiware/tutorials.IoT-Sensors) using the [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) protocol running over HTTP - access to certain resources is restricted.
+-   The FIWARE
+    [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which
+    will receive requests using
+    [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
+-   The FIWARE
+    [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/)
+    which will receive southbound requests using
+    [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) and convert
+    them to
+    [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+    commands for the devices
+-   FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) offer a complement
+    Identity Management System including:
+    -   An OAuth2 authentication system for Applications and Users
+    -   A site graphical frontend for Identity Management Administration
+    -   An equivalent REST API for Identity Management via HTTP requests
+-   FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a PEP Proxy securing
+    access to the **Orion** and/or **IoT Agent** microservices
+-   The underlying [MongoDB](https://www.mongodb.com/) database :
+    -   Used by the **Orion Context Broker** to hold context data information
+        such as data entities, subscriptions and registrations
+    -   Used by the **IoT Agent** to hold device information such as device URLs
+        and Keys
+-   A [MySQL](https://www.mysql.com/) database :
+    -   Used to persist user identities, applications, roles and permissions
+-   The **Stock Management Frontend** does the following:
+    -   Displays store information
+    -   Shows which products can be bought at each store
+    -   Allows users to "buy" products and reduce the stock count.
+    -   Allows authorized users into restricted areas
+-   A webserver acting as set of
+    [dummy IoT devices](https://github.com/Fiware/tutorials.IoT-Sensors) using
+    the
+    [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+    protocol running over HTTP - access to certain resources is restricted.
 
-
-Since all interactions between the elements are initiated by HTTP requests, the entities can be containerized and run from exposed ports.
+Since all interactions between the elements are initiated by HTTP requests, the
+entities can be containerized and run from exposed ports.
 
 The specific architecture of each section of the tutorial is discussed below.
-
 
 # Start Up
 
@@ -190,10 +249,11 @@ cd tutorials.PEP-Proxy
 ./services create
 ```
 
->**Note** The initial creation of Docker images can take up to three minutes
+> **Note** The initial creation of Docker images can take up to three minutes
 
-
-Thereafter, all services can be initialized from the command-line by running the [services](https://github.com/Fiware/tutorials.PEP-PRoxy/blob/master/services) Bash script provided within the repository:
+Thereafter, all services can be initialized from the command-line by running the
+[services](https://github.com/Fiware/tutorials.PEP-PRoxy/blob/master/services)
+Bash script provided within the repository:
 
 ```console
 ./services <command>
@@ -201,92 +261,99 @@ Thereafter, all services can be initialized from the command-line by running the
 
 Where `<command>` will vary depending upon the exercise we wish to activate.
 
->:information_source: **Note:** If you want to clean up and start over again you can do so with the following command:
+> :information_source: **Note:** If you want to clean up and start over again
+> you can do so with the following command:
 >
->```console
->./services stop
->```
->
-
+> ```console
+> ./services stop
+> ```
 
 ## Dramatis Personae
 
-The following people at `test.com` legitimately have accounts within the Application
+The following people at `test.com` legitimately have accounts within the
+Application
 
-* Alice, she will be the Administrator of the **Keyrock** Application
-* Bob, the Regional Manager of the supermarket chain - he has several store managers under him:
-  * Manager1
-  * Manager2
-* Charlie, the Head of Security of the supermarket chain - he has several store detectives under him:
-  * Detective1
-  * Detective2
+-   Alice, she will be the Administrator of the **Keyrock** Application
+-   Bob, the Regional Manager of the supermarket chain - he has several store
+    managers under him:
+    -   Manager1
+    -   Manager2
+-   Charlie, the Head of Security of the supermarket chain - he has several
+    store detectives under him:
+    -   Detective1
+    -   Detective2
 
-| Name       |eMail                       |Password |
-|------------|----------------------------|---------|
-| alice      | alice-the-admin@test.com   | `test`  |
-| bob        | bob-the-manager@test.com   | `test`  |
-| charlie    | charlie-security@test.com  | `test`  |
-| manager1   | manager1@test.com          | `test`  |
-| manager2   | manager2@test.com          | `test`  |
-| detective1 | detective1@test.com        | `test`  |
-| detective2 | detective2@test.com        | `test`  |
+| Name       | eMail                     | Password |
+| ---------- | ------------------------- | -------- |
+| alice      | alice-the-admin@test.com  | `test`   |
+| bob        | bob-the-manager@test.com  | `test`   |
+| charlie    | charlie-security@test.com | `test`   |
+| manager1   | manager1@test.com         | `test`   |
+| manager2   | manager2@test.com         | `test`   |
+| detective1 | detective1@test.com       | `test`   |
+| detective2 | detective2@test.com       | `test`   |
 
+The following people at `example.com` have signed up for accounts, but have no
+reason to be granted access
 
-The following people at `example.com`  have signed up for accounts, but have no reason to be granted access
+-   Eve - Eve the Eavesdropper
+-   Mallory - Mallory the malicious attacker
+-   Rob - Rob the Robber
 
-* Eve - Eve the Eavesdropper
-* Mallory - Mallory the malicious attacker
-* Rob - Rob the Robber
-
-
-| Name       |eMail                       |Password |
-|------------|----------------------------|---------|
-| eve        | eve@example.com            | `test`  |
-| mallory    | mallory@example.com        | `test`  |
-| rob        | rob@example.com            | `test`  |
-
+| Name    | eMail               | Password |
+| ------- | ------------------- | -------- |
+| eve     | eve@example.com     | `test`   |
+| mallory | mallory@example.com | `test`   |
+| rob     | rob@example.com     | `test`   |
 
 Two organizations have also been set up by Alice:
 
-| Name       | Description                         | UUID                                 |
-|------------|-------------------------------------|--------------------------------------|
-| Security   | Security Group for Store Detectives |`security-team-0000-0000-000000000000`|
-| Management | Management Group for Store Managers |`managers-team-0000-0000-000000000000`|
+| Name       | Description                         | UUID                                   |
+| ---------- | ----------------------------------- | -------------------------------------- |
+| Security   | Security Group for Store Detectives | `security-team-0000-0000-000000000000` |
+| Management | Management Group for Store Managers | `managers-team-0000-0000-000000000000` |
 
 One application, with appropriate roles and permissions has also been created:
 
 | Key           | Value                                  |
-|---------------|----------------------------------------|
+| ------------- | -------------------------------------- |
 | Client ID     | `tutorial-dckr-site-0000-xpresswebapp` |
 | Client Secret | `tutorial-dckr-site-0000-clientsecret` |
 | URL           | `http://localhost:3000`                |
 | RedirectURL   | `http://localhost:3000/login`          |
 
+To save time, the data creating users and organizations from the
+[previous tutorial](https://github.com/Fiware/tutorials.Roles-Permissions) has
+been downloaded and is automatically persisted to the MySQL database on start-up
+so the assigned UUIDs do not change and the data does not need to be entered
+again.
 
-To save time, the data creating users and organizations from the [previous tutorial](https://github.com/Fiware/tutorials.Roles-Permissions) has been downloaded and is automatically persisted to the MySQL
-database on start-up so the assigned UUIDs do not change and the data does not need to be entered again.
+The **Keyrock** MySQL database deals with all aspects of application security
+including storing users, password etc.; defining access rights and dealing with
+OAuth2 authorization protocols. The complete database relationship diagram can
+be found
+[here](https://fiware.github.io/tutorials.Securing-Access/img/keyrock-db.png)
 
-The **Keyrock** MySQL database deals with all aspects of application security including storing users, password etc.; defining access rights and dealing with OAuth2 authorization protocols.
-The complete database relationship diagram can be found [here](https://fiware.github.io/tutorials.Securing-Access/img/keyrock-db.png)
-
-To refresh your memory about how to create users and organizations and applications, you can log in at `http://localhost:3005/idm`
-using the account `alice-the-admin@test.com` with a password of `test`.
+To refresh your memory about how to create users and organizations and
+applications, you can log in at `http://localhost:3005/idm` using the account
+`alice-the-admin@test.com` with a password of `test`.
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/keyrock-log-in.png)
 
 and look around.
 
-
 ## Logging In to Keyrock using the REST API
 
-
-Enter a username and password to enter the application. The default super-user has the values `alice-the-admin@test.com` and `test`. The URL `https://localhost:3443/v1/auth/tokens` should also work in a secure system.
+Enter a username and password to enter the application. The default super-user
+has the values `alice-the-admin@test.com` and `test`. The URL
+`https://localhost:3443/v1/auth/tokens` should also work in a secure system.
 
 ### Create Token with Password
 
 The following example logs in using the Admin Super-User:
 
 #### :one: Request:
+
 ```console
 curl -iX POST \
   'http://localhost:3005/v1/auth/tokens' \
@@ -299,8 +366,9 @@ curl -iX POST \
 
 #### Response:
 
-The response header returns an `X-Subject-token` which identifies who has logged on the application.
-This token is required in all subsequent requests to gain access
+The response header returns an `X-Subject-token` which identifies who has logged
+on the application. This token is required in all subsequent requests to gain
+access
 
 ```
 HTTP/1.1 201 Created
@@ -311,12 +379,11 @@ ETag: W/"8a-TVwlWNKBsa7cskJw55uE/wZl6L8"
 Date: Mon, 30 Jul 2018 12:07:54 GMT
 Connection: keep-alive
 ```
+
 ```json
 {
     "token": {
-        "methods": [
-            "password"
-        ],
+        "methods": ["password"],
         "expires_at": "2018-07-30T13:02:37.116Z"
     },
     "idm_authorization_config": {
@@ -328,11 +395,13 @@ Connection: keep-alive
 
 ### Get Token Info
 
-Once a user has logged in, the presence of a (time-limited) token is sufficient to find out more information about the user.
+Once a user has logged in, the presence of a (time-limited) token is sufficient
+to find out more information about the user.
 
-You can use the long-lasting  `X-Auth-token=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa` to pretend to be Alice throughout this
-tutorial. Both `{{X-Auth-token}}` and `{{X-Subject-token}}`  can be set to the same value in the case that Alice is making
-an enquiry about herself.
+You can use the long-lasting `X-Auth-token=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa`
+to pretend to be Alice throughout this tutorial. Both `{{X-Auth-token}}` and
+`{{X-Subject-token}}` can be set to the same value in the case that Alice is
+making an enquiry about herself.
 
 #### :two: Request:
 
@@ -366,18 +435,20 @@ The response will return the details of the associated user
 
 # Managing PEP Proxies and IoT Agents
 
-User accounts have been created in a [previous tutorial](https://github.com/Fiware/tutorials.Identity-Management). Non-human
-actors such as a PEP Proxy can be set up in the same manner. The account for each PEP Proxy, IoT Agent or IoT Sensor will
-merely consist of a Username and password linked to an application within Keyrock. PEP Proxy and IoT Agents accounts can
-be created by using either the Keyrock GUI or by using the REST API.
-
+User accounts have been created in a
+[previous tutorial](https://github.com/Fiware/tutorials.Identity-Management).
+Non-human actors such as a PEP Proxy can be set up in the same manner. The
+account for each PEP Proxy, IoT Agent or IoT Sensor will merely consist of a
+Username and password linked to an application within Keyrock. PEP Proxy and IoT
+Agents accounts can be created by using either the Keyrock GUI or by using the
+REST API.
 
 ## :arrow_forward: Video : Wilma PEP Proxy Configuration
 
 [![](http://img.youtube.com/vi/b4sYU78skrw/0.jpg)](https://www.youtube.com/watch?v=b4sYU78skrw "PEP Proxy Configuration")
 
-Click on the image above to see a video about configuring the Wilma PEP Proxy using the **Keyrock** GUI
-
+Click on the image above to see a video about configuring the Wilma PEP Proxy
+using the **Keyrock** GUI
 
 ## Managing PEP Proxies and IoT Agents - Start Up
 
@@ -387,27 +458,30 @@ To start the system run the following command:
 ./services orion
 ```
 
-This will start up **Keyrock** with a series of users. There are already two existing applications
-and an existing PEP Proxy Account associated with the application.
-
-
+This will start up **Keyrock** with a series of users. There are already two
+existing applications and an existing PEP Proxy Account associated with the
+application.
 
 ## PEP Proxy CRUD Actions
 
 #### GUI
 
-Once signed-in, users are able to create and update PEP Proxies associated to their applications for themselves.
+Once signed-in, users are able to create and update PEP Proxies associated to
+their applications for themselves.
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/create-pep-proxy.png)
 
 #### REST API
 
-Alternatively, the standard CRUD actions are assigned to the appropriate HTTP verbs (POST, GET, PATCH and DELETE) under the `/v1/applications/{{application-id}}/pep_proxies` endpoint.
-
+Alternatively, the standard CRUD actions are assigned to the appropriate HTTP
+verbs (POST, GET, PATCH and DELETE) under the
+`/v1/applications/{{application-id}}/pep_proxies` endpoint.
 
 ### Create a PEP Proxy
 
-To create a new PEP Proxy account within an application, send a POST request to the `/v1/applications/{{application-id}}/pep_proxies` endpoint  along with the `X-Auth-token` header from a previously logged in administrative user.
+To create a new PEP Proxy account within an application, send a POST request to
+the `/v1/applications/{{application-id}}/pep_proxies` endpoint along with the
+`X-Auth-token` header from a previously logged in administrative user.
 
 #### :three: Request:
 
@@ -420,7 +494,9 @@ curl -iX POST \
 
 #### Response:
 
-Provided there is no previously existing PEP Proxy account associated with the application, a new account will be created with a unique `id` and `password` and the values will be returned in the response.
+Provided there is no previously existing PEP Proxy account associated with the
+application, a new account will be created with a unique `id` and `password` and
+the values will be returned in the response.
 
 ```json
 {
@@ -433,7 +509,9 @@ Provided there is no previously existing PEP Proxy account associated with the a
 
 ### Read PEP Proxy details
 
-Making a GET request to the `/v1/applications/{{application-id}}/pep_proxies` endpoint will return the details of the associated PEP Proxy Account. The `X-Auth-token` must be supplied in the headers.
+Making a GET request to the `/v1/applications/{{application-id}}/pep_proxies`
+endpoint will return the details of the associated PEP Proxy Account. The
+`X-Auth-token` must be supplied in the headers.
 
 #### :four: Request:
 
@@ -456,7 +534,10 @@ curl -X GET \
 
 ### Reset Password of a PEP Proxy
 
-To renew the password of a PEP Proxy Account, make a PATCH request to the `/v1/applications/{{application-id}}/pep_proxies` endpoint will return the details of the associated PEP Proxy Account. The `X-Auth-token` must be supplied in the headers.
+To renew the password of a PEP Proxy Account, make a PATCH request to the
+`/v1/applications/{{application-id}}/pep_proxies` endpoint will return the
+details of the associated PEP Proxy Account. The `X-Auth-token` must be supplied
+in the headers.
 
 #### :five: Request:
 
@@ -479,7 +560,9 @@ The response returns a new password for the PEP Proxy Account
 
 ### Delete a PEP Proxy
 
-An existing PEP Proxy Account can be deleted by making a DELETE request to the  `/v1/applications/{{application-id}}/pep_proxies` endpoint. The `X-Auth-token` must be supplied in the headers.
+An existing PEP Proxy Account can be deleted by making a DELETE request to the
+`/v1/applications/{{application-id}}/pep_proxies` endpoint. The `X-Auth-token`
+must be supplied in the headers.
 
 #### :six: Request:
 
@@ -490,23 +573,26 @@ curl -X DELETE \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-
 ## IoT Agent CRUD Actions
 
 #### GUI
 
-In a similar manner to PEP Proxy creation, signed-in, users are able to create and update IoT Sensor Accounts associated to their
-applications.
+In a similar manner to PEP Proxy creation, signed-in, users are able to create
+and update IoT Sensor Accounts associated to their applications.
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/create-iot-sensor.png)
 
 #### REST API
 
-Alternatively, the standard CRUD actions are assigned to the appropriate HTTP verbs (POST, GET, PATCH and DELETE) under the `/v1/applications/{{application-id}}/iot_agents` endpoint.
+Alternatively, the standard CRUD actions are assigned to the appropriate HTTP
+verbs (POST, GET, PATCH and DELETE) under the
+`/v1/applications/{{application-id}}/iot_agents` endpoint.
 
 ### Create an IoT Agent
 
-To create a new IoT Agent account within an application, send a POST request to the `/v1/applications/{{application-id}}/iot_agents` endpoint  along with the `X-Auth-token` header from a previously logged in administrative user.
+To create a new IoT Agent account within an application, send a POST request to
+the `/v1/applications/{{application-id}}/iot_agents` endpoint along with the
+`X-Auth-token` header from a previously logged in administrative user.
 
 #### :seven: Request:
 
@@ -519,7 +605,8 @@ curl -X POST \
 
 #### Response:
 
-A new account will be created with a unique `id` and `password` and the values will be returned in the response.
+A new account will be created with a unique `id` and `password` and the values
+will be returned in the response.
 
 ```json
 {
@@ -530,11 +617,12 @@ A new account will be created with a unique `id` and `password` and the values w
 }
 ```
 
-
-
 ### Read IoT Agent details
 
-Making a GET request the `/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` endpoint will return the details of the associated IoT Agent Account. The `X-Auth-token` must be supplied in the headers.
+Making a GET request the
+`/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` endpoint will
+return the details of the associated IoT Agent Account. The `X-Auth-token` must
+be supplied in the headers.
 
 #### :eight: Request:
 
@@ -555,10 +643,11 @@ curl -X GET \
 }
 ```
 
-
 ### List IoT Agents
 
-A list of all IoT Agents associated with an application can be obtained by making a GET request the `/v1/applications/{{application-id}}/iot_agents` endpoint. The `X-Auth-token` must be supplied in the headers.
+A list of all IoT Agents associated with an application can be obtained by
+making a GET request the `/v1/applications/{{application-id}}/iot_agents`
+endpoint. The `X-Auth-token` must be supplied in the headers.
 
 #### :nine: Request:
 
@@ -587,8 +676,9 @@ curl -X GET \
 
 #### :one::zero: Request:
 
-To renew the password of an individual IoT Agent Account, make a PATCH request to the  `/v1/applications/{{application-id}}//iot_agents/{{iot-agent-id}}` endpoint.
-The `X-Auth-token` must be supplied in the headers.
+To renew the password of an individual IoT Agent Account, make a PATCH request
+to the `/v1/applications/{{application-id}}//iot_agents/{{iot-agent-id}}`
+endpoint. The `X-Auth-token` must be supplied in the headers.
 
 ```console
 curl -iX PATCH \
@@ -609,7 +699,9 @@ The response returns a new password for the IoT Agent account.
 
 ### Delete an IoT Agent
 
-An existing IoT Agent Account can be deleted by making a DELETE request to the  `/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` endpoint.  The `X-Auth-token` must be supplied in the headers.
+An existing IoT Agent Account can be deleted by making a DELETE request to the
+`/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` endpoint. The
+`X-Auth-token` must be supplied in the headers.
 
 #### :one::one: Request:
 
@@ -619,84 +711,87 @@ curl -X DELETE \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-
 # Securing the Orion Context Broker
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-orion.png)
 
 ## Securing Orion - PEP Proxy Configuration
 
-The `orion-proxy` container is an instance of FIWARE **Wilma** listening on port `1027`, it is configured to forward traffic to
-`orion` on port `1026`, which is the default port that the Orion Context Broker is listening to for NGSI Requests.
+The `orion-proxy` container is an instance of FIWARE **Wilma** listening on port
+`1027`, it is configured to forward traffic to `orion` on port `1026`, which is
+the default port that the Orion Context Broker is listening to for NGSI
+Requests.
 
 ```yaml
-  orion-proxy:
+orion-proxy:
     image: fiware/pep-proxy
     container_name: fiware-orion-proxy
     hostname: orion-proxy
     networks:
-      default:
-        ipv4_address: 172.18.1.10
+        default:
+            ipv4_address: 172.18.1.10
     depends_on:
-      - keyrock
+        - keyrock
     ports:
-      - "1027:1027"
+        - "1027:1027"
     expose:
-      - "1027"
+        - "1027"
     environment:
-      - PEP_PROXY_APP_HOST=orion
-      - PEP_PROXY_APP_PORT=1026
-      - PEP_PROXY_PORT=1027
-      - PEP_PROXY_IDM_HOST=keyrock
-      - PEP_PROXY_HTTPS_ENABLED=false
-      - PEP_PROXY_AUTH_ENABLED=false
-      - PEP_PROXY_IDM_SSL_ENABLED=false
-      - PEP_PROXY_IDM_PORT=3005
-      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
-      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
-      - PEP_PASSWORD=test
-      - PEP_PROXY_PDP=idm
-      - PEP_PROXY_MAGIC_KEY=1234
+        - PEP_PROXY_APP_HOST=orion
+        - PEP_PROXY_APP_PORT=1026
+        - PEP_PROXY_PORT=1027
+        - PEP_PROXY_IDM_HOST=keyrock
+        - PEP_PROXY_HTTPS_ENABLED=false
+        - PEP_PROXY_AUTH_ENABLED=false
+        - PEP_PROXY_IDM_SSL_ENABLED=false
+        - PEP_PROXY_IDM_PORT=3005
+        - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
+        - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
+        - PEP_PASSWORD=test
+        - PEP_PROXY_PDP=idm
+        - PEP_PROXY_MAGIC_KEY=1234
 ```
 
-The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by adding new entries to the application in **Keyrock**,
-however, in this tutorial, they have been predefined by populating the **MySQL** database with data on start-up.
+The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by
+adding new entries to the application in **Keyrock**, however, in this tutorial,
+they have been predefined by populating the **MySQL** database with data on
+start-up.
 
 The `orion-proxy` container is listening on a single port:
 
-* The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to the **Wilma** instance
-  without being part of the same network.
+-   The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that
+    cUrl or Postman can requests directly to the **Wilma** instance without
+    being part of the same network.
 
+| Key                       | Value                                            | Description                                            |
+| ------------------------- | ------------------------------------------------ | ------------------------------------------------------ |
+| PEP_PROXY_APP_HOST        | `orion`                                          | The hostname of the service behind the PEP Proxy       |
+| PEP_PROXY_APP_PORT        | `1026`                                           | The port of the service behind the PEP Proxy           |
+| PEP_PROXY_PORT            | `1027`                                           | The port that the PEP Proxy is listening on            |
+| PEP_PROXY_IDM_HOST        | `keyrock`                                        | The hostname for the Identity Manager                  |
+| PEP_PROXY_HTTPS_ENABLED   | `false`                                          | Whether the PEP Proxy itself is running under HTTPS    |
+| PEP_PROXY_AUTH_ENABLED    | `false`                                          | Whether the PEP Proxy is checking for Authorization    |
+| PEP_PROXY_IDM_SSL_ENABLED | `false`                                          | Whether the Identity Manager is running under HTTPS    |
+| PEP_PROXY_IDM_PORT        | `3005`                                           | The Port for the Identity Manager instance             |
+| PEP_PROXY_APP_ID          | `tutorial-dckr-site-0000-xpresswebapp`           |                                                        |
+| PEP_PROXY_USERNAME        | `pep_proxy_00000000-0000-0000-0000-000000000000` | The Username for the PEP Proxy                         |
+| PEP_PASSWORD              | `test`                                           | The Password for the PEP Proxy                         |
+| PEP_PROXY_PDP             | `idm`                                            | The Type of service offering the Policy Decision Point |
+| PEP_PROXY_MAGIC_KEY       | `1234`                                           |                                                        |
 
-| Key |Value|Description|
-|-----|-----|-----------|
-| PEP_PROXY_APP_HOST |`orion` | The hostname of the service behind the PEP Proxy |
-| PEP_PROXY_APP_PORT |`1026` | The port of the service behind the PEP Proxy |
-| PEP_PROXY_PORT |`1027` | The port that the PEP Proxy is listening on |
-| PEP_PROXY_IDM_HOST | `keyrock`| The hostname for the Identity Manager |
-| PEP_PROXY_HTTPS_ENABLED | `false`| Whether the PEP Proxy itself is running under HTTPS |
-| PEP_PROXY_AUTH_ENABLED | `false`| Whether the PEP Proxy is checking for Authorization |
-| PEP_PROXY_IDM_SSL_ENABLED | `false`| Whether the Identity Manager is running under HTTPS |
-| PEP_PROXY_IDM_PORT | `3005`|  The Port for the Identity Manager instance|
-| PEP_PROXY_APP_ID | `tutorial-dckr-site-0000-xpresswebapp`| |
-| PEP_PROXY_USERNAME | `pep_proxy_00000000-0000-0000-0000-000000000000`|  The Username for the PEP Proxy |
-| PEP_PASSWORD | `test`|  The Password for the PEP Proxy |
-| PEP_PROXY_PDP | `idm`| The Type of service offering the Policy Decision Point|
-| PEP_PROXY_MAGIC_KEY | `1234` | |
-
-For this example, the PEP Proxy is checking for Level 1 - *Authentication Access* not  Level 2 - *Basic Authorization* or
-Level 3 - *Advanced Authorization*.
-
-
+For this example, the PEP Proxy is checking for Level 1 - _Authentication
+Access_ not Level 2 - _Basic Authorization_ or Level 3 - _Advanced
+Authorization_.
 
 ## Securing Orion - Application Configuration
 
-The tutorial application has already been registered in **Keyrock**, programmatically the tutorial application will
-be making requests to the **Wilma** PEP Proxy in front of the **Orion Context Broker**. Every request must now include
-an additional `access_token` header.
+The tutorial application has already been registered in **Keyrock**,
+programmatically the tutorial application will be making requests to the
+**Wilma** PEP Proxy in front of the **Orion Context Broker**. Every request must
+now include an additional `access_token` header.
 
 ```yaml
-  tutorial-app:
+tutorial-app:
     image: fiware/tutorials.context-provider
     hostname: tutorial-app
     container_name: tutorial-app
@@ -705,10 +800,10 @@ an additional `access_token` header.
         - iot-agent
         - keyrock
     networks:
-      default:
-        ipv4_address: 172.18.1.7
-        aliases:
-          - iot-sensors
+        default:
+            ipv4_address: 172.18.1.7
+            aliases:
+                - iot-sensors
     expose:
         - "3000"
         - "3001"
@@ -727,44 +822,46 @@ an additional `access_token` header.
         - "CALLBACK_URL=http://localhost:3000/login"
 ```
 
-All of the `tutorial` container settings have been described in previous tutorials. One important change is necessary however,
-rather than accessing **Orion** directly on the default port `1026` as shown in all previous tutorials, all context broker
-traffic is now sent to `orion-proxy` on port `1027`. As a reminder, the relevant settings are detailed below:
+All of the `tutorial` container settings have been described in previous
+tutorials. One important change is necessary however, rather than accessing
+**Orion** directly on the default port `1026` as shown in all previous
+tutorials, all context broker traffic is now sent to `orion-proxy` on port
+`1027`. As a reminder, the relevant settings are detailed below:
 
-| Key |Value|Description|
-|-----|-----|-----------|
-|WEB_APP_PORT|`3000`|Port used by web-app which displays the login screen & etc.|
-|KEYROCK_URL|`http://localhost`| This is URL of the **Keyrock** Web frontend itself, used for redirection when forwarding users |
-|KEYROCK_IP_ADDRESS|`http://172.18.1.5`| This is URL of the **Keyrock** OAuth Communications |
-|KEYROCK_PORT|`3005` | This is the port that **Keyrock** is listening on.|
-|KEYROCK_CLIENT_ID|`tutorial-dckr-site-0000-xpresswebapp`| The Client ID defined by Keyrock for this application |
-|KEYROCK_CLIENT_SECRET|`tutorial-dckr-site-0000-clientsecret`| The Client Secret defined by Keyrock for this application |
-|CALLBACK_URL|`http://localhost:3000/login`| The callback URL used by Keyrock when a challenge has succeeded.|
+| Key                   | Value                                  | Description                                                                                    |
+| --------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| WEB_APP_PORT          | `3000`                                 | Port used by web-app which displays the login screen & etc.                                    |
+| KEYROCK_URL           | `http://localhost`                     | This is URL of the **Keyrock** Web frontend itself, used for redirection when forwarding users |
+| KEYROCK_IP_ADDRESS    | `http://172.18.1.5`                    | This is URL of the **Keyrock** OAuth Communications                                            |
+| KEYROCK_PORT          | `3005`                                 | This is the port that **Keyrock** is listening on.                                             |
+| KEYROCK_CLIENT_ID     | `tutorial-dckr-site-0000-xpresswebapp` | The Client ID defined by Keyrock for this application                                          |
+| KEYROCK_CLIENT_SECRET | `tutorial-dckr-site-0000-clientsecret` | The Client Secret defined by Keyrock for this application                                      |
+| CALLBACK_URL          | `http://localhost:3000/login`          | The callback URL used by Keyrock when a challenge has succeeded.                               |
 
 ## Securing Orion - Start up
 
-To start the system with a PEP Proxy protecting  access to **Orion**, run the following command:
+To start the system with a PEP Proxy protecting access to **Orion**, run the
+following command:
 
 ```console
 ./services orion
 ```
 
-
 ### :arrow_forward: Video : Securing A REST API
 
 [![](http://img.youtube.com/vi/coxFQEY0_So/0.jpg)](https://www.youtube.com/watch?v=coxFQEY0_So "Securing a REST API")
 
-Click on the image above to see a video about securing a REST API using the Wilma PEP Proxy
-
+Click on the image above to see a video about securing a REST API using the
+Wilma PEP Proxy
 
 ## User Logs In to the Application using the REST API
 
-
-
-
 ### PEP Proxy - No Access to Orion without an Access Token
 
-Secured Access can be ensured by requiring all requests to the secured service are made indirectly via a PEP Proxy (in this case the PEP Proxy is found in front of the Context Broker). Requests must include an `X-Auth-Token`, failure to present a valid token results in a denial of access.
+Secured Access can be ensured by requiring all requests to the secured service
+are made indirectly via a PEP Proxy (in this case the PEP Proxy is found in
+front of the Context Broker). Requests must include an `X-Auth-Token`, failure
+to present a valid token results in a denial of access.
 
 #### :one::two: Request
 
@@ -777,19 +874,20 @@ curl -X GET \
 
 #### Response
 
-The response is a **401 Unauthorized** error code, with the following explanation:
+The response is a **401 Unauthorized** error code, with the following
+explanation:
 
 ```
 Auth-token not found in request header
 ```
 
-
 ### Keyrock - User Obtains an Access Token
 
 #### :one::three: Request
 
-To log in to the application using the user-credentials flow send a POST request to **Keyrock** using the `oauth2/token` endpoint
-with the `grant_type=password`. For example to log-in as Alice the Admin:
+To log in to the application using the user-credentials flow send a POST request
+to **Keyrock** using the `oauth2/token` endpoint with the `grant_type=password`.
+For example to log-in as Alice the Admin:
 
 ```console
 curl -iX POST \
@@ -813,13 +911,16 @@ The response returns an access code to identify the user:
 }
 ```
 
-This can also be done by entering the Tutorial Application on http:/localhost and logging in using any of the OAuth2 grants
-on the page. A successful log-in will return an access token.
-
+This can also be done by entering the Tutorial Application on http:/localhost
+and logging in using any of the OAuth2 grants on the page. A successful log-in
+will return an access token.
 
 ### PEP Proxy - Accessing Orion with an Access Token
 
-If a request to the PEP Proxy is made including a valid access token in the `X-Auth-Token` header as shown, the request is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as expected.
+If a request to the PEP Proxy is made including a valid access token in the
+`X-Auth-Token` header as shown, the request is permitted and the service behind
+the PEP Proxy (in this case the Orion Context Broker) will return the data as
+expected.
 
 #### :one::four: Request
 
@@ -843,151 +944,156 @@ curl -X GET \
     },
     "location": {
         "type": "Point",
-        "coordinates": [
-            13.3986,
-            52.5547
-        ]
+        "coordinates": [13.3986, 52.5547]
     },
     "name": "Bösebrücke Einkauf"
 }
 ```
 
-
 ## Securing Orion - Sample Code
 
-When a User logs in to the application using the User Credentials Grant, an `access_token` is obtained which identifies the User.
-The  `access_token`  is stored in session:
+When a User logs in to the application using the User Credentials Grant, an
+`access_token` is obtained which identifies the User. The `access_token` is
+stored in session:
 
 ```javascript
-function userCredentialGrant(req, res){
-    debug('userCredentialGrant');
+function userCredentialGrant(req, res) {
+    debug("userCredentialGrant");
 
     const email = req.body.email;
     const password = req.body.password;
 
-    oa.getOAuthPasswordCredentials(email, password)
-    .then(results => {
-        req.session.access_token =  results.access_token;
+    oa.getOAuthPasswordCredentials(email, password).then(results => {
+        req.session.access_token = results.access_token;
         return;
-    })
+    });
 }
 ```
 
-For each subsequent request, the `access_token` is supplied in the `X-Auth-Token` Header
+For each subsequent request, the `access_token` is supplied in the
+`X-Auth-Token` Header
 
 ```javascript
-function setAuthHeaders(req){
-  const headers = {};
-  if (req.session.access_token) {
-    headers['X-Auth-Token'] = req.session.access_token;
-  }
-  return headers;
+function setAuthHeaders(req) {
+    const headers = {};
+    if (req.session.access_token) {
+        headers["X-Auth-Token"] = req.session.access_token;
+    }
+    return headers;
 }
 ```
 
-For example, when buying an item, two requests are made, the same  `X-Auth-Token` Header must be added to each request - therefore
-the User can be identified and access granted.
+For example, when buying an item, two requests are made, the same `X-Auth-Token`
+Header must be added to each request - therefore the User can be identified and
+access granted.
 
 ```javascript
 async function buyItem(req, res) {
+    const inventory = await retrieveEntity(
+        req.params.inventoryId,
+        {
+            options: "keyValues",
+            type: "InventoryItem"
+        },
+        setAuthHeaders(req)
+    );
+    const count = inventory.shelfCount - 1;
 
-  const inventory = await retrieveEntity(req.params.inventoryId, {
-    options: 'keyValues',
-    type: 'InventoryItem',
-  }, setAuthHeaders(req));
-  const count = inventory.shelfCount - 1;
-
-  await updateExistingEntityAttributes(
-    req.params.inventoryId,
-    { shelfCount: { type: 'Integer', value: count } },
-    {
-      type: 'InventoryItem',
-    }, setAuthHeaders(req)
-  );
-  res.redirect(`/app/store/${inventory.refStore}/till`);
+    await updateExistingEntityAttributes(
+        req.params.inventoryId,
+        { shelfCount: { type: "Integer", value: count } },
+        {
+            type: "InventoryItem"
+        },
+        setAuthHeaders(req)
+    );
+    res.redirect(`/app/store/${inventory.refStore}/till`);
 }
 ```
-
-
 
 # Securing an IoT Agent
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-iot-agent.png)
 
-
 ## Securing an IoT Agent - PEP Proxy Configuration
 
-The `iot-agent-proxy` container is an instance of FIWARE **Wilma** listening on port `7897`, it is configured to forward traffic to
-`iot-agent` on port `7896`, which is the default port that the Ultralight agent is listening to for HTTP Requests.
+The `iot-agent-proxy` container is an instance of FIWARE **Wilma** listening on
+port `7897`, it is configured to forward traffic to `iot-agent` on port `7896`,
+which is the default port that the Ultralight agent is listening to for HTTP
+Requests.
 
 ```yaml
-  iot-agent-proxy:
+iot-agent-proxy:
     image: fiware/pep-proxy
     container_name: fiware-iot-agent-proxy
     hostname: iot-agent-proxy
     networks:
-      default:
-        ipv4_address: 172.18.1.11
+        default:
+            ipv4_address: 172.18.1.11
     depends_on:
-      - keyrock
+        - keyrock
     ports:
-      - "7897:7897"
+        - "7897:7897"
     expose:
-      - "7897"
+        - "7897"
     environment:
-      - PEP_PROXY_APP_HOST=iot-agent
-      - PEP_PROXY_APP_PORT=7896
-      - PEP_PROXY_PORT=7897
-      - PEP_PROXY_IDM_HOST=keyrock
-      - PEP_PROXY_HTTPS_ENABLED=false
-      - PEP_PROXY_AUTH_ENABLED=false
-      - PEP_PROXY_IDM_SSL_ENABLED=false
-      - PEP_PROXY_IDM_PORT=3005
-      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
-      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
-      - PEP_PASSWORD=test
-      - PEP_PROXY_PDP=idm
-      - PEP_PROXY_MAGIC_KEY=1234
+        - PEP_PROXY_APP_HOST=iot-agent
+        - PEP_PROXY_APP_PORT=7896
+        - PEP_PROXY_PORT=7897
+        - PEP_PROXY_IDM_HOST=keyrock
+        - PEP_PROXY_HTTPS_ENABLED=false
+        - PEP_PROXY_AUTH_ENABLED=false
+        - PEP_PROXY_IDM_SSL_ENABLED=false
+        - PEP_PROXY_IDM_PORT=3005
+        - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
+        - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
+        - PEP_PASSWORD=test
+        - PEP_PROXY_PDP=idm
+        - PEP_PROXY_MAGIC_KEY=1234
 ```
 
-The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by adding new entries to the application in **Keyrock**,
-however, in this tutorial, they have been predefined by populating the **MySQL** database with data on start-up.
+The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by
+adding new entries to the application in **Keyrock**, however, in this tutorial,
+they have been predefined by populating the **MySQL** database with data on
+start-up.
 
 The `iot-agent-proxy` container is listening on a single port:
 
-* The PEP Proxy Port - `7897` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to this **Wilma** instance
-  without being part of the same network.
+-   The PEP Proxy Port - `7897` is exposed purely for tutorial access - so that
+    cUrl or Postman can requests directly to this **Wilma** instance without
+    being part of the same network.
 
-| Key |Value|Description|
-|-----|-----|-----------|
-| PEP_PROXY_APP_HOST | `iot-agent`| The hostname of the service behind the PEP Proxy |
-| PEP_PROXY_APP_PORT | `7896`| The port of the service behind the PEP Proxy |
-| PEP_PROXY_PORT | `7897`| The port that the PEP Proxy is listening on |
-| PEP_PROXY_IDM_HOST | `keyrock`| The hostname for the Identity Manager |
-| PEP_PROXY_HTTPS_ENABLED | `false`| Whether the PEP Proxy is running under HTTPS |
-| PEP_PROXY_AUTH_ENABLED | `false`|  Whether the PEP Proxy is checking for Authorization|
-| PEP_PROXY_IDM_SSL_ENABLED | `false`|  Whether the Identity Manager is running under HTTPS |
-| PEP_PROXY_IDM_PORT | `3005`|  The Port for the Identity Manager instance|
-| PEP_PROXY_APP_ID | `tutorial-dckr-site-0000-xpresswebapp`| |
-| PEP_PROXY_USERNAME | `pep_proxy_00000000-0000-0000-0000-000000000000`|  The Username for the PEP Proxy |
-| PEP_PASSWORD | `test`|  The Password for the PEP Proxy |
-| PEP_PROXY_PDP | `idm`| The Type of service offering the Policy Decision Point|
-| PEP_PROXY_MAGIC_KEY | `1234` | |
+| Key                       | Value                                            | Description                                            |
+| ------------------------- | ------------------------------------------------ | ------------------------------------------------------ |
+| PEP_PROXY_APP_HOST        | `iot-agent`                                      | The hostname of the service behind the PEP Proxy       |
+| PEP_PROXY_APP_PORT        | `7896`                                           | The port of the service behind the PEP Proxy           |
+| PEP_PROXY_PORT            | `7897`                                           | The port that the PEP Proxy is listening on            |
+| PEP_PROXY_IDM_HOST        | `keyrock`                                        | The hostname for the Identity Manager                  |
+| PEP_PROXY_HTTPS_ENABLED   | `false`                                          | Whether the PEP Proxy is running under HTTPS           |
+| PEP_PROXY_AUTH_ENABLED    | `false`                                          | Whether the PEP Proxy is checking for Authorization    |
+| PEP_PROXY_IDM_SSL_ENABLED | `false`                                          | Whether the Identity Manager is running under HTTPS    |
+| PEP_PROXY_IDM_PORT        | `3005`                                           | The Port for the Identity Manager instance             |
+| PEP_PROXY_APP_ID          | `tutorial-dckr-site-0000-xpresswebapp`           |                                                        |
+| PEP_PROXY_USERNAME        | `pep_proxy_00000000-0000-0000-0000-000000000000` | The Username for the PEP Proxy                         |
+| PEP_PASSWORD              | `test`                                           | The Password for the PEP Proxy                         |
+| PEP_PROXY_PDP             | `idm`                                            | The Type of service offering the Policy Decision Point |
+| PEP_PROXY_MAGIC_KEY       | `1234`                                           |                                                        |
 
-For this example, the PEP Proxy is checking for Level 1 - *Authentication Access* not  Level 2 - *Basic Authorization* or
-Level 3 - *Advanced Authorization*.
-
+For this example, the PEP Proxy is checking for Level 1 - _Authentication
+Access_ not Level 2 - _Basic Authorization_ or Level 3 - _Advanced
+Authorization_.
 
 ## Securing an IoT Agent - Application Configuration
 
-The tutorial application also plays the role of providing data from our dummy IoT Sensors. The IoT Sensors are
-making HTTP request containing commands and measurements in Ultralight syntax. An IoT Sensor username and password
-have already been registered in **Keyrock**, programmatically each sensor must obtain an OAuth2 access token and
-will then make requests to  a second **Wilma** PEP Proxy in front of the **IoT Agent**.
-
+The tutorial application also plays the role of providing data from our dummy
+IoT Sensors. The IoT Sensors are making HTTP request containing commands and
+measurements in Ultralight syntax. An IoT Sensor username and password have
+already been registered in **Keyrock**, programmatically each sensor must obtain
+an OAuth2 access token and will then make requests to a second **Wilma** PEP
+Proxy in front of the **IoT Agent**.
 
 ```yaml
-  tutorial-app:
+tutorial-app:
     image: fiware/tutorials.context-provider
     hostname: tutorial-app
     container_name: tutorial-app
@@ -996,10 +1102,10 @@ will then make requests to  a second **Wilma** PEP Proxy in front of the **IoT A
         - iot-agent-proxy
         - keyrock
     networks:
-      default:
-        ipv4_address: 172.18.1.7
-        aliases:
-          - iot-sensors
+        default:
+            ipv4_address: 172.18.1.7
+            aliases:
+                - iot-sensors
     expose:
         - "3000"
         - "3001"
@@ -1016,42 +1122,46 @@ will then make requests to  a second **Wilma** PEP Proxy in front of the **IoT A
         - "DUMMY_DEVICES_PASSWORD=test"
 ```
 
-The `tutorial` container hosts the dummy Ultralight sensors. Rather than accessing the **IoT Agent** directly on port `7896` as
-shown in all previous tutorials, all traffic is forwarded to `iot-agent-proxy` on port `7897`. Most of the relevant `tutorial`
-container settings have been described in previous tutorials, the `DUMMY_DEVICES_USER` and `DUMMY_DEVICES_PASSWORD` are new
+The `tutorial` container hosts the dummy Ultralight sensors. Rather than
+accessing the **IoT Agent** directly on port `7896` as shown in all previous
+tutorials, all traffic is forwarded to `iot-agent-proxy` on port `7897`. Most of
+the relevant `tutorial` container settings have been described in previous
+tutorials, the `DUMMY_DEVICES_USER` and `DUMMY_DEVICES_PASSWORD` are new
 additions.
 
+| Key                     | Value                                             | Description                                                                                                                        |
+| ----------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| IOTA_HTTP_HOST          | `iot-agent-proxy`                                 | The hostname of the Wilma PEP Proxy protecting the IoT Agent for UltraLight 2.0                                                    |
+| IOTA_HTTP_PORT          | `7896`                                            | The port that the Wilma PEP Proxy protecting the IoT Agent is listening on                                                         |
+| DUMMY_DEVICES_PORT      | `3001`                                            | Port used by the dummy IoT devices to receive commands                                                                             |
+| DUMMY_DEVICES_TRANSPORT | `HTTP`                                            | Default transport used by dummy IoT devices                                                                                        |
+| DUMMY_DEVICES_API_KEY   | `4jggokgpepnvsb2uv4s40d59ov`                      | Random security key used for UltraLight interactions - ensures the integrity of interactions between the devices and the IoT Agent |
+| DUMMY_DEVICES_USER      | `iot_sensor_00000000-0000-0000-0000-000000000000` | Username assigned to the device(s) in **Keyrock**                                                                                  |
+| DUMMY_DEVICES_PASSWORD  | `test`                                            | Password assigned to the device(s) in **Keyrock**                                                                                  |
 
-| Key |Value|Description|
-|-----|-----|-----------|
-|IOTA_HTTP_HOST|`iot-agent-proxy`| The hostname of the Wilma PEP Proxy protecting the IoT Agent for UltraLight 2.0 |
-|IOTA_HTTP_PORT|`7896` | The port that the Wilma PEP Proxy protecting the IoT Agent is listening on|
-|DUMMY_DEVICES_PORT|`3001`| Port used by the dummy IoT devices to receive commands|
-|DUMMY_DEVICES_TRANSPORT|`HTTP`|Default transport used by dummy IoT devices|
-|DUMMY_DEVICES_API_KEY|`4jggokgpepnvsb2uv4s40d59ov`| Random security key used for UltraLight interactions - ensures the integrity of interactions between the devices and the IoT Agent |
-|DUMMY_DEVICES_USER|`iot_sensor_00000000-0000-0000-0000-000000000000` | Username assigned to the device(s) in **Keyrock** |
-|DUMMY_DEVICES_PASSWORD|`test` | Password assigned to the device(s) in **Keyrock** |
-
-The `DUMMY_DEVICES_USER` and `DUMMY_DEVICES_PASSWORD` would usually be obtained by adding new entries to the application in **Keyrock**,
-however, in this tutorial, they have been predefined by populating the **MySQL** database with data on start-up.
+The `DUMMY_DEVICES_USER` and `DUMMY_DEVICES_PASSWORD` would usually be obtained
+by adding new entries to the application in **Keyrock**, however, in this
+tutorial, they have been predefined by populating the **MySQL** database with
+data on start-up.
 
 ## Securing IoT Agent - Start up
 
-To start the system with a PEP Proxies protecting access to both **Orion** and the **IoT Agent** run the following command:
+To start the system with a PEP Proxies protecting access to both **Orion** and
+the **IoT Agent** run the following command:
 
 ```console
 ./services iot-agent
 ```
 
-
 ## IoT Sensor Logs In to the Application using the REST API
 
 ### Keyrock - IoT Sensor Obtains an Access Token
 
-Logging in as an IoT Sensor follows the same  user-credentials flow as for a User.
-To log in and identify the sensor `iot_sensor_00000000-0000-0000-0000-000000000000` with password `test`
-send a POST request to **Keyrock** using the `oauth2/token` endpoint
-with the `grant_type=password`:
+Logging in as an IoT Sensor follows the same user-credentials flow as for a
+User. To log in and identify the sensor
+`iot_sensor_00000000-0000-0000-0000-000000000000` with password `test` send a
+POST request to **Keyrock** using the `oauth2/token` endpoint with the
+`grant_type=password`:
 
 #### :one::five: Request:
 
@@ -1077,17 +1187,15 @@ The response returns an access code to identify the device:
 }
 ```
 
-
 ### PEP Proxy - Accessing IoT Agent with an Access Token
 
 This example simulates a secured request coming from the device `motion001`
 
 The POST request to a PEP Proxy in front to the Ultralight IoT Agent identifies
 a previously provisioned resource `iot/d` endpoint and passes a measurement for
-device `motion001`. The addition of the `X-Auth-Token` Header identifies the source
-of the request as being registered in Keyrock, and therefore the measurement will
-be successfully passed on to the IoT Agent itself.
-
+device `motion001`. The addition of the `X-Auth-Token` Header identifies the
+source of the request as being registered in Keyrock, and therefore the
+measurement will be successfully passed on to the IoT Agent itself.
 
 #### Request:
 
@@ -1098,61 +1206,54 @@ curl -X POST \
   -d 'c|1'
 ```
 
+## Securing an IoT Agent - Sample Code
 
-## Securing an IoT Agent -  Sample Code
-
-
-When an IoT Sensor starts up, it must log-in like any other user to obtain an access token:
+When an IoT Sensor starts up, it must log-in like any other user to obtain an
+access token:
 
 ```javascript
-const DUMMY_DEVICE_HTTP_HEADERS = { 'Content-Type': 'text/plain' };
+const DUMMY_DEVICE_HTTP_HEADERS = { "Content-Type": "text/plain" };
 ```
+
 ```javascript
-function initSecureDevices(){
-    Security.oa.getOAuthPasswordCredentials(process.env.DUMMY_DEVICES_USER, process.env.DUMMY_DEVICES_PASSWORD)
-    .then(results => {
-        DUMMY_DEVICE_HTTP_HEADERS['X-Auth-Token'] = results.access_token;
-        return;
-    })
-    .catch(error => {
-        debug(error);
-        return;
-    });
+function initSecureDevices() {
+    Security.oa
+        .getOAuthPasswordCredentials(
+            process.env.DUMMY_DEVICES_USER,
+            process.env.DUMMY_DEVICES_PASSWORD
+        )
+        .then(results => {
+            DUMMY_DEVICE_HTTP_HEADERS["X-Auth-Token"] = results.access_token;
+            return;
+        })
+        .catch(error => {
+            debug(error);
+            return;
+        });
 }
 ```
 
-Each HTTP request thereafter includes the `X-Auth-Token` Header in the request identifying the IoT Sensor:
+Each HTTP request thereafter includes the `X-Auth-Token` Header in the request
+identifying the IoT Sensor:
 
 ```javascript
-const options = { method: 'POST',
-  url: UL_URL,
-  qs: { k: UL_API_KEY, i: deviceId },
-  headers: DUMMY_DEVICE_HTTP_HEADERS,
-  body: state };
+const options = {
+    method: "POST",
+    url: UL_URL,
+    qs: { k: UL_API_KEY, i: deviceId },
+    headers: DUMMY_DEVICE_HTTP_HEADERS,
+    body: state
+};
 
-request(options,  (error) => {
-  if (error){
-    debug( debugText +  " " + error.code)
-  }
+request(options, error => {
+    if (error) {
+        debug(debugText + " " + error.code);
+    }
 });
 ```
-
-
 
 ---
 
 ## License
 
 [MIT](LICENSE) © FIWARE Foundation e.V.
-
-
-
-
-
-
-
-
-
-
-
-
