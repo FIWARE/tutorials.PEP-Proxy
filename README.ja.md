@@ -1,8 +1,10 @@
 [![FIWARE Banner](https://fiware.github.io/tutorials.PEP-Proxy/img/fiware.png)](https://www.fiware.org/developers)
 
 [![FIWARE Security](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://www.fiware.org/developers/catalogue/)
-[![License: MIT](https://img.shields.io/github/license/fiware/tutorials.Time-Series-Data.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://readthedocs.org/projects/fiware-tutorials/badge/?version=latest)](https://fiware-tutorials.readthedocs.io/en/latest)
+[![License: MIT](https://img.shields.io/github/license/fiware/tutorials.PEP-Proxy.svg)](https://opensource.org/licenses/MIT)
+[![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware)
+<br/>
+[![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
 このチュートリアルでは、FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy と **Keyrock** を組み合わせて、FIWARE Generic Enablersによって公開されるエンドポイントへのアクセスを保護します。ユーザ、または他のアクターは、ログインし、トークンを使用してサービスにアクセスする必要があります。[以前のチュートリアル](https://github.com/Fiware/tutorials.Securing-Access)で作成したアプリケーション・コードを展開して、分散システム全体のユーザを認証します。FIWARE Wilma (PEP Proxy) の設計について説明し、他のサービスの認証に関連する Keyrock GUI と REST API の部分について詳しく説明します。
 
