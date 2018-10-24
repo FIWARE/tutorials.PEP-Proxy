@@ -140,7 +140,7 @@ will need to follow the instructions found  [here](https://docs.docker.com/compo
 ## Cygwin
 
 We will start up our services using a simple bash script. Windows users should download [cygwin](http://www.cygwin.com/) to provide a
-command line functionality similar to a Linux distribution on Windows.
+command-line functionality similar to a Linux distribution on Windows.
 
 # Architecture
 
@@ -158,7 +158,7 @@ Therefore the overall architecture will consist of the following elements:
 * The FIWARE [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) which will receive southbound requests using [NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) and convert them to  [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) commands for the devices
 * FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) offer a complement Identity Management System including:
     * An OAuth2 authentication system for Applications and Users
-    * A website graphical front-end for Identity Management Administration
+    * A site graphical frontend for Identity Management Administration
     * An equivalent REST API for Identity Management via HTTP requests
 * FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a PEP Proxy securing access to the **Orion** and/or **IoT Agent** microservices
 * The underlying [MongoDB](https://www.mongodb.com/) database :
@@ -193,7 +193,7 @@ cd tutorials.PEP-Proxy
 >**Note** The initial creation of Docker images can take up to three minutes
 
 
-Thereafter, all services can be initialized from the command line by running the [services](https://github.com/Fiware/tutorials.PEP-PRoxy/blob/master/services) Bash script provided within the repository:
+Thereafter, all services can be initialized from the command-line by running the [services](https://github.com/Fiware/tutorials.PEP-PRoxy/blob/master/services) Bash script provided within the repository:
 
 ```console
 ./services <command>
@@ -660,7 +660,7 @@ The `orion-proxy` container is an instance of FIWARE **Wilma** listening on port
 ```
 
 The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by adding new entries to the application in **Keyrock**,
-however, in this tutorial, they have been pre-defined by populating the **MySQL** database with data on start-up.
+however, in this tutorial, they have been predefined by populating the **MySQL** database with data on start-up.
 
 The `orion-proxy` container is listening on a single port:
 
@@ -734,7 +734,7 @@ traffic is now sent to `orion-proxy` on port `1027`. As a reminder, the relevant
 | Key |Value|Description|
 |-----|-----|-----------|
 |WEB_APP_PORT|`3000`|Port used by web-app which displays the login screen & etc.|
-|KEYROCK_URL|`http://localhost`| This is URL of the **Keyrock** Web Front-End itself, used for redirection when forwarding users |
+|KEYROCK_URL|`http://localhost`| This is URL of the **Keyrock** Web frontend itself, used for redirection when forwarding users |
 |KEYROCK_IP_ADDRESS|`http://172.18.1.5`| This is URL of the **Keyrock** OAuth Communications |
 |KEYROCK_PORT|`3005` | This is the port that **Keyrock** is listening on.|
 |KEYROCK_CLIENT_ID|`tutorial-dckr-site-0000-xpresswebapp`| The Client ID defined by Keyrock for this application |
@@ -951,7 +951,7 @@ The `iot-agent-proxy` container is an instance of FIWARE **Wilma** listening on 
 ```
 
 The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by adding new entries to the application in **Keyrock**,
-however, in this tutorial, they have been pre-defined by populating the **MySQL** database with data on start-up.
+however, in this tutorial, they have been predefined by populating the **MySQL** database with data on start-up.
 
 The `iot-agent-proxy` container is listening on a single port:
 
@@ -1024,7 +1024,7 @@ additions.
 
 | Key |Value|Description|
 |-----|-----|-----------|
-|IOTA_HTTP_HOST|`iot-agent-proxy`| The host name of the Wilma PEP Proxy protecting the IoT Agent for UltraLight 2.0 |
+|IOTA_HTTP_HOST|`iot-agent-proxy`| The hostname of the Wilma PEP Proxy protecting the IoT Agent for UltraLight 2.0 |
 |IOTA_HTTP_PORT|`7896` | The port that the Wilma PEP Proxy protecting the IoT Agent is listening on|
 |DUMMY_DEVICES_PORT|`3001`| Port used by the dummy IoT devices to receive commands|
 |DUMMY_DEVICES_TRANSPORT|`HTTP`|Default transport used by dummy IoT devices|
@@ -1033,7 +1033,7 @@ additions.
 |DUMMY_DEVICES_PASSWORD|`test` | Password assigned to the device(s) in **Keyrock** |
 
 The `DUMMY_DEVICES_USER` and `DUMMY_DEVICES_PASSWORD` would usually be obtained by adding new entries to the application in **Keyrock**,
-however, in this tutorial, they have been pre-defined by populating the **MySQL** database with data on start-up.
+however, in this tutorial, they have been predefined by populating the **MySQL** database with data on start-up.
 
 ## Securing IoT Agent - Start up
 
