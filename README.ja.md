@@ -8,7 +8,7 @@
 
 このチュートリアルでは、FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy と **Keyrock** を組み合わせて、FIWARE Generic Enablersによって公開されるエンドポイントへのアクセスを保護します。ユーザ、または他のアクターは、ログインし、トークンを使用してサービスにアクセスする必要があります。[以前のチュートリアル](https://github.com/Fiware/tutorials.Securing-Access)で作成したアプリケーション・コードを展開して、分散システム全体のユーザを認証します。FIWARE Wilma (PEP Proxy) の設計について説明し、他のサービスの認証に関連する Keyrock GUI と REST API の部分について詳しく説明します。
 
-[cUrl](https://ec.haxx.se/) コマンドは、Keyrock および Wilma REST API にアクセスするために全面的に使用されています。これらの呼び出しに [Postman documentation](http://fiware.github.io/tutorials.PEP-Proxy/) も利用できます。
+[cUrl](https://ec.haxx.se/) コマンドは、Keyrock および Wilma REST API にアクセスするために全面的に使用されています。これらの呼び出しに [Postman documentation](https://fiware.github.io/tutorials.PEP-Proxy/) も利用できます。
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/6b143a6b3ad8bcba69cf)
 
@@ -71,7 +71,7 @@
 
 **PEP Proxy** は、保護されたリソースの前方に位置し、"既知の" 公共の場所で見つかるエンドポイントです。リソース・アクセスのゲート・キーパーとして機能します。ユーザ、または他のアクターは、**PEP proxy** を成功させて **PEP proxy** を通過させるために、**PEP proxy** に十分な情報を提供する必要があります。**PEP proxy** は、リクエストをセキュリティ保護されたリソース自体の実際の場所に渡します。保護されたリソースの実際の場所は外部ユーザには分かりません。**PEP proxy** の背後にあるプライベート・ネットワーク または、別のマシン上にあります。
 
-FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) は、FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler で動作するように設計された **PEP proxy**  の簡単なインプリケーションです。ユーザが **PEP proxy** の背後にあるリソースにアクセスしようとするたびに、PEP はユーザの属性を Policy Decision Point (PDP) に記述し、セキュリティの決定をリクエストし、決定を実行します。許可または拒否です。許可されたユーザのアクセスが最小限になります。受信したレスポンスは、セキュリティで保護されたサービスに直接アクセスした場合と同じです。権限のないユーザには、**401 - Unauthorized** レスポンスが戻されます。
+FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) は、FIWARE [Keyrock](https://fiware-idm.readthedocs.io/) Generic Enabler で動作するように設計された **PEP proxy**  の簡単なインプリケーションです。ユーザが **PEP proxy** の背後にあるリソースにアクセスしようとするたびに、PEP はユーザの属性を Policy Decision Point (PDP) に記述し、セキュリティの決定をリクエストし、決定を実行します。許可または拒否です。許可されたユーザのアクセスが最小限になります。受信したレスポンスは、セキュリティで保護されたサービスに直接アクセスした場合と同じです。権限のないユーザには、**401 - Unauthorized** レスポンスが戻されます。
 
 <a name="standard-concepts-of-identity-management"></a>
 ## ID 管理の標準概念
@@ -123,15 +123,15 @@ FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) は、FIWARE [Keyrock](http://
 <a name="architecture"></a>
 # Architecture
 
-このアプリケーションは、以前のチュートリアルで作成したサービスの周りに **PEP Proxy** インスタンスを追加することで、既存の在庫管理、および、センサ・ベースのアプリケーションへのアクセスを保護し、**Keyrock** が使用する **MySQL** データベースに事前入力されたデータを使用します。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/), [Keyrock](http://fiware-idm.readthedocs.io/) Generic Enabler の 4つの FIWARE コンポーネントを使用し、[Wilma](https://fiware-pep-proxy.rtfd.io/) **PEP Proxy** の 1つまたは 2つのインスタンスを追加して、どのインタフェースを保護するかを決定します。アプリケーションが *“Powered by FIWARE”* と認定されるには、Orion Context Broker を使用するだけで十分です。
+このアプリケーションは、以前のチュートリアルで作成したサービスの周りに **PEP Proxy** インスタンスを追加することで、既存の在庫管理、および、センサ・ベースのアプリケーションへのアクセスを保護し、**Keyrock** が使用する **MySQL** データベースに事前入力されたデータを使用します。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/), [Keyrock](https://fiware-idm.readthedocs.io/) Generic Enabler の 4つの FIWARE コンポーネントを使用し、[Wilma](https://fiware-pep-proxy.rtfd.io/) **PEP Proxy** の 1つまたは 2つのインスタンスを追加して、どのインタフェースを保護するかを決定します。アプリケーションが *“Powered by FIWARE”* と認定されるには、Orion Context Broker を使用するだけで十分です。
 
 Orion Context Broker と IoT Agent はオープンソースの [MongoDB](https://www.mongodb.com/) 技術を利用して、保持している情報の永続性を保ちます。[以前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Sensors/)で作成した ダミー IoT デバイスも使用します。**Keyrock** は独自の [MySQL](https://www.mysql.com/) データベースを使用します。
 
 したがって、全体的なアーキテクチャは次の要素で構成されます :
 
 * FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) は、[NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してリクエストを受信します
-* [IoT Agent for UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/) は、[NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してサウスバウンド・リクエストを受信し、それをデバイスのために [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) に変換します。
-* FIWARE [Keyrock](http://fiware-idm.readthedocs.io/) は、以下を含んだ、補完的な ID 管理システムを提供します :
+* [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) は、[NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してサウスバウンド・リクエストを受信し、それをデバイスのために [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) に変換します。
+* FIWARE [Keyrock](https://fiware-idm.readthedocs.io/) は、以下を含んだ、補完的な ID 管理システムを提供します :
     * アプリケーションとユーザのための OAuth2 認証システム
     * ID 管理のための Web サイトのグラフィカル・フロントエンド
     * HTTP リクエストによる ID 管理用の同等の REST API
@@ -146,7 +146,7 @@ Orion Context Broker と IoT Agent はオープンソースの [MongoDB](https:/
     * 各店舗でどの商品を購入できるかを示します
     * ユーザが製品を"購入"して在庫数を減らすことができます
     * 許可されたユーザを制限されたエリアに入れることができます
-* HTTP を介して実行されている [UltraLight 2.0](http://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) プロトコルを使用する[ダミー IoT デバイス](https://github.com/Fiware/tutorials.IoT-Sensors)のセットとして機能する Web サーバ。特定のリソースへのアクセスが制限されています。
+* HTTP を介して実行されている [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) プロトコルを使用する[ダミー IoT デバイス](https://github.com/Fiware/tutorials.IoT-Sensors)のセットとして機能する Web サーバ。特定のリソースへのアクセスが制限されています。
 
 要素間のすべての対話は HTTP リクエストによって開始されるため、エンティティはコンテナ化され、公開されたポートから実行されます。
 
@@ -253,7 +253,7 @@ cd tutorials.PEP-Proxy
 
 次の例では、Admin Super-User を使用してログインします :
 
-#### :one: リクエスト : 
+#### :one: リクエスト :
 ```console
 curl -iX POST \
   'http://localhost:3005/v1/auth/tokens' \
@@ -299,7 +299,7 @@ Connection: keep-alive
 
 このチュートリアルでは、長続きする `X-Auth-token=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa` を使用して Alice のふりをすることができます。`{{X-Auth-token}}` と `{{X-Subject-token}}` は、Alice が自分自身について問い合わせを行っている場合に同じ値に設定することができます。
 
-#### :two: リクエスト : 
+#### :two: リクエスト :
 
 ```console
 curl -X GET \
@@ -405,7 +405,7 @@ curl -X GET \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス : 
+#### レスポンス :
 
 ```json
 {
@@ -445,7 +445,7 @@ curl -X PATCH \
 
 既存の PEP Proxy アカウントは、`/v1/applications/{{application-id}}/pep_proxies` エンドポイントに DELETE リクエストを行うことで削除できます。`X-Auth-token` をヘッダに指定してしてください。
 
-#### :six: リクエスト : 
+#### :six: リクエスト :
 
 ```console
 curl -X DELETE \
@@ -472,7 +472,7 @@ PEP Proxy 作成と同様に、サイン・インして、ユーザはアプリ�
 
 アプリケーション内に新しい IoT Agent アカウントを作成するには、以前にログインした管理ユーザから、`X-Auth-token` とともに `/v1/applications/{{application-id}}/iot_agents` エンドポイントに POST リクエストを送信します。
 
-#### :seven: リクエスト : 
+#### :seven: リクエスト :
 
 ```console
 curl -X POST \
@@ -499,7 +499,7 @@ curl -X POST \
 
 GET リクエストを作成すると、`/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` エンドポイントは関連する IoT Agent アカウントの詳細を返します。`X-Auth-token` をヘッダに指定してしてください。
 
-#### :eight: リクエスト : 
+#### :eight: リクエスト :
 
 ```console
 curl -X GET \
@@ -507,7 +507,7 @@ curl -X GET \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス : 
+#### レスポンス :
 
 ```json
 {
@@ -522,7 +522,7 @@ curl -X GET \
 ### IoT Agents の 一覧
 `/v1/applications/{{application-id}}/iot_agents` エンドポイントに GET リクエストを実行することによって、アプリケーションに関連するすべての IoT Agents のリストを得ることができる。`X-Auth-token` をヘッダに指定してしてください。
 
-#### :nine: リクエスト : 
+#### :nine: リクエスト :
 
 ```console
 curl -X GET \
@@ -530,7 +530,7 @@ curl -X GET \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス : 
+#### レスポンス :
 
 ```json
 {
@@ -549,7 +549,7 @@ curl -X GET \
 ### IoT Agent のパスワードをリセット
 
 #### :one::zero: リクエスト :
- 
+
 個々の IoT Agent アカウントのパスワードを更新するには、`/v1/applications/{{application-id}}//iot_agents/{{iot-agent-id}}`  エンドポイントに PATCH リクエストを行います。`X-Auth-token` をヘッダに指定してしてください。
 
 ```console
@@ -623,7 +623,7 @@ curl -X DELETE \
 
 また、`PEP_PROXY_APP_ID` と `PEP_PROXY_USERNAME` は、通常、**Keyrock** のアプリケーションに新しいエントリを追加して取得しますが、このチュートリアルでは **MySQL** データベースに起動時のデータを入力することで事前定義されています。
 
-`orion-proxy` コンテナは、単一ポートで待機しています : 
+`orion-proxy` コンテナは、単一ポートで待機しています :
 
 * PEP Proxyポート `1027` は、純粋にチュートリアルのアクセスのために公開されているため、cUrl または Postman は同じネットワークの一部ではなくても、**Wilma** インスタンスに直接リクエストできます。
 
@@ -739,7 +739,7 @@ Auth-token not found in request header
 
 #### :one::three: リクエスト
 
-ユーザ・クレデンシャルのフローを使用してアプリケーションにログインするには、`oauth2/token` エンドポイントを使用して、`grant_type=password` とともに、**Keyrock** に POSTリクエストを送信します。例えば、Admin Alice としてログインするには : 
+ユーザ・クレデンシャルのフローを使用してアプリケーションにログインするには、`oauth2/token` エンドポイントを使用して、`grant_type=password` とともに、**Keyrock** に POSTリクエストを送信します。例えば、Admin Alice としてログインするには :
 
 ```console
 curl -iX POST \
@@ -778,7 +778,7 @@ curl -X GET \
   -H 'X-Auth-Token: {{X-Access-token}}'
 ```
 
-#### レスポンス : 
+#### レスポンス :
 
 ```json
 {
@@ -965,7 +965,7 @@ async function buyItem(req, res) {
 |DUMMY_DEVICES_API_KEY|`4jggokgpepnvsb2uv4s40d59ov`| UltraLight インタラクションに使用されるランダムなセキュリティキー - デバイスと IoT Agent 間のインタラクションの完全性を保証します |
 |DUMMY_DEVICES_USER|`iot_sensor_00000000-0000-0000-0000-000000000000` | **Keyrock** のデバイスに割り当てられたユーザ名 |
 |DUMMY_DEVICES_PASSWORD|`test` | **Keyrock** のデバイスに割り当てられたパスワード |
-	
+
 `DUMMY_DEVICES_USER` および `DUMMY_DEVICES_PASSWORD` は、通常、**Keyrock** のアプリケーションに新しいエントリを追加することで得られますが、このチュートリアルでは **MySQL** データベースに起動時のデータを入力することで事前定義されています。
 
 <a name="securing-iot-agent---start-up"></a>
