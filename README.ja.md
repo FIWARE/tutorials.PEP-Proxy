@@ -71,7 +71,7 @@
 
 **PEP Proxy** は、保護されたリソースの前方に位置し、"既知の" 公共の場所で見つかるエンドポイントです。リソース・アクセスのゲート・キーパーとして機能します。ユーザ、または他のアクターは、**PEP proxy** を成功させて **PEP proxy** を通過させるために、**PEP proxy** に十分な情報を提供する必要があります。**PEP proxy** は、リクエストをセキュリティ保護されたリソース自体の実際の場所に渡します。保護されたリソースの実際の場所は外部ユーザには分かりません。**PEP proxy** の背後にあるプライベート・ネットワーク または、別のマシン上にあります。
 
-FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) は、FIWARE [Keyrock](https://fiware-idm.readthedocs.io/) Generic Enabler で動作するように設計された **PEP proxy**  の簡単なインプリケーションです。ユーザが **PEP proxy** の背後にあるリソースにアクセスしようとするたびに、PEP はユーザの属性を Policy Decision Point (PDP) に記述し、セキュリティの決定をリクエストし、決定を実行します。許可または拒否です。許可されたユーザのアクセスが最小限になります。受信したレスポンスは、セキュリティで保護されたサービスに直接アクセスした場合と同じです。権限のないユーザには、**401 - Unauthorized** レスポンスが戻されます。
+FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) は、FIWARE [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) Generic Enabler で動作するように設計された **PEP proxy**  の簡単なインプリケーションです。ユーザが **PEP proxy** の背後にあるリソースにアクセスしようとするたびに、PEP はユーザの属性を Policy Decision Point (PDP) に記述し、セキュリティの決定をリクエストし、決定を実行します。許可または拒否です。許可されたユーザのアクセスが最小限になります。受信したレスポンスは、セキュリティで保護されたサービスに直接アクセスした場合と同じです。権限のないユーザには、**401 - Unauthorized** レスポンスが戻されます。
 
 <a name="standard-concepts-of-identity-management"></a>
 ## ID 管理の標準概念
@@ -123,7 +123,7 @@ FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) は、FIWARE [Keyrock](https:/
 <a name="architecture"></a>
 # Architecture
 
-このアプリケーションは、以前のチュートリアルで作成したサービスの周りに **PEP Proxy** インスタンスを追加することで、既存の在庫管理、および、センサ・ベースのアプリケーションへのアクセスを保護し、**Keyrock** が使用する **MySQL** データベースに事前入力されたデータを使用します。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/), [Keyrock](https://fiware-idm.readthedocs.io/) Generic Enabler の 4つの FIWARE コンポーネントを使用し、[Wilma](https://fiware-pep-proxy.rtfd.io/) **PEP Proxy** の 1つまたは 2つのインスタンスを追加して、どのインタフェースを保護するかを決定します。アプリケーションが *“Powered by FIWARE”* と認定されるには、Orion Context Broker を使用するだけで十分です。
+このアプリケーションは、以前のチュートリアルで作成したサービスの周りに **PEP Proxy** インスタンスを追加することで、既存の在庫管理、および、センサ・ベースのアプリケーションへのアクセスを保護し、**Keyrock** が使用する **MySQL** データベースに事前入力されたデータを使用します。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/), [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) Generic Enabler の 4つの FIWARE コンポーネントを使用し、[Wilma](https://fiware-pep-proxy.rtfd.io/) **PEP Proxy** の 1つまたは 2つのインスタンスを追加して、どのインタフェースを保護するかを決定します。アプリケーションが *“Powered by FIWARE”* と認定されるには、Orion Context Broker を使用するだけで十分です。
 
 Orion Context Broker と IoT Agent はオープンソースの [MongoDB](https://www.mongodb.com/) 技術を利用して、保持している情報の永続性を保ちます。[以前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Sensors/)で作成した ダミー IoT デバイスも使用します。**Keyrock** は独自の [MySQL](https://www.mysql.com/) データベースを使用します。
 
@@ -131,7 +131,7 @@ Orion Context Broker と IoT Agent はオープンソースの [MongoDB](https:/
 
 * FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) は、[NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してリクエストを受信します
 * [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) は、[NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用してサウスバウンド・リクエストを受信し、それをデバイスのために [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) に変換します。
-* FIWARE [Keyrock](https://fiware-idm.readthedocs.io/) は、以下を含んだ、補完的な ID 管理システムを提供します :
+* FIWARE [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) は、以下を含んだ、補完的な ID 管理システムを提供します :
     * アプリケーションとユーザのための OAuth2 認証システム
     * ID 管理のための Web サイトのグラフィカル・フロントエンド
     * HTTP リクエストによる ID 管理用の同等の REST API
