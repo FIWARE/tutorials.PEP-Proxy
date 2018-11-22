@@ -81,18 +81,8 @@ case "${command}" in
 		stoppingContainers
 		;;
 	"create")
-		echo "Obtaining MySQL image"
-		docker pull mysql:5.7
-		echo "Obtaining Latest Keyrock Image"
-		docker pull fiware/idm
-		echo "Obtaining Latest Wilma Image"
-		docker pull fiware/pep-proxy
-		echo "Obtaining Latest Orion Image"
-		docker pull fiware/orion
-		echo "Obtaining Latest UltraLight IoT Agent"
-		docker pull fiware/iotagent-ul
-		echo "Obtaining Tutorial Context-Provider"
-		docker pull fiware/tutorials.context-provider
+		echo "Pulling Docker images"
+		docker-compose --log-level ERROR -f docker-compose/orion.yml -p fiware pull
 		;;
 	*)
 		echo "Command not Found."

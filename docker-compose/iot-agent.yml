@@ -97,7 +97,7 @@ services:
         - "CALLBACK_URL=http://localhost:3000/login"
 
   keyrock:
-    image: fiware/idm:7.4.0
+    image: fiware/idm:7.5.0
     container_name: fiware-keyrock
     hostname: keyrock
     networks:
@@ -114,7 +114,6 @@ services:
       - IDM_DB_USER=root
       - IDM_HOST=http://localhost:3005
       - IDM_PORT=3005
-      - IDM_HTTPS_ENABLED=${IDM_HTTPS_ENABLED}
       - IDM_HTTPS_PORT=3443
       - IDM_ADMIN_USER=alice
       - IDM_ADMIN_EMAIL=alice-the-admin@test.com
@@ -145,7 +144,7 @@ services:
 
 
   orion-proxy:
-    image: fiware/pep-proxy
+    image: fiware/pep-proxy:7.5.0
     container_name: fiware-orion-proxy
     hostname: orion-proxy
     networks:
