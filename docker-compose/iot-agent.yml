@@ -97,7 +97,7 @@ services:
         - "CALLBACK_URL=http://localhost:3000/login"
 
   keyrock:
-    image: fiware/idm:7.5.0
+    image: fiware/idm:7.5.1
     container_name: fiware-keyrock
     hostname: keyrock
     networks:
@@ -144,7 +144,7 @@ services:
 
 
   orion-proxy:
-    image: fiware/pep-proxy:7.5.0
+    image: fiware/pep-proxy:7.5.1
     container_name: fiware-orion-proxy
     hostname: orion-proxy
     networks:
@@ -172,7 +172,7 @@ services:
       - PEP_PROXY_MAGIC_KEY=1234
 
   iot-agent-proxy:
-    image: fiware/pep-proxy
+    image: fiware/pep-proxy:7.5.1
     container_name: fiware-iot-agent-proxy
     hostname: iot-agent-proxy
     networks:
