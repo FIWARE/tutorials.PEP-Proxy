@@ -284,6 +284,19 @@ Application
     store detectives under him:
     -   Detective1
     -   Detective2
+    
+The following people at `example.com` have signed up for accounts, but have no
+reason to be granted access
+
+-   Eve - Eve the Eavesdropper
+-   Mallory - Mallory the malicious attacker
+-   Rob - Rob the Robber
+
+    
+<details>
+  <summary>
+   For more details <b>(Click to expand)</b>
+  </summary>
 
 | Name       | eMail                     | Password |
 | ---------- | ------------------------- | -------- |
@@ -295,18 +308,14 @@ Application
 | detective1 | detective1@test.com       | `test`   |
 | detective2 | detective2@test.com       | `test`   |
 
-The following people at `example.com` have signed up for accounts, but have no
-reason to be granted access
-
--   Eve - Eve the Eavesdropper
--   Mallory - Mallory the malicious attacker
--   Rob - Rob the Robber
 
 | Name    | eMail               | Password |
 | ------- | ------------------- | -------- |
 | eve     | eve@example.com     | `test`   |
 | mallory | mallory@example.com | `test`   |
 | rob     | rob@example.com     | `test`   |
+
+</details>
 
 Two organizations have also been set up by Alice:
 
