@@ -303,6 +303,19 @@ Bash スクリプトを実行することによって、コマンドラインか
     -   Detective1
     -   Detective2
 
+次の `example.com` のメンバはアカウントに登録しましたが、アクセスを許可する理由
+はありません。
+
+-   Eve - 盗聴者のイブ
+-   Mallory - 悪意のある攻撃者のマロリー
+-   Rob - 強盗のロブ
+
+
+<details>
+  <summary>
+   詳細 <b>(クリックして拡大)</b>
+  </summary>
+
 | 名前       | eMail                     | パスワード |
 | ---------- | ------------------------- | ---------- |
 | alice      | alice-the-admin@test.com  | `test`     |
@@ -313,18 +326,13 @@ Bash スクリプトを実行することによって、コマンドラインか
 | detective1 | detective1@test.com       | `test`     |
 | detective2 | detective2@test.com       | `test`     |
 
-次の `example.com` のメンバはアカウントに登録しましたが、アクセスを許可する理由
-はありません。
-
--   Eve - 盗聴者のイブ
--   Mallory - 悪意のある攻撃者のマロリー
--   Rob - 強盗のロブ
-
 | 名前    | eMail               | パスワード |
 | ------- | ------------------- | ---------- |
 | eve     | eve@example.com     | `test`     |
 | mallory | mallory@example.com | `test`     |
 | rob     | rob@example.com     | `test`     |
+
+</details>
 
 2 つの組織が Alice によって設定されました :
 
