@@ -24,7 +24,10 @@ calls is also available.
 
 -   このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
 
-# Contents
+## Contents
+
+<details>
+<summary><strong>Details</strong></summary>
 
 -   [Securing Microservices with a PEP Proxy](#securing-microservices-with-a-pep-proxy)
     -   [Standard Concepts of Identity Management](#standard-concepts-of-identity-management)

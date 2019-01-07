@@ -24,6 +24,9 @@ Keyrock GUI と REST API の部分について詳しく説明します。
 
 # コンテンツ
 
+<details>
+<summary>詳細 <b>(クリックして拡大)</b></summary>
+
 -   [PEP Proxy を使用したマイクロ・サービスの保護](#securing-microservices-with-a-pep-proxy)
     -   [ID 管理の標準概念](#standard-concepts-of-identity-management)
     -   [:arrow_forward: ビデオ : Wilma PEP Proxy の紹介](#arrow_forward-video--introduction-to-wilma-pep-proxy)
@@ -68,6 +71,8 @@ Keyrock GUI と REST API の部分について詳しく説明します。
         -   [Keyrock - IoT センサによるアクセス・トークンの取得](#keyrock---iot-sensor-obtains-an-access-token)
         -   [PEP Proxy - アクセス・トークンを使用して IoT Agent にアクセス](#pep-proxy---accessing-iot-agent-with-an-access-token)
     -   [IoT Agent の保護 - サンプル・コード](#securing-an-iot-agent----sample-code)
+
+</details>
 
 <a name="securing-microservices-with-a-pep-proxy"></a>
 
