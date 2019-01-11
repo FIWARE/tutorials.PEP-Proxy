@@ -295,7 +295,6 @@ reason to be granted access
 -   Mallory - Mallory the malicious attacker
 -   Rob - Rob the Robber
 
-
 <details>
   <summary>
    For more details <b>(Click to expand)</b>
@@ -310,7 +309,6 @@ reason to be granted access
 | manager2   | manager2@test.com         | `test`   |
 | detective1 | detective1@test.com       | `test`   |
 | detective2 | detective2@test.com       | `test`   |
-
 
 | Name    | eMail               | Password |
 | ------- | ------------------- | -------- |
