@@ -176,8 +176,6 @@ services:
       - PEP_PASSWORD=test
       - PEP_PROXY_PDP=idm
       - PEP_PROXY_MAGIC_KEY=1234
-    healthcheck:
-      test: curl --fail -s http://localhost:1027/version || exit 1
 
 networks:
   default:
