@@ -74,6 +74,8 @@ calls is also available.
         -   [PEP Proxy - Accessing IoT Agent with an Access Token](#pep-proxy---accessing-iot-agent-with-an-access-token)
     -   [Securing an IoT Agent - Sample Code](#securing-an-iot-agent----sample-code)
 
+</details>
+
 # Securing Microservices with a PEP Proxy
 
 > "Oh, it's quite simple. If you are a friend, you speak the password, and the
