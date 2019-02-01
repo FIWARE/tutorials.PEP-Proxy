@@ -1,14 +1,13 @@
 version: "3.1"
 services:
-
   mongo-db:
     image: mongo:3.6
     hostname: mongo-db
     container_name: db-mongo
     ports:
-        - "27017:27017"
+      - "27017:27017"
     networks:
-        - default
+      - default
     command: --bind_ip_all --smallfiles
     volumes:
       - mongo-db:/data
@@ -18,14 +17,14 @@ services:
     hostname: orion
     container_name: fiware-orion
     depends_on:
-        - mongo-db
+      - mongo-db
     networks:
       default:
         ipv4_address: 172.18.1.9
     expose:
-        - "1026"
+      - "1026"
     ports:
-        - "1026:1026"
+      - "1026:1026"
     command: -dbhost mongo-db -logLevel DEBUG
     healthcheck:
       test: curl --fail -s http://localhost:1026/version || exit 1
@@ -35,25 +34,25 @@ services:
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
-        - mongo-db
-        - orion
+      - mongo-db
+      - orion
     networks:
-        - default
+      - default
     ports:
-        - "4041:4041"
-        - "7896:7896"
+      - "4041:4041"
+      - "7896:7896"
     environment:
-        - "IOTA_CB_HOST=orion" # name of the context broker to update context
-        - "IOTA_CB_PORT=1026" # port the context broker listens on to update context
-        - "IOTA_NORTH_PORT=4041"
-        - "IOTA_REGISTRY_TYPE=mongodb" #Whether to hold IoT device info in memory or in a database
-        - "IOTA_LOG_LEVEL=DEBUG" #The log level of the IoT Agent
-        - "IOTA_TIMESTAMP=true"
-        - "IOTA_MONGO_HOST=mongo-db" # The host name of ongoDB
-        - "IOTA_MONGO_PORT=27017" # The port mongoDB is listening on
-        - "IOTA_MONGO_DB=iotagentul" # The name of the database used in mongoDB
-        - "IOTA_HTTP_PORT=7896" # The port used for device traffic over HTTP
-        - "IOTA_PROVIDER_URL=http://iot-agent:4041"
+      - "IOTA_CB_HOST=orion" # name of the context broker to update context
+      - "IOTA_CB_PORT=1026" # port the context broker listens on to update context
+      - "IOTA_NORTH_PORT=4041"
+      - "IOTA_REGISTRY_TYPE=mongodb" #Whether to hold IoT device info in memory or in a database
+      - "IOTA_LOG_LEVEL=DEBUG" #The log level of the IoT Agent
+      - "IOTA_TIMESTAMP=true"
+      - "IOTA_MONGO_HOST=mongo-db" # The host name of ongoDB
+      - "IOTA_MONGO_PORT=27017" # The port mongoDB is listening on
+      - "IOTA_MONGO_DB=iotagentul" # The name of the database used in mongoDB
+      - "IOTA_HTTP_PORT=7896" # The port used for device traffic over HTTP
+      - "IOTA_PROVIDER_URL=http://iot-agent:4041"
     healthcheck:
       test: curl --fail -s http://localhost:4041/iot/about || exit 1
 
@@ -62,9 +61,9 @@ services:
     hostname: tutorial-app
     container_name: tutorial-app
     depends_on:
-        - orion-proxy
-        - iot-agent
-        - keyrock
+      - orion-proxy
+      - iot-agent
+      - keyrock
     networks:
       default:
         ipv4_address: 172.18.1.7
@@ -72,33 +71,33 @@ services:
           - iot-sensors
           - context-provider
     expose:
-        - "3000"
-        - "3001"
+      - "3000"
+      - "3001"
     ports:
-        - "3000:3000"
-        - "3001:3001"
+      - "3000:3000"
+      - "3001:3001"
     environment:
-        - "DEBUG=tutorial:*"
-        - "WEB_APP_PORT=3000" # Port used by the content provider proxy and web-app for viewing data
-        - "IOTA_HTTP_HOST=iot-agent-proxy"
-        - "IOTA_HTTP_PORT=7897"
-        - "DUMMY_DEVICES_PORT=3001" # Port used by the dummy IOT devices to receive commands
-        - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy Io devices
-        - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
-        - "DUMMY_DEVICES_USER=iot_sensor_00000000-0000-0000-0000-000000000000"
-        - "DUMMY_DEVICES_PASSWORD=test"
-        - "CONTEXT_BROKER=http://orion-proxy:1027/v2" # URL of the PEP Proxy to update context
-        - "OPENWEATHERMAP_KEY_ID=<ADD_YOUR_KEY_ID>"
-        - "TWITTER_CONSUMER_KEY=<ADD_YOUR_CONSUMER_KEY>"
-        - "TWITTER_CONSUMER_SECRET=<ADD_YOUR_CONSUMER_SECRET>"
-        - "NGSI_LD_PREFIX="
-        - "SECURE_ENDPOINTS=true"
-        - "KEYROCK_URL=http://localhost"
-        - "KEYROCK_IP_ADDRESS=http://172.18.1.5"
-        - "KEYROCK_PORT=3005"
-        - "KEYROCK_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp"
-        - "KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret"
-        - "CALLBACK_URL=http://localhost:3000/login"
+      - "DEBUG=tutorial:*"
+      - "WEB_APP_PORT=3000" # Port used by the content provider proxy and web-app for viewing data
+      - "IOTA_HTTP_HOST=iot-agent-proxy"
+      - "IOTA_HTTP_PORT=7897"
+      - "DUMMY_DEVICES_PORT=3001" # Port used by the dummy IOT devices to receive commands
+      - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy Io devices
+      - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
+      - "DUMMY_DEVICES_USER=iot_sensor_00000000-0000-0000-0000-000000000000"
+      - "DUMMY_DEVICES_PASSWORD=test"
+      - "CONTEXT_BROKER=http://orion-proxy:1027/v2" # URL of the PEP Proxy to update context
+      - "OPENWEATHERMAP_KEY_ID=<ADD_YOUR_KEY_ID>"
+      - "TWITTER_CONSUMER_KEY=<ADD_YOUR_CONSUMER_KEY>"
+      - "TWITTER_CONSUMER_SECRET=<ADD_YOUR_CONSUMER_SECRET>"
+      - "NGSI_LD_PREFIX="
+      - "SECURE_ENDPOINTS=true"
+      - "KEYROCK_URL=http://localhost"
+      - "KEYROCK_IP_ADDRESS=http://172.18.1.5"
+      - "KEYROCK_PORT=3005"
+      - "KEYROCK_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp"
+      - "KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret"
+      - "CALLBACK_URL=http://localhost:3000/login"
     healthcheck:
       test: curl --fail -s http://localhost:3000/version || exit 1
 
@@ -124,7 +123,7 @@ services:
       - IDM_ADMIN_USER=alice
       - IDM_ADMIN_EMAIL=alice-the-admin@test.com
       - IDM_ADMIN_PASS=test
-    secrets:                
+    secrets:
       - my_secret_data
     healthcheck:
       test: curl --fail -s http://localhost:3005/version || exit 1
@@ -147,9 +146,8 @@ services:
     volumes:
       - mysql-db:/var/lib/mysql
       - ../mysql-data:/docker-entrypoint-initdb.d/:ro
-    secrets:                
+    secrets:
       - my_secret_data
-
 
   orion-proxy:
     image: fiware/pep-proxy:7.5.1
@@ -207,18 +205,16 @@ services:
       - PEP_PROXY_PDP=idm
       - PEP_PROXY_MAGIC_KEY=1234
 
-
 networks:
   default:
     ipam:
       config:
         - subnet: 172.18.1.0/24
 volumes:
-  mysql-db:
-  mongo-db:
-  iot-agent:
+  ? mysql-db
+  ? mongo-db
+  ? iot-agent
 
 secrets:
   my_secret_data:
     file: ../secrets.txt
-
