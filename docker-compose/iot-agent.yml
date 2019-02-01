@@ -211,9 +211,9 @@ networks:
       config:
         - subnet: 172.18.1.0/24
 volumes:
-  ? mysql-db
-  ? mongo-db
-  ? iot-agent
+  mysql-db: ~
+  mongo-db: ~
+  iot-agent: ~
 
 secrets:
   my_secret_data:
