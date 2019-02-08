@@ -269,6 +269,7 @@ CREATE TABLE `oauth_client` (
   `secret` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `url` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `redirect_uri` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `redirect_sign_out_uri` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `image` varchar(255) DEFAULT 'default',
   `grant_type` varchar(255) DEFAULT NULL,
   `response_type` varchar(255) DEFAULT NULL,
@@ -287,14 +288,14 @@ CREATE TABLE `oauth_client` (
 
 LOCK TABLES `oauth_client` WRITE;
 /*!40000 ALTER TABLE `oauth_client` DISABLE KEYS */;
-INSERT INTO `oauth_client` VALUES 
+INSERT INTO `oauth_client` VALUES
 ('tutorial-dckr-site-0000-xpresswebapp','FIWARE Tutorial',
   'FIWARE Application protected by OAuth2 and Keyrock','tutorial-dckr-site-0000-clientsecret',
-  'http://localhost:3000','http://localhost:3000/login','default',
+  'http://localhost:3000','http://localhost:3000/login',NULL,'default',
   'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer', NULL),
 ('tutorial-lcal-host-0000-xpresswebapp','localhost App',
   'Localhost Callback protected by OAuth2 and Keyrock','tutorial-lcal-host-0000-clientsecret',
-  'http://localhost:3000','http://localhost:3000/login','default',
+  'http://localhost:3000','http://localhost:3000/login',NULL,'default',
   'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer', NULL);
 
 /*!40000 ALTER TABLE `oauth_client` ENABLE KEYS */;
@@ -450,7 +451,8 @@ LOCK TABLES `permission` WRITE;
 INSERT INTO `permission` VALUES 
 ('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
 ('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
-('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app'),('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
+('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
+('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
 ('5','Get and assign all public application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
 ('6','Get and assign only public owned roles',NULL,1,NULL,NULL,NULL,'idm_admin_app'),
 ('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp'),
