@@ -8,7 +8,7 @@
 This tutorial uses the FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy combined with **Keyrock** to secure
 access to endpoints exposed by FIWARE generic enablers. Users (or other actors) must log-in and use a token to gain
 access to services. The application code created in the
-[previous tutorial](https://github.com/Fiware/tutorials.Securing-Access) is expanded to authenticate users throughout a
+[previous tutorial](https://github.com/FIWARE/tutorials.Securing-Access) is expanded to authenticate users throughout a
 distributed system. The design of FIWARE Wilma - a PEP Proxy is discussed, and the parts of the Keyrock GUI and REST API
 relevant to authenticating other services are described in detail.
 
@@ -77,7 +77,7 @@ relevant to authenticating other services are described in detail.
 >
 > — Gandalf (The Fellowship of the Ring by J.R.R Tolkien)
 
-The [previous tutorial](https://github.com/Fiware/tutorials.Securing-Access) demonstrated that it is possible to Permit
+The [previous tutorial](https://github.com/FIWARE/tutorials.Securing-Access) demonstrated that it is possible to Permit
 or Deny access to resources based on an authenticated user identifying themselves within an application. It was simply a
 matter of the code following a different line of execution if the `access_token` was not found (Level 1 -
 _Authentication Access_), or confirming that a given `access_token` had appropriate rights (Level 2 - _Basic
@@ -165,7 +165,7 @@ Orion Context Broker is sufficient for an application to qualify as _“Powered 
 
 Both the Orion Context Broker and the IoT Agent rely on open source [MongoDB](https://www.mongodb.com/) technology to
 keep persistence of the information they hold. We will also be using the dummy IoT devices created in the
-[previous tutorial](https://github.com/Fiware/tutorials.IoT-Sensors/). **Keyrock** uses its own
+[previous tutorial](https://github.com/FIWARE/tutorials.IoT-Sensors/). **Keyrock** uses its own
 [MySQL](https://www.mysql.com/) database.
 
 Therefore the overall architecture will consist of the following elements:
@@ -194,7 +194,7 @@ Therefore the overall architecture will consist of the following elements:
     -   Shows which products can be bought at each store
     -   Allows users to "buy" products and reduce the stock count.
     -   Allows authorized users into restricted areas
--   A webserver acting as set of [dummy IoT devices](https://github.com/Fiware/tutorials.IoT-Sensors) using the
+-   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors) using the
     [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
     protocol running over HTTP - access to certain resources is restricted.
 
@@ -217,7 +217,7 @@ cd tutorials.PEP-Proxy
 > **Note** The initial creation of Docker images can take up to three minutes
 
 Thereafter, all services can be initialized from the command-line by running the
-[services](https://github.com/Fiware/tutorials.PEP-PRoxy/blob/master/services) Bash script provided within the
+[services](https://github.com/FIWARE/tutorials.PEP-PRoxy/blob/master/services) Bash script provided within the
 repository:
 
 ```console
@@ -290,7 +290,7 @@ One application, with appropriate roles and permissions has also been created:
 | RedirectURL   | `http://localhost:3000/login`          |
 
 To save time, the data creating users and organizations from the
-[previous tutorial](https://github.com/Fiware/tutorials.Roles-Permissions) has been downloaded and is automatically
+[previous tutorial](https://github.com/FIWARE/tutorials.Roles-Permissions) has been downloaded and is automatically
 persisted to the MySQL database on start-up so the assigned UUIDs do not change and the data does not need to be entered
 again.
 
@@ -395,7 +395,7 @@ The response will return the details of the associated user
 
 # Managing PEP Proxies and IoT Agents
 
-User accounts have been created in a [previous tutorial](https://github.com/Fiware/tutorials.Identity-Management).
+User accounts have been created in a [previous tutorial](https://github.com/FIWARE/tutorials.Identity-Management).
 Non-human actors such as a PEP Proxy can be set up in the same manner. The account for each PEP Proxy, IoT Agent or IoT
 Sensor will merely consist of a Username and password linked to an application within Keyrock. PEP Proxy and IoT Agents
 accounts can be created by using either the Keyrock GUI or by using the REST API.

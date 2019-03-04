@@ -12,7 +12,7 @@
 Proxy と **Keyrock** を組み合わせて、FIWARE Generic Enablers によって公開される
 エンドポイントへのアクセスを保護します。ユーザ、または他のアクターは、ログインし
 、トークンを使用してサービスにアクセスする必要があります
-。[以前のチュートリアル](https://github.com/Fiware/tutorials.Securing-Access)で
+。[以前のチュートリアル](https://github.com/FIWARE/tutorials.Securing-Access)で
 作成したアプリケーション・コードを展開して、分散システム全体のユーザを認証します
 。FIWARE Wilma (PEP Proxy) の設計について説明し、他のサービスの認証に関連する
 Keyrock GUI と REST API の部分について詳しく説明します。
@@ -85,7 +85,7 @@ Keyrock GUI と REST API の部分について詳しく説明します。
 >
 > — Gandalf (The Fellowship of the Ring by J.R.R Tolkien)
 
-[以前のチュートリアル](https://github.com/Fiware/tutorials.Securing-Access)は、
+[以前のチュートリアル](https://github.com/FIWARE/tutorials.Securing-Access)は、
 アプリケーション内で自身を識別認証されたユーザに基づいて、リソースへのアクセスを
 許可または拒否することが可能であることを実証しました。それが `access_token` 見つ
 からなかった場合 (レベル 1 - _Authentication Access_, 認証アクセス)、または、与
@@ -211,7 +211,7 @@ Proxy** インスタンスを追加することで、既存の在庫管理、お
 Orion Context Broker と IoT Agent はオープンソースの
 [MongoDB](https://www.mongodb.com/) 技術を利用して、保持している情報の永続性を保
 ちます
-。[以前のチュートリアル](https://github.com/Fiware/tutorials.IoT-Sensors/)で作成
+。[以前のチュートリアル](https://github.com/FIWARE/tutorials.IoT-Sensors/)で作成
 した ダミー IoT デバイスも使用します。**Keyrock** は独自の
 [MySQL](https://www.mysql.com/) データベースを使用します。
 
@@ -250,7 +250,7 @@ Orion Context Broker と IoT Agent はオープンソースの
 -   HTTP を介して実行されている
     [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
     プロトコルを使用す
-    る[ダミー IoT デバイス](https://github.com/Fiware/tutorials.IoT-Sensors)のセ
+    る[ダミー IoT デバイス](https://github.com/FIWARE/tutorials.IoT-Sensors)のセ
     ットとして機能する Web サーバ。特定のリソースへのアクセスが制限されています
     。
 
@@ -276,7 +276,7 @@ cd tutorials.PEP-Proxy
 > **注** Docker イメージの最初の作成には最大 3 分かかります
 
 その後、リポジトリ内で提供される
-[services](https://github.com/Fiware/tutorials.PEP-PRoxy/blob/master/services)
+[services](https://github.com/FIWARE/tutorials.PEP-PRoxy/blob/master/services)
 Bash スクリプトを実行することによって、コマンドラインからすべてのサービスを初期
 化することができます :
 
@@ -358,7 +358,7 @@ Bash スクリプトを実行することによって、コマンドラインか
 | RedirectURL   | `http://localhost:3000/login`          |
 
 時間を節約するために
-、[以前のチュートリアル](https://github.com/Fiware/tutorials.Roles-Permissions)か
+、[以前のチュートリアル](https://github.com/FIWARE/tutorials.Roles-Permissions)か
 らユーザと組織を作成するデータがダウンロードされ、起動時に自動的に MySQL データ
 ベースに保存されるため、UUIDs が変更されず、データを再入力する必要もありません。
 
@@ -477,7 +477,7 @@ curl -X GET \
 
 # PEP Proxies と IoT Agents の管理
 
-[以前のチュートリアル](https://github.com/Fiware/tutorials.Identity-Management)で
+[以前のチュートリアル](https://github.com/FIWARE/tutorials.Identity-Management)で
 ユーザ・アカウントが作成されました。PEP Proxy などの人以外 (Non-human) のアクタ
 ーも同じ方法で設定できます。各 PEP Proxy, IoT Agent または IoT センサのアカウン
 トは、Keyrock 内のアプリケーションにリンクされたユーザ名とパスワードで構成されま
