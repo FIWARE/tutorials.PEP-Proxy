@@ -208,7 +208,7 @@ The specific architecture of each section of the tutorial is discussed below.
 To start the installation, do the following:
 
 ```console
-git clone git@github.com:Fiware/tutorials.PEP-Proxy.git
+git clone git@github.com:FIWARE/tutorials.PEP-Proxy.git
 cd tutorials.PEP-Proxy
 
 ./services create
