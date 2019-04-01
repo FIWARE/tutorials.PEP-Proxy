@@ -24,6 +24,12 @@ waitForKeyrock () {
 	echo -e " \033[1;32mdone\033[0m"
 }
 
+displayServices () {
+	echo ""
+	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" --filter name=fiware-*
+	echo ""
+}
+
 startContainers () {
 	echo ""
 	export IDM_HTTPS_ENABLED="$1" 
@@ -58,7 +64,7 @@ case "${command}" in
 		startContainers false orion.yml
 		loadData
 		waitForKeyrock
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
 	"iot-agent")
@@ -72,7 +78,7 @@ case "${command}" in
 		startContainers false iot-agent.yml
 		loadData
 		waitForKeyrock
-		echo ""
+		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
 	"stop")
