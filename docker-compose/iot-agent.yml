@@ -58,10 +58,10 @@ services:
     healthcheck:
       test: curl --fail -s http://iot-agent:4041/iot/about || exit 1
 
-  tutorial-app:
+  tutorial:
     image: fiware/tutorials.context-provider
-    hostname: tutorial-app
-    container_name: tutorial-app
+    hostname: tutorial
+    container_name: fiware-tutorial
     depends_on:
       - orion-proxy
       - iot-agent
@@ -104,7 +104,7 @@ services:
       test: curl --fail -s http://tutorial:3000/version || exit 1
 
   keyrock:
-    image: fiware/idm:7.5.1
+    image: fiware/idm:7.6.0
     container_name: fiware-keyrock
     hostname: keyrock
     networks:
@@ -116,7 +116,7 @@ services:
       - "3005:3005"
     environment:
       - DEBUG=idm:*
-      - DATABASE_HOST=mysql-db
+      - IDM_DB_HOST=mysql-db
       - IDM_DB_PASS_FILE=/run/secrets/my_secret_data
       - IDM_DB_USER=root
       - IDM_HOST=http://localhost:3005
