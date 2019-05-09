@@ -1,17 +1,24 @@
+# WARNING: Do not deploy this tutorial configuration directly to a production environment
+#
+# The tutorial docker-compose files have not been written for production deployment and will not 
+# scale. A proper architecture has been sacrificed to keep the narrative focused on the learning 
+# goals, they are just used to deploy everything onto a single Docker machine. All FIWARE components 
+# are running at full debug and extra ports have been exposed to allow for direct calls to services. 
+# They also contain various obvious security flaws - passwords in plain text, no load balancing,
+# no use of HTTPS and so on. 
+# 
+# This is all to avoid the need of multiple machines, generating certificates, encrypting secrets
+# and so on, purely so that a single docker-compose file can be read as an example to build on, 
+# not use directly. 
+# 
+# When deploying to a production environment, please looking at the SmartSDK Recipes
+# in order to scale up to a proper architecture:
+# 
+# see: https://smartsdk.github.io/smartsdk-recipes/
+#
 version: "3.5"
 services:
-  mongo-db:
-    image: mongo:3.6
-    hostname: mongo-db
-    container_name: db-mongo
-    ports:
-      - "27017:27017"
-    networks:
-      - default
-    command: --bind_ip_all --smallfiles
-    volumes:
-      - mongo-db:/data
-
+  # Orion is the context broker
   orion:
     image: fiware/orion:2.2.0
     hostname: orion
@@ -29,6 +36,7 @@ services:
     healthcheck:
       test: curl --fail -s http://orion:1026/version || exit 1
 
+  # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
     image: fiware/iotagent-ul:1.8.0
     hostname: iot-agent
@@ -58,6 +66,66 @@ services:
     healthcheck:
       test: curl --fail -s http://iot-agent:4041/iot/about || exit 1
 
+  # Keyrock is an Identity Management Front-End
+  keyrock:
+    image: fiware/idm:7.6.0
+    container_name: fiware-keyrock
+    hostname: keyrock
+    networks:
+      default:
+        ipv4_address: 172.18.1.5
+    depends_on:
+      - mysql-db
+    ports:
+      - "3005:3005"
+    environment:
+      - DEBUG=idm:*
+      - IDM_DB_HOST=mysql-db
+      - IDM_DB_PASS_FILE=/run/secrets/my_secret_data
+      - IDM_DB_USER=root
+      - IDM_HOST=http://localhost:3005
+      - IDM_PORT=3005
+      - IDM_HTTPS_ENABLED=${IDM_HTTPS_ENABLED}
+      - IDM_HTTPS_PORT=3443
+      - IDM_ADMIN_USER=alice
+      - IDM_ADMIN_EMAIL=alice-the-admin@test.com
+      - IDM_ADMIN_PASS=test
+    secrets:
+      - my_secret_data
+    healthcheck:
+      test: curl --fail -s http://localhost:3005/version || exit 1
+
+  # PEP Proxy for Orion
+  orion-proxy:
+    image: fiware/pep-proxy:7.5.1
+    container_name: fiware-orion-proxy
+    hostname: orion-proxy
+    networks:
+      default:
+        ipv4_address: 172.18.1.10
+    depends_on:
+      - keyrock
+    ports:
+      - "1027:1027"
+    expose:
+      - "1027"
+    environment:
+      - PEP_PROXY_APP_HOST=orion
+      - PEP_PROXY_APP_PORT=1026
+      - PEP_PROXY_PORT=1027
+      - PEP_PROXY_IDM_HOST=keyrock
+      - PEP_PROXY_HTTPS_ENABLED=false
+      - PEP_PROXY_AUTH_ENABLED=false
+      - PEP_PROXY_IDM_SSL_ENABLED=false
+      - PEP_PROXY_IDM_PORT=3005
+      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
+      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
+      - PEP_PASSWORD=test
+      - PEP_PROXY_PDP=idm
+      - PEP_PROXY_MAGIC_KEY=1234
+
+
+  # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
     image: fiware/tutorials.context-provider
     hostname: tutorial
@@ -101,33 +169,20 @@ services:
     healthcheck:
       test: curl --fail -s http://tutorial:3000/version || exit 1
 
-  keyrock:
-    image: fiware/idm:7.6.0
-    container_name: fiware-keyrock
-    hostname: keyrock
-    networks:
-      default:
-        ipv4_address: 172.18.1.5
-    depends_on:
-      - mysql-db
+  # Databases
+  mongo-db:
+    image: mongo:3.6
+    hostname: mongo-db
+    container_name: db-mongo
+    expose:
+      - "27017"
     ports:
-      - "3005:3005"
-    environment:
-      - DEBUG=idm:*
-      - IDM_DB_HOST=mysql-db
-      - IDM_DB_PASS_FILE=/run/secrets/my_secret_data
-      - IDM_DB_USER=root
-      - IDM_HOST=http://localhost:3005
-      - IDM_PORT=3005
-      - IDM_HTTPS_ENABLED=${IDM_HTTPS_ENABLED}
-      - IDM_HTTPS_PORT=3443
-      - IDM_ADMIN_USER=alice
-      - IDM_ADMIN_EMAIL=alice-the-admin@test.com
-      - IDM_ADMIN_PASS=test
-    secrets:
-      - my_secret_data
-    healthcheck:
-      test: curl --fail -s http://localhost:3005/version || exit 1
+      - "27017:27017"
+    networks:
+      - default
+    command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-db:/data
 
   mysql-db:
     restart: always
@@ -149,35 +204,6 @@ services:
       - ../mysql-data:/docker-entrypoint-initdb.d/:ro
     secrets:
       - my_secret_data
-
-  orion-proxy:
-    image: fiware/pep-proxy:7.5.1
-    container_name: fiware-orion-proxy
-    hostname: orion-proxy
-    networks:
-      default:
-        ipv4_address: 172.18.1.10
-    depends_on:
-      - keyrock
-    ports:
-      - "1027:1027"
-    expose:
-      - "1027"
-    environment:
-      - PEP_PROXY_APP_HOST=orion
-      - PEP_PROXY_APP_PORT=1026
-      - PEP_PROXY_PORT=1027
-      - PEP_PROXY_IDM_HOST=keyrock
-      - PEP_PROXY_HTTPS_ENABLED=false
-      - PEP_PROXY_AUTH_ENABLED=false
-      - PEP_PROXY_IDM_SSL_ENABLED=false
-      - PEP_PROXY_IDM_PORT=3005
-      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
-      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
-      - PEP_PASSWORD=test
-      - PEP_PROXY_PDP=idm
-      - PEP_PROXY_MAGIC_KEY=1234
-
 networks:
   default:
     ipam:
