@@ -209,7 +209,7 @@ The specific architecture of each section of the tutorial is discussed below.
 To start the installation, do the following:
 
 ```console
-git clone git@github.com:FIWARE/tutorials.PEP-Proxy.git
+git clone https://github.com/FIWARE/tutorials.PEP-Proxy.git
 cd tutorials.PEP-Proxy
 
 ./services create
@@ -864,8 +864,8 @@ curl -X GET \
 
 ### PEP Proxy - Accessing Orion with an Authorization: Bearer
 
-The standard  `Authorization: Bearer` header can also be used to identity the user,
-the request from an authorized user is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
+The standard `Authorization: Bearer` header can also be used to identity the user, the request from an authorized user
+is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
 expected.
 
 #### :one::five: Request
@@ -875,7 +875,6 @@ curl -X GET \
   http://localhost:1027/v2/entities/urn:ngsi-ld:Store:001?options=keyValues \
   -H 'Authorization: Bearer {{X-Access-token}}'
 ```
-
 
 #### Response:
 

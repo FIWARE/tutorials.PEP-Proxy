@@ -267,7 +267,7 @@ Orion Context Broker と IoT Agent はオープンソースの
 インストールを開始するには、次の手順を実行します :
 
 ```console
-git clone git@github.com:FIWARE/tutorials.PEP-Proxy.git
+git clone https://github.com/FIWARE/tutorials.PEP-Proxy.git
 cd tutorials.PEP-Proxy
 
 ./services create
