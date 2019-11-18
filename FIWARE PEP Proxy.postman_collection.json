@@ -66,7 +66,6 @@
 								"value": "{{X-Subject-token}}"
 							}
 						],
-						"body": {},
 						"url": {
 							"raw": "http://{{keyrock}}/v1/auth/tokens",
 							"protocol": "http",
@@ -132,7 +131,10 @@
 										"value": "{{X-Auth-token}}"
 									}
 								],
-								"body": {},
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
 								"url": {
 									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies",
 									"protocol": "http",
@@ -170,7 +172,6 @@
 										"value": "{{X-Auth-token}}"
 									}
 								],
-								"body": {},
 								"url": {
 									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies/",
 									"protocol": "http",
@@ -208,7 +209,10 @@
 										"value": "{{X-Auth-token}}"
 									}
 								],
-								"body": {},
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
 								"url": {
 									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies",
 									"protocol": "http",
@@ -248,7 +252,10 @@
 										"value": "{{X-Auth-token}}"
 									}
 								],
-								"body": {},
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
 								"url": {
 									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/pep_proxies",
 									"protocol": "http",
@@ -317,7 +324,10 @@
 										"value": "{{X-Auth-token}}"
 									}
 								],
-								"body": {},
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
 								"url": {
 									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents",
 									"protocol": "http",
@@ -353,7 +363,6 @@
 										"value": "{{X-Auth-token}}"
 									}
 								],
-								"body": {},
 								"url": {
 									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}",
 									"protocol": "http",
@@ -390,7 +399,6 @@
 										"value": "{{X-Auth-token}}"
 									}
 								],
-								"body": {},
 								"url": {
 									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents",
 									"protocol": "http",
@@ -427,7 +435,10 @@
 										"value": "{{X-Auth-token}}"
 									}
 								],
-								"body": {},
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
 								"url": {
 									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}",
 									"protocol": "http",
@@ -465,7 +476,10 @@
 										"value": "{{X-Auth-token}}"
 									}
 								],
-								"body": {},
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
 								"url": {
 									"raw": "http://{{keyrock}}/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}",
 									"protocol": "http",
@@ -548,7 +562,6 @@
 								"value": "{{X-Access-token}}"
 							}
 						],
-						"body": {},
 						"url": {
 							"raw": "http://localhost:1027/v2/entities/",
 							"protocol": "http",
@@ -614,7 +627,6 @@
 								"value": "{{X-Access-token}}"
 							}
 						],
-						"body": {},
 						"url": {
 							"raw": "http://localhost:1027/v2/entities/",
 							"protocol": "http",
@@ -627,7 +639,46 @@
 								"entities",
 								""
 							]
-						}
+						},
+						"description": "If a request to the PEP Proxy is made including a valid access token in the `X-Auth-Token` header as shown, the request\nis permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as\nexpected."
+					},
+					"response": []
+				},
+				{
+					"name": "PEP Proxy - Accessing Orion with a Bearer Auth Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{X-Access-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Access-token}}",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:1027/v2/entities/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1027",
+							"path": [
+								"v2",
+								"entities",
+								""
+							]
+						},
+						"description": "The standard  `Authorization: Bearer` header can also be used to identity the user,\nthe request from an authorized user is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as\nexpected."
 					},
 					"response": []
 				}
@@ -707,7 +758,10 @@
 								"value": "{{X-Access-token}}"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
 						"url": {
 							"raw": "http://localhost:7897/iot/d?k=4jggokgpepnvsb2uv4s40d59ov&i=motion001",
 							"protocol": "http",
@@ -784,49 +838,49 @@
 	],
 	"variable": [
 		{
-			"id": "e3f1909b-87aa-4c1f-80f8-3dc7f3ed2c4a",
+			"id": "c3476b41-fc4b-4374-a966-2d944df301e6",
 			"key": "keyrock",
 			"value": "localhost:3005",
 			"type": "string"
 		},
 		{
-			"id": "d8d3b396-a65d-4e13-9f0a-e2279c7346c5",
+			"id": "baf3bafa-682b-4ed6-8a5b-38260f492efe",
 			"key": "X-Auth-token",
 			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
 			"type": "string"
 		},
 		{
-			"id": "341a850c-e1e2-40d7-b7b0-5ea55d63dd8f",
+			"id": "17678013-4b5b-4b23-8dbd-5d51135545d6",
 			"key": "X-Subject-token",
 			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
 			"type": "string"
 		},
 		{
-			"id": "b7380ef2-4ce0-4540-a166-0e2cc2780513",
+			"id": "73a41a4b-2046-457a-a6ad-273dbceb7158",
 			"key": "application-id",
 			"value": "tutorial-dckr-site-0000-xpresswebapp",
 			"type": "string"
 		},
 		{
-			"id": "bc824eba-66f4-4702-8906-774697abd0a0",
+			"id": "7d6fe58e-4f85-42ed-922b-bb166e03a8ff",
 			"key": "X-Access-token",
-			"value": "f713fac1962de865016312dc0f7796b8a6bf3869",
+			"value": " 79d07d0139c66b75fc25f56a88008553f12f6ac7",
 			"type": "string"
 		},
 		{
-			"id": "5e06e7c0-4451-4eb2-8d34-80b298b93c56",
+			"id": "efb378c9-1431-4457-bd2e-33d413e2dd8f",
 			"key": "Authorization",
 			"value": "dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==",
 			"type": "string"
 		},
 		{
-			"id": "98bd54af-49c3-4aa0-a34c-e598e44bc48b",
+			"id": "c072adb8-8728-46b6-ac41-b85369463373",
 			"key": "iot-agent-id",
 			"value": "iot_sensor_00000000-0000-0000-0000-000000000000",
 			"type": "string"
 		},
 		{
-			"id": "99553037-7126-4e8f-a87f-92cfed891184",
+			"id": "c333d447-d7bb-4c01-b649-1c44c08019b3",
 			"key": "pep-proxy-id",
 			"value": "pep_proxy_00000000-0000-0000-0000-000000000000",
 			"type": "string"

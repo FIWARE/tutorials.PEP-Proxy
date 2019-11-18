@@ -59,6 +59,7 @@ relevant to authenticating other services are described in detail.
         -   [PEP Proxy - No Access to Orion without an Access Token](#pep-proxy---no-access-to-orion-without-an-access-token)
         -   [Keyrock - User Obtains an Access Token](#keyrock---user-obtains-an-access-token)
         -   [PEP Proxy - Accessing Orion with an Access Token](#pep-proxy---accessing-orion-with-an-access-token)
+        -   [PEP Proxy - Accessing Orion with an Authorization: Bearer](pep-proxy---accessing-orion-awith-an-authorization-bearer)
     -   [Securing Orion - Sample Code](#securing-orion---sample-code)
 -   [Securing an IoT Agent](#securing-an-iot-agent)
     -   [Securing an IoT Agent - PEP Proxy Configuration](#securing-an-iot-agent---pep-proxy-configuration)
@@ -860,6 +861,21 @@ curl -X GET \
   http://localhost:1027/v2/entities/urn:ngsi-ld:Store:001?options=keyValues \
   -H 'X-Auth-Token: {{X-Access-token}}'
 ```
+
+### PEP Proxy - Accessing Orion with an Authorization: Bearer
+
+The standard  `Authorization: Bearer` header can also be used to identity the user,
+the request from an authorized user is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
+expected.
+
+#### :one::five: Request
+
+```console
+curl -X GET \
+  http://localhost:1027/v2/entities/urn:ngsi-ld:Store:001?options=keyValues \
+  -H 'Authorization: Bearer {{X-Access-token}}'
+```
+
 
 #### Response:
 
