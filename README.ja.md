@@ -1240,7 +1240,7 @@ tutorial-app:
 ステムを起動するには、次のコマンドを実行します :
 
 ```console
-./services iot-agent
+./services southport
 ```
 
 <a name="iot-sensor-logs-in-to-the-application-using-the-rest-api"></a>

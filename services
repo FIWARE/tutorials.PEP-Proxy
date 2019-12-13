@@ -39,19 +39,19 @@ startContainers () {
 
 stoppingContainers () {
 	echo "Stopping containers"
-	docker-compose --log-level ERROR -f docker-compose/iot-agent.yml  -p fiware down -v --remove-orphans
+	docker-compose --log-level ERROR -f docker-compose/southport.yml  -p fiware down -v --remove-orphans
 }
 
 if (( $# != 1 )); then
     echo "Illegal number of parameters"
-    echo "usage: services [create|orion|iot-agent]"
+    echo "usage: services [create|orion|southport|northport]"
     exit 1
 fi
 
 command="$1"
 case "${command}" in
 	"help")
-        echo "usage: services [create|orion|iot-agent]"
+        echo "usage: services [create|orion|northport]"
         ;;
     "orion")
 		stoppingContainers
@@ -60,24 +60,42 @@ case "${command}" in
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo -e "- \033[1;31mKeyrock\033[0m is an Identity Management Front-End"
-		echo -e "- \033[1;31mWilma\033[0m is a PEP Proxy for Orion"
+		echo -e "- \033[1;31mWilma\033[0m is a PEP Proxy around \033[1;34mOrion\033[0m"
 		startContainers false orion.yml
-		loadData
 		waitForKeyrock
+		export ORION_URL="http://orion:1026"
+		loadData
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
-	"iot-agent")
+	"southport")
 		stoppingContainers
 		echo -e "Starting eight containers \033[1;34mOrion\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;31mKeyrock\033[0m, \033[1;31mWilma\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
 		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
 		echo -e "- \033[1;31mKeyrock\033[0m is an Identity Management Front-End"
-		echo -e "- 2 instances of \033[1;31mWilma\033[0m as a PEP Proxy for Orion and IoT Agent"
-		startContainers false iot-agent.yml
-		loadData
+		echo -e "- 2 instances of \033[1;31mWilma\033[0m as a PEP Proxy around \033[1;34mOrion\033[0m and between the Devices and \033[1;36mIoT-Agent\033[0m Southport"
+		startContainers false southport.yml
 		waitForKeyrock
+		loadData
+		displayServices
+		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
+		;;
+	"northport")
+		stoppingContainers
+		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;31mKeyrock\033[0m, \033[1;31mWilma\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
+		echo -e "- \033[1;34mOrion\033[0m is the context broker"
+		echo -e "- \033[1;36mIoT-Agent\033[0m is configured for the UltraLight Protocol"
+		echo -e "- \033[1mTutorial\033[0m acts as a series of dummy IoT Sensors over HTTP"
+		echo -e "- \033[1;31mKeyrock\033[0m is an Identity Management Front-End"
+		echo -e "- \033[1;31mWilma\033[0m as a PEP Proxy between \033[1;34mOrion\033[0m and the \033[1;36mIoT-Agent\033[0m"
+		startContainers false northport.yml
+		waitForKeyrock
+		export ORION_URL="http://orion-proxy:1027" 
+#		loadData
+		./import-data
+		echo
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
@@ -90,7 +108,7 @@ case "${command}" in
 		;;
 	*)
 		echo "Command not Found."
-		echo "usage: services [create|orion|iot-agent|stop]"
+		echo "usage: services [create|orion|southport|northport|stop]"
 		exit 127;
 		;;
 esac

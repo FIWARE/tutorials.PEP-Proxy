@@ -61,14 +61,20 @@ relevant to authenticating other services are described in detail.
         -   [PEP Proxy - Accessing Orion with an Access Token](#pep-proxy---accessing-orion-with-an-access-token)
         -   [PEP Proxy - Accessing Orion with an Authorization: Bearer](pep-proxy---accessing-orion-awith-an-authorization-bearer)
     -   [Securing Orion - Sample Code](#securing-orion---sample-code)
--   [Securing an IoT Agent](#securing-an-iot-agent)
-    -   [Securing an IoT Agent - PEP Proxy Configuration](#securing-an-iot-agent---pep-proxy-configuration)
-    -   [Securing an IoT Agent - Application Configuration](#securing-an-iot-agent---application-configuration)
-    -   [Securing IoT Agent - Start up](#securing-iot-agent---start-up)
+-   [Securing an IoT Agent South Port](#securing-an-iot-agent-south-port)
+    -   [Securing an IoT Agent South Port - PEP Proxy Configuration](#securing-an-iot-agent-south-port---pep-proxy-configuration)
+    -   [Securing an IoT Agent South Port - Application Configuration](#securing-an-iot-agent-south-port---application-configuration)
+    -   [Securing South Port Traffic - Start up](#securing-south-port-traffic---start-up)
     -   [IoT Sensor Logs In to the Application using the REST API](#iot-sensor-logs-in-to-the-application-using-the-rest-api)
         -   [Keyrock - IoT Sensor Obtains an Access Token](#keyrock---iot-sensor-obtains-an-access-token)
         -   [PEP Proxy - Accessing IoT Agent with an Access Token](#pep-proxy---accessing-iot-agent-with-an-access-token)
-    -   [Securing an IoT Agent - Sample Code](#securing-an-iot-agent----sample-code)
+    -   [Securing South Port Traffic - Sample Code](#securing-south-port-traffic---sample-code)
+-   [Securing an IoT Agent North Port](#securing-an-iot-agent-north-port)
+    -   [Securing an IoT Agent North Port - IoT Agent Configuration](#securing-an-iot-agent-north-port---iot-agent-configuration)
+    -   [Securing an IoT Agent North Port - Start up](#securing-an-iot-agent-north-port---start-up)
+        -   [Keyrock - Obtaining a permanent token](#keyrock---obtaining-a-permanent-token)
+        -   [IoT Agent - provisioning a trusted service group](#iot-agent---provisioning-a-trusted-service-group)
+        -   [IoT Agent - provisioning a sensor](#iot-agent---provisioning-a-sensor)
 
 </details>
 
@@ -954,11 +960,11 @@ async function buyItem(req, res) {
 }
 ```
 
-# Securing an IoT Agent
+# Securing an IoT Agent South Port
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-iot-agent.png)
 
-## Securing an IoT Agent - PEP Proxy Configuration
+## Securing an IoT Agent South Port - PEP Proxy Configuration
 
 The `iot-agent-proxy` container is an instance of FIWARE **Wilma** listening on port `7897`, it is configured to forward
 traffic to `iot-agent` on port `7896`, which is the default port that the Ultralight agent is listening to for HTTP
@@ -1022,7 +1028,7 @@ The `iot-agent-proxy` container is listening on a single port:
 For this example, the PEP Proxy is checking for Level 1 - _Authentication Access_ not Level 2 - _Basic Authorization_ or
 Level 3 - _Advanced Authorization_.
 
-## Securing an IoT Agent - Application Configuration
+## Securing an IoT Agent South Port - Application Configuration
 
 The tutorial application also plays the role of providing data from our dummy IoT Sensors. The IoT Sensors are making
 HTTP request containing commands and measurements in Ultralight syntax. An IoT Sensor username and password have already
@@ -1078,13 +1084,13 @@ The `DUMMY_DEVICES_USER` and `DUMMY_DEVICES_PASSWORD` would usually be obtained 
 in **Keyrock**, however, in this tutorial, they have been predefined by populating the **MySQL** database with data on
 start-up.
 
-## Securing IoT Agent - Start up
+## Securing South Port Traffic - Start up
 
-To start the system with a PEP Proxies protecting access to both **Orion** and the **IoT Agent** run the following
-command:
+To start the system with a PEP Proxies protecting access to both **Orion** and the **IoT Agent** South Port run the
+following command:
 
 ```console
-./services iot-agent
+./services southport
 ```
 
 ## IoT Sensor Logs In to the Application using the REST API
@@ -1137,7 +1143,7 @@ curl -X POST \
   -d 'c|1'
 ```
 
-## Securing an IoT Agent - Sample Code
+## Securing South Port Traffic - Sample Code
 
 When an IoT Sensor starts up, it must log-in like any other user to obtain an access token:
 
@@ -1176,6 +1182,160 @@ request(options, error => {
         debug(debugText + " " + error.code);
     }
 });
+```
+
+# Securing an IoT Agent North Port
+
+![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-iot-agent.png)
+
+## Securing an IoT Agent North Port - IoT Agent Configuration
+
+The `iot-agent` container is listening on port `4041`, it is configured to forward traffic to `orion-proxy` on port
+`1027`.
+
+```yaml
+iot-agent:
+    image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
+    hostname: iot-agent
+    container_name: fiware-iot-agent
+    depends_on:
+        - mongo-db
+        - orion
+    networks:
+        - default
+    ports:
+        - "4041:4041"
+        - "7896:7896"
+    environment:
+        - IOTA_CB_HOST=orion-proxy
+        - IOTA_CB_PORT=1027
+        - IOTA_NORTH_PORT=4041
+        - IOTA_REGISTRY_TYPE=mongodb
+        - IOTA_LOG_LEVEL=DEBUG
+        - IOTA_TIMESTAMP=true
+        - IOTA_CB_NGSI_VERSION=v2
+        - IOTA_AUTOCAST=true
+        - IOTA_MONGO_HOST=mongo-db
+        - IOTA_MONGO_PORT=27017
+        - IOTA_MONGO_DB=iotagentul
+        - IOTA_HTTP_PORT=7896
+        - IOTA_PROVIDER_URL=http://iot-agent:4041
+        - IOTA_AUTH_ENABLED=true
+        - IOTA_AUTH_TYPE=oauth2
+        - IOTA_AUTH_HEADER=Authorization
+        - IOTA_AUTH_HOST=keyrock
+        - IOTA_AUTH_PORT=3005
+        - IOTA_AUTH_URL=http://keyrock:3005
+        - IOTA_AUTH_TOKEN_PATH=/oauth2/token
+        - IOTA_AUTH_PERMANENT_TOKEN=true
+        - IOTA_AUTH_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp
+        - IOTA_AUTH_CLIENT_SECRET=tutorial-dckr-host-0000-clientsecret
+```
+
+| Key                       | Value                                  | Description                                                |
+| ------------------------- | -------------------------------------- | ---------------------------------------------------------- |
+| IOTA_AUTH_ENABLED         | `true`                                 | Whether to use authorization on the north port             |
+| IOTA_AUTH_TYPE            | `oauth2`                               | The type of authorization to be used (Keyrock uses OAuth2) |
+| IOTA_AUTH_HEADER          | `Authorization`                        | The name of the header to be added to requests             |
+| IOTA_AUTH_HOST            | `keyrock`                              | The Identity Manager holding the application               |
+| IOTA_AUTH_PORT            | `3005`                                 | The port the Identity Manager is listening on              |
+| IOTA_AUTH_URL             | `http://keyrock:3005`                  | The URL for authentication requests                        |
+| IOTA_AUTH_CLIENT_ID       | `tutorial-dckr-site-0000-xpresswebapp` | the Id of the applicantion within Keyrock                  |
+| IOTA_AUTH_CLIENT_SECRET   | `tutorial-dckr-host-0000-clientsecret` | The client secret of the application within Keyrock        |
+| IOTA_AUTH_PERMANENT_TOKEN | `true`                                 | Whether to use permanent tokens                            |
+| IOTA_AUTH_TOKEN_PATH      | `/oauth2/token`                        | the path to be used when requesting tokens                 |
+
+## Securing an IoT Agent North Port - Start up
+
+To start the system with a PEP Proxy protecting access to between **Orion** and the **IoT Agent** North Port run the
+following command:
+
+```console
+./services southport
+```
+
+### Keyrock - Obtaining a permanent token
+
+The Keyrock application has been configured to offer permanent tokens
+
+The standard `Authorization: Basic` header holds the base 64 concatentation of the client id and secret. The parameter
+`scope=permanent` is added to retrieve permanent tokens when available. The response contains an `access_token` which
+can be used for device provisioning.
+
+#### :one::six: Request
+
+```console
+curl -X POST \
+  http://localhost:3005/oauth2/token \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Basic dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==' \
+  -d 'username=alice-the-admin@test.com&password=test&grant_type=password&scope=permanent'
+```
+
+#### Response:
+
+```json
+{
+    "access_token": "e37aeef5d48c9c1a3d4adf72626a8745918d4355",
+    "token_type": "Bearer",
+    "scope": ["permanent"]
+}
+```
+
+### IoT Agent - provisioning a trusted service group
+
+The Access token (also known as a Trust Token) must be added to the service group.
+
+#### :one::seven: Request
+
+```console
+curl -iX POST \
+  'http://localhost:4041/iot/services' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+ "services": [
+   {
+     "apikey":      "4jggokgpepnvsb2uv4s40d59ov",
+     "cbroker":     "http://orion:1026",
+     "entity_type": "Motion",
+     "resource":    "/iot/d",
+     "trust": "e37aeef5d48c9c1a3d4adf72626a8745918d4355"
+   }
+ ]
+}'
+```
+
+### IoT Agent - provisioning a sensor
+
+Once a trusted service group has been created, a device can be provisioned in the usual manner
+
+#### :one::eight: Request:
+
+```console
+curl -iX POST \
+  'http://localhost:4041/iot/devices' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+ "devices": [
+   {
+     "device_id":   "motion001",
+     "entity_name": "urn:ngsi-ld:Motion:001",
+     "entity_type": "Motion",
+     "timezone":    "Europe/Berlin",
+     "attributes": [
+       { "object_id": "c", "name": "count", "type": "Integer" }
+     ],
+     "static_attributes": [
+       { "name":"refStore", "type": "Relationship", "value": "urn:ngsi-ld:Store:001"}
+     ]
+   }
+ ]
+}
+'
 ```
 
 ---

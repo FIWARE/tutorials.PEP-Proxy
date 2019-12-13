@@ -290,13 +290,13 @@ LOCK TABLES `oauth_client` WRITE;
 /*!40000 ALTER TABLE `oauth_client` DISABLE KEYS */;
 INSERT INTO `oauth_client` VALUES
 ('tutorial-dckr-site-0000-xpresswebapp','FIWARE Tutorial',
-  'FIWARE Application protected by OAuth2 and Keyrock','tutorial-dckr-site-0000-clientsecret',
+  'FIWARE Application protected by OAuth2 and Keyrock',  'tutorial-dckr-site-0000-clientsecret',
   'http://localhost:3000','http://localhost:3000/login',NULL,'default',
-  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer', NULL),
-('tutorial-lcal-host-0000-xpresswebapp','localhost App',
-  'Localhost Callback protected by OAuth2 and Keyrock','tutorial-lcal-host-0000-clientsecret',
-  'http://localhost:3000','http://localhost:3000/login',NULL,'default',
-  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer', NULL);
+  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer,permanent', NULL),
+('trusted-dckr-app-0000-000000000000','Trusted Application',
+  'Second application protected by OAuth2 and Keyrock','trusted-dckr-app-0000-clientsecret',
+  '','',NULL,'default',
+  'password','code',NULL,NULL,NULL,'bearer', NULL);
 
 /*!40000 ALTER TABLE `oauth_client` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -532,7 +532,7 @@ INSERT INTO `role_assignment` VALUES
 (3,NULL,'222eda27-958b-4f0c-a5cb-e4114fb170c3','provider',NULL,'admin'),
 (4,NULL,'222eda27-958b-4f0c-a5cb-e4114fb170c3','provider',NULL,'96154659-cb3b-4d2d-afef-18d6aec0518e'),
 (5,NULL,'tutorial-dckr-site-0000-xpresswebapp','provider',NULL,'aaaaaaaa-good-0000-0000-000000000000'),
-(6,NULL,'tutorial-lcal-host-0000-xpresswebapp','provider',NULL,'aaaaaaaa-good-0000-0000-000000000000'),
+(6,NULL,'trusted-dckr-app-0000-000000000000','provider',NULL,'aaaaaaaa-good-0000-0000-000000000000'),
 (10,NULL,'tutorial-dckr-site-0000-xpresswebapp','security-role-0000-0000-000000000000',NULL,'cccccccc-good-0000-0000-000000000000'),
 (11,'member','tutorial-dckr-site-0000-xpresswebapp','security-role-0000-0000-000000000000','security-team-0000-0000-000000000000',NULL),
 (12,NULL,'tutorial-dckr-site-0000-xpresswebapp','managers-role-0000-0000-000000000000',NULL,'bbbbbbbb-good-0000-0000-000000000000'),
@@ -607,6 +607,8 @@ CREATE TABLE `trusted_application` (
 
 LOCK TABLES `trusted_application` WRITE;
 /*!40000 ALTER TABLE `trusted_application` DISABLE KEYS */;
+INSERT INTO `trusted_application` VALUES 
+(1,'tutorial-dckr-site-0000-xpresswebapp','trusted-dckr-app-0000-000000000000');
 /*!40000 ALTER TABLE `trusted_application` ENABLE KEYS */;
 UNLOCK TABLES;
 
