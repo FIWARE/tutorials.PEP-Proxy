@@ -65,14 +65,20 @@ Keyrock GUI と REST API の部分について詳しく説明します。
         -   [Keyrock - ユーザによるアクセス・トークンの取得](#keyrock---user-obtains-an-access-token)
         -   [PEP Proxy - アクセス・トークンを使用して Orion にアクセス](#pep-proxy---accessing-orion-with-an-access-token)
     -   [Orion の保護 - サンプル・コード](#securing-orion---sample-code)
--   [IoT Agent の保護](#securing-an-iot-agent)
-    -   [IoT Agent の保護 - PEP Proxy の設定](#securing-an-iot-agent---pep-proxy-configuration)
-    -   [IoT Agent の保護 - アプリケーションの設定](#securing-an-iot-agent---application-configuration)
-    -   [IoT Agent のセキュリティ確保 - 起動](#securing-iot-agent---start-up)
+-   [IoT Agent サウス・ポート の保護](#securing-an-iot-agent-south-port)
+    -   [IoT Agent サウス・ポート の保護 - PEP Proxy の設定](#securing-an-iot-agent-south-port---pep-proxy-configuration)
+    -   [IoT Agent サウス・ポート の保護 - アプリケーションの設定](#securing-an-iot-agent-south-port---application-configuration)
+    -   [サウス・ポート・トラフィックの保護 - 起動](#securing-south-port-traffic---start-up)
     -   [IoT センサが REST API を使用してアプリケーションにログイン](#iot-sensor-logs-in-to-the-application-using-the-rest-api)
         -   [Keyrock - IoT センサによるアクセス・トークンの取得](#keyrock---iot-sensor-obtains-an-access-token)
         -   [PEP Proxy - アクセス・トークンを使用して IoT Agent にアクセス](#pep-proxy---accessing-iot-agent-with-an-access-token)
-    -   [IoT Agent の保護 - サンプル・コード](#securing-an-iot-agent----sample-code)
+    -   [サウス・ポート・トラフィックの保護 - サンプル・コード](#securing-south-port-traffic---sample-code)
+-   [IoT Agent ノース・ポートの保護](#securing-an-iot-agent-north-port)
+    -   [IoT Agent ノース・ポートの保護 - IoT Agent の設定](#securing-an-iot-agent-north-port---iot-agent-configuration)
+    -   [IoT Agent ノース・ポートの保護 - 起動](#securing-an-iot-agent-north-port---start-up)
+        -   [Keyrock - 永久トークンの取得](#keyrock---obtaining-a-permanent-token)
+        -   [IoT Agent - 信頼できるサービス・グループのプロビジョニング](#iot-agent---provisioning-a-trusted-service-group)
+        -   [IoT Agent - センサのプロビジョニング](#iot-agent---provisioning-a-sensor)
 
 </details>
 
@@ -194,7 +200,7 @@ application) のオブジェクトを保護することができます。
 
 <a name="architecture"></a>
 
-# Architecture
+# アーキテクチャ
 
 このアプリケーションは、以前のチュートリアルで作成したサービスの周りに **PEP
 Proxy** インスタンスを追加することで、既存の在庫管理、および、センサ・ベースのア
@@ -390,7 +396,7 @@ Super-User は、`alice-the-admin@test.com` と `test` の値を持っていま�
 
 次の例では、Admin Super-User を使用してログインします :
 
-#### :one: リクエスト :
+#### :one: リクエスト:
 
 ```console
 curl -iX POST \
@@ -402,7 +408,7 @@ curl -iX POST \
 }'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 レスポンス・ヘッダは、誰がアプリケーションにログオンしているかを識別する
 `X-Subject-token` を返します。このトークンは、後続のすべてのリクエストにアクセス
@@ -443,7 +449,7 @@ Connection: keep-alive
 ることができます。`{{X-Auth-token}}` と `{{X-Subject-token}}` は、Alice が自分自
 身について問い合わせを行っている場合に同じ値に設定することができます。
 
-#### :two: リクエスト :
+#### :two: リクエスト:
 
 ```console
 curl -X GET \
@@ -453,7 +459,7 @@ curl -X GET \
   -H 'X-Subject-token: {{X-Subject-token}}'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 レスポンスは関連するユーザの詳細を返します :
 
@@ -533,7 +539,7 @@ curl -X GET \
 `/v1/applications/{{application-id}}/pep_proxies` エンドポイントに POST リクエス
 トを送信します。
 
-#### :three: リクエスト :
+#### :three: リクエスト:
 
 ```console
 curl -iX POST \
@@ -542,7 +548,7 @@ curl -iX POST \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 アプリケーションに関連付けられている既存の PEP Proxy アカウントがない場合は、新
 しいアカウントが固有の `id` と `password` を付けて作成され、値がレスポンスに返さ
@@ -565,7 +571,7 @@ curl -iX POST \
 トを行うと、関連する PEP Proxy アカウントの詳細が返されます。`X-Auth-token` をヘ
 ッダに指定してしてください。
 
-#### :four: リクエスト :
+#### :four: リクエスト:
 
 ```console
 curl -X GET \
@@ -573,7 +579,7 @@ curl -X GET \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 ```json
 {
@@ -593,7 +599,7 @@ PEP Proxy アカウントのパスワードを更新するには
 クエストを実行し、関連する PEP Proxy アカウントの詳細が返されます
 。`X-Auth-token` をヘッダに指定してしてください。
 
-#### :five: リクエスト :
+#### :five: リクエスト:
 
 ```console
 curl -X PATCH \
@@ -602,7 +608,7 @@ curl -X PATCH \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 レスポンスは、PEP Proxy アカウントの新しいパスワードを返します :
 
@@ -620,7 +626,7 @@ curl -X PATCH \
 エンドポイントに DELETE リクエストを行うことで削除できます。`X-Auth-token` をヘ
 ッダに指定してしてください。
 
-#### :six: リクエスト :
+#### :six: リクエスト:
 
 ```console
 curl -X DELETE \
@@ -655,7 +661,7 @@ PEP Proxy 作成と同様に、サイン・インして、ユーザはアプリ�
 `/v1/applications/{{application-id}}/iot_agents` エンドポイントに POST リクエス
 トを送信します。
 
-#### :seven: リクエスト :
+#### :seven: リクエスト:
 
 ```console
 curl -X POST \
@@ -664,7 +670,7 @@ curl -X POST \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 固有の `id` と `password`を持つ新しいアカウントが作成され、値がレスポンスに返さ
 れます。
@@ -687,7 +693,7 @@ GET リクエストを作成すると
 トは関連する IoT Agent アカウントの詳細を返します。`X-Auth-token` をヘッダに指定
 してしてください。
 
-#### :eight: リクエスト :
+#### :eight: リクエスト:
 
 ```console
 curl -X GET \
@@ -695,7 +701,7 @@ curl -X GET \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 ```json
 {
@@ -714,7 +720,7 @@ curl -X GET \
 を実行することによって、アプリケーションに関連するすべての IoT Agents のリストを
 得ることができる。`X-Auth-token` をヘッダに指定してしてください。
 
-#### :nine: リクエスト :
+#### :nine: リクエスト:
 
 ```console
 curl -X GET \
@@ -722,7 +728,7 @@ curl -X GET \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 ```json
 {
@@ -741,7 +747,7 @@ curl -X GET \
 
 ### IoT Agent のパスワードをリセット
 
-#### :one::zero: リクエスト :
+#### :one::zero: リクエスト:
 
 個々の IoT Agent アカウントのパスワードを更新するには
 、`/v1/applications/{{application-id}}//iot_agents/{{iot-agent-id}}` エンドポイ
@@ -755,7 +761,7 @@ curl -iX PATCH \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 レスポンスは、IoT Agent アカウントの新しいパスワードを返します。
 
@@ -774,7 +780,7 @@ curl -iX PATCH \
 トに DELETE リクエストを行うことで削除できます。`X-Auth-token` をヘッダに指定し
 てしてください。
 
-#### :one::one: リクエスト :
+#### :one::one: リクエスト:
 
 ```console
 curl -X DELETE \
@@ -945,7 +951,7 @@ tutorial-app:
 Broker の前にあります。リクエストには、`X-Auth-Token` を含める必要があります。有
 効なトークンを提示できないと、アクセスが拒否されます。
 
-#### :one::two: リクエスト
+#### :one::two: リクエスト:
 
 以下のようにアクセス・トークンなしで PEP Proxy へのリクエストが行われた場合は :
 
@@ -966,7 +972,7 @@ Auth-token not found in request header
 
 ### Keyrock - ユーザによるアクセス・トークンの取得
 
-#### :one::three: リクエスト
+#### :one::three: リクエスト:
 
 ユーザ・クレデンシャルのフローを使用してアプリケーションにログインするには
 、`oauth2/token` エンドポイントを使用して、`grant_type=password` とともに
@@ -1007,7 +1013,7 @@ curl -iX POST \
 Proxy へのリクエストが行われた場合、そのリクエストは許可され、PEP Proxy の背後に
 あるサービス (この場合は Orion Context Broker) が期待通りにデータを返します。
 
-#### :one::four: リクエスト
+#### :one::four: リクエスト:
 
 ```console
 curl -X GET \
@@ -1015,7 +1021,7 @@ curl -X GET \
   -H 'X-Auth-Token: {{X-Access-token}}'
 ```
 
-#### レスポンス :
+#### レスポンス:
 
 ```json
 {
@@ -1097,15 +1103,15 @@ async function buyItem(req, res) {
 }
 ```
 
-<a name="securing-an-iot-agent"></a>
+<a name="securing-an-iot-agent-south-port"></a>
 
-# IoT Agent の保護
+# IoT Agent サウス・ポート の保護
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-iot-agent.png)
 
-<a name="securing-an-iot-agent---pep-proxy-configuration"></a>
+<a name="securing-an-iot-agent-south-port---pep-proxy-configuration"></a>
 
-## IoT Agent の保護 - PEP Proxy の設定
+## IoT Agent サウス・ポート の保護 - PEP Proxy の設定
 
 `iot-agent-proxy` コンテナは FIWARE **Wilma** のインスタンスである、ポート
 `7897` で待機し、`iot-agent` のポート `7896` にトラフィックを転送するように設定
@@ -1171,15 +1177,16 @@ iot-agent-proxy:
 この例では、PEP Proxy は、レベル 1 - _認証アクセス_ をチェックし、レベル 2 - _基
 本認可_ または、レベル 3 - _アドバンスド認可_ をチェックしていません。
 
-<a name="securing-an-iot-agent---application-configuration"></a>
+<a name="securing-an-iot-agent-south-port---application-configuration"></a>
 
-## IoT Agent の保護 - アプリケーションの設定
+## IoT Agent サウス・ポート の保護 - アプリケーションの設定
 
 このチュートリアル・アプリケーションは、ダミー IoT センサのデータを提供する役割
 も果たします。IoT センサは、Ultralight 構文でコマンドと測定値を含む HTTP リクエ
 ストを出しています。IoT センサのユーザ名とパスワードはすでに **Keyrock** に登録
 されていますが、プログラムごとに OAuth2 アクセス・トークンを取得し、**IoT
 Agent** の前にある 2 番目の **Wilma** PEP Proxy にリクエストします。
+
 
 ```yaml
 tutorial-app:
@@ -1222,8 +1229,8 @@ tutorial-app:
 | ----------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | IOTA_HTTP_HOST          | `iot-agent-proxy`                                 | Ultra Light 2.0 用 IoT Agent を保護する Wilma PEP Proxy のホスト名                                                                |
 | IOTA_HTTP_PORT          | `7896`                                            | IoT Agent を保護する Wilma PEP Proxy がリスンしているポート                                                                       |
-| DUMMY_DEVICES_PORT      | `3001`                                            | ダミー IoT デバイスによって使用されるポート                                                                                       |
-| DUMMY_DEVICES_TRANSPORT | `HTTP`                                            | ダミー IoT デバイスによって使用されるデフォルト転送                                                                               |
+| DUMMY_DEVICES_PORT      | `3001`                                            | ダミー IoT デバイスがコマンドを受信するために使用するポート                                                                       |
+| DUMMY_DEVICES_TRANSPORT | `HTTP`                                            | ダミー IoT デバイスによって使用されるデフォルトのトランスポート                                                                   |
 | DUMMY_DEVICES_API_KEY   | `4jggokgpepnvsb2uv4s40d59ov`                      | UltraLight インタラクションに使用されるランダムなセキュリティキー - デバイスと IoT Agent 間のインタラクションの完全性を保証します |
 | DUMMY_DEVICES_USER      | `iot_sensor_00000000-0000-0000-0000-000000000000` | **Keyrock** のデバイスに割り当てられたユーザ名                                                                                    |
 | DUMMY_DEVICES_PASSWORD  | `test`                                            | **Keyrock** のデバイスに割り当てられたパスワード                                                                                  |
@@ -1232,9 +1239,9 @@ tutorial-app:
 プリケーションに新しいエントリを追加することで得られますが、このチュートリアルで
 は **MySQL** データベースに起動時のデータを入力することで事前定義されています。
 
-<a name="securing-iot-agent---start-up"></a>
+<a name="securing-south-port-traffic---start-up"></a>
 
-## IoT Agent のセキュリティ確保 - 起動
+## サウス・ポート・トラフィックの保護 - 起動
 
 **Orion** と **IoT Agent** の両方へのアクセスを保護する PEP Proxies を使用してシ
 ステムを起動するには、次のコマンドを実行します :
@@ -1255,9 +1262,10 @@ IoT センサとしてのログインは、ユーザと同じユーザ・クレ�
 す。ログインしてパスワード `test` でセンサ
 `iot_sensor_00000000-0000-0000-0000-000000000000` を特定するには
 、`grant_type=password` で `oauth2/token` エンドポイントを使って **Keyrock** に
-POST リクエストを送ります：
+POST リクエストを送ります :
 
-#### :one::five: リクエスト :
+
+#### :one::five: リクエスト:
 
 ```console
 curl -iX POST \
@@ -1293,7 +1301,7 @@ Ultralight IoT Agent の前にある PEP Proxy への POST リクエストは、
 定値を渡します。`X-Auth-Token` ヘッダを追加すると、リクエスト元が Keyrock に登録
 されていると識別され、測定が IoT Agent 自体に正常に渡されます。
 
-#### リクエスト :
+#### :one::six: リクエスト:
 
 ```console
 curl -X POST \
@@ -1302,9 +1310,9 @@ curl -X POST \
   -d 'c|1'
 ```
 
-<a name="securing-an-iot-agent----sample-code"></a>
+<a name="securing-south-port-traffic---sample-code"></a>
 
-## IoT Agent の保護 - サンプル・コード
+## サウス・ポート・トラフィックの保護 - サンプル・コード
 
 IoT センサが起動すると、他のユーザと同様にログインしてアクセス・トークンを取得す
 る必要があります :
@@ -1316,10 +1324,7 @@ const DUMMY_DEVICE_HTTP_HEADERS = { "Content-Type": "text/plain" };
 ```javascript
 function initSecureDevices() {
     Security.oa
-        .getOAuthPasswordCredentials(
-            process.env.DUMMY_DEVICES_USER,
-            process.env.DUMMY_DEVICES_PASSWORD
-        )
+        .getOAuthPasswordCredentials(process.env.DUMMY_DEVICES_USER, process.env.DUMMY_DEVICES_PASSWORD)
         .then(results => {
             DUMMY_DEVICE_HTTP_HEADERS["X-Auth-Token"] = results.access_token;
             return;
@@ -1348,6 +1353,173 @@ request(options, error => {
         debug(debugText + " " + error.code);
     }
 });
+```
+
+<a name="securing-an-iot-agent-north-port"></a>
+
+# IoT Agent ノース・ポートの保護
+
+![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-iot-agent.png)
+
+<a name="securing-an-iot-agent-north-port---iot-agent-configuration"></a>
+
+## IoT Agent ノース・ポートの保護 - IoT Agent の設定
+
+`iot-agent` コンテナはポート `4041` でリッスンしており、ポート `1027` で `orion-proxy` にトラフィックを転送するよう
+に設定されています。
+
+```yaml
+iot-agent:
+    image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
+    hostname: iot-agent
+    container_name: fiware-iot-agent
+    depends_on:
+        - mongo-db
+        - orion
+    networks:
+        - default
+    ports:
+        - "4041:4041"
+        - "7896:7896"
+    environment:
+        - IOTA_CB_HOST=orion-proxy
+        - IOTA_CB_PORT=1027
+        - IOTA_NORTH_PORT=4041
+        - IOTA_REGISTRY_TYPE=mongodb
+        - IOTA_LOG_LEVEL=DEBUG
+        - IOTA_TIMESTAMP=true
+        - IOTA_CB_NGSI_VERSION=v2
+        - IOTA_AUTOCAST=true
+        - IOTA_MONGO_HOST=mongo-db
+        - IOTA_MONGO_PORT=27017
+        - IOTA_MONGO_DB=iotagentul
+        - IOTA_HTTP_PORT=7896
+        - IOTA_PROVIDER_URL=http://iot-agent:4041
+        - IOTA_AUTH_ENABLED=true
+        - IOTA_AUTH_TYPE=oauth2
+        - IOTA_AUTH_HEADER=Authorization
+        - IOTA_AUTH_HOST=keyrock
+        - IOTA_AUTH_PORT=3005
+        - IOTA_AUTH_URL=http://keyrock:3005
+        - IOTA_AUTH_TOKEN_PATH=/oauth2/token
+        - IOTA_AUTH_PERMANENT_TOKEN=true
+        - IOTA_AUTH_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp
+        - IOTA_AUTH_CLIENT_SECRET=tutorial-dckr-host-0000-clientsecret
+```
+
+| キー                      | 値                                     | 説明                                                       |
+| ------------------------- | -------------------------------------- | ---------------------------------------------------------- |
+| IOTA_AUTH_ENABLED         | `true`                                 | ノース・ポートで認証を使用するかどうか                     |
+| IOTA_AUTH_TYPE            | `oauth2`                               | 使用する承認のタイプ (Keyrock は OAuth2 を使用します)      |
+| IOTA_AUTH_HEADER          | `Authorization`                        | リクエストに追加されるヘッダの名前                         |
+| IOTA_AUTH_HOST            | `keyrock`                              | アプリケーションを保持する Identity Manager                |
+| IOTA_AUTH_PORT            | `3005`                                 | Identity Manager がリッスンしているポート                  |
+| IOTA_AUTH_URL             | `http://keyrock:3005`                  | 認証要求の URL                                             |
+| IOTA_AUTH_CLIENT_ID       | `tutorial-dckr-site-0000-xpresswebapp` | Keyrock 内のアプリケーションの Id                          |
+| IOTA_AUTH_CLIENT_SECRET   | `tutorial-dckr-host-0000-clientsecret` | Keyrock 内のアプリケーションのクライアント・シークレット   |
+| IOTA_AUTH_PERMANENT_TOKEN | `true`                                 | 永久トークンを使用するかどうか                             |
+| IOTA_AUTH_TOKEN_PATH      | `/oauth2/token`                        | トークンを要求するときに使用されるパス                     |
+
+<a name="securing-an-iot-agent-north-port---start-up"></a>
+
+## IoT Agent ノース・ポートの保護 - 起動
+
+**Orion** と **IoT Agent** ノース・ポート間のアクセスを保護する PEP Proxy でシステムを起動するには、次のコマンドを
+実行します :
+
+
+```console
+./services northport
+```
+
+<a name="keyrock---obtaining-a-permanent-token"></a>
+
+### Keyrock - 永久トークンの取得
+
+Keyrock アプリケーションは、永久トークンを提供するように構成されています。
+
+標準の `Authorization: Basic` ヘッダは、クライアント ID とシークレットの base 64 連結を保持します。パラメータ
+`scope=permanent` が追加され、利用可能な場合に永続トークンを取得します。レスポンスには、デバイスのプロビジョニングに
+使用できる `access_token` が含まれています。
+
+#### :one::seven: リクエスト:
+
+```console
+curl -X POST \
+  http://localhost:3005/oauth2/token \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Basic dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==' \
+  -d 'username=alice-the-admin@test.com&password=test&grant_type=password&scope=permanent'
+```
+
+#### レスポンス:
+
+```json
+{
+    "access_token": "e37aeef5d48c9c1a3d4adf72626a8745918d4355",
+    "token_type": "Bearer",
+    "scope": ["permanent"]
+}
+```
+
+<a name="iot-agent---provisioning-a-trusted-service-group"></a>
+
+### IoT Agent - 信頼できるサービス・グループのプロビジョニング
+
+アクセス・トークン (トラスト・トークンとも呼ばれる) をサービス・グループに追加する必要があります。
+
+#### :one::eight: リクエスト:
+
+```console
+curl -iX POST \
+  'http://localhost:4041/iot/services' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+ "services": [
+   {
+     "apikey":      "4jggokgpepnvsb2uv4s40d59ov",
+     "cbroker":     "http://orion:1026",
+     "entity_type": "Motion",
+     "resource":    "/iot/d",
+     "trust": "e37aeef5d48c9c1a3d4adf72626a8745918d4355"
+   }
+ ]
+}'
+```
+
+<a name="iot-agent---provisioning-a-sensor"></a>
+
+### IoT Agent - センサのプロビジョニング
+
+信頼できるサービス・グループが作成されると、通常の方法でデバイスをプロビジョニングできます。
+
+#### :one::nine: リクエスト:
+
+```console
+curl -iX POST \
+  'http://localhost:4041/iot/devices' \
+  -H 'Content-Type: application/json' \
+  -H 'fiware-service: openiot' \
+  -H 'fiware-servicepath: /' \
+  -d '{
+ "devices": [
+   {
+     "device_id":   "motion001",
+     "entity_name": "urn:ngsi-ld:Motion:001",
+     "entity_type": "Motion",
+     "timezone":    "Europe/Berlin",
+     "attributes": [
+       { "object_id": "c", "name": "count", "type": "Integer" }
+     ],
+     "static_attributes": [
+       { "name":"refStore", "type": "Relationship", "value": "urn:ngsi-ld:Store:001"}
+     ]
+   }
+ ]
+}
+'
 ```
 
 ---
