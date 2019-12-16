@@ -805,7 +805,7 @@ Secured Access can be ensured by requiring all requests to the secured service a
 this case the PEP Proxy is found in front of the Context Broker). Requests must include an `X-Auth-Token`, failure to
 present a valid token results in a denial of access.
 
-#### :one::two: Request
+#### :one::two: Request:
 
 If a request to the PEP Proxy is made without any access token as shown:
 
@@ -814,7 +814,7 @@ curl -X GET \
   http://localhost:1027/v2/entities/urn:ngsi-ld:Store:001?options=keyValues
 ```
 
-#### Response
+#### Response:
 
 The response is a **401 Unauthorized** error code, with the following explanation:
 
@@ -824,7 +824,7 @@ Auth-token not found in request header
 
 ### Keyrock - User Obtains an Access Token
 
-#### :one::three: Request
+#### :one::three: Request:
 
 To log in to the application using the user-credentials flow send a POST request to **Keyrock** using the `oauth2/token`
 endpoint with the `grant_type=password`. For example to log-in as Alice the Admin:
@@ -838,7 +838,7 @@ curl -iX POST \
   --data "username=alice-the-admin@test.com&password=test&grant_type=password"
 ```
 
-#### Response
+#### Response:
 
 The response returns an access code to identify the user:
 
@@ -860,7 +860,7 @@ If a request to the PEP Proxy is made including a valid access token in the `X-A
 is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
 expected.
 
-#### :one::four: Request
+#### :one::four: Request:
 
 ```console
 curl -X GET \
@@ -874,7 +874,7 @@ The standard `Authorization: Bearer` header can also be used to identity the use
 is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
 expected.
 
-#### :one::five: Request
+#### :one::five: Request:
 
 ```console
 curl -X GET \
@@ -1112,7 +1112,7 @@ curl -iX POST \
   --data "username=iot_sensor_00000000-0000-0000-0000-000000000000&password=test&grant_type=password"
 ```
 
-#### Response
+#### Response:
 
 The response returns an access code to identify the device:
 
@@ -1134,7 +1134,7 @@ The POST request to a PEP Proxy in front to the Ultralight IoT Agent identifies 
 the source of the request as being registered in Keyrock, and therefore the measurement will be successfully passed on
 to the IoT Agent itself.
 
-#### Request:
+#### :one::six: Request:
 
 ```console
 curl -X POST \
@@ -1262,7 +1262,7 @@ The standard `Authorization: Basic` header holds the base 64 concatentation of t
 `scope=permanent` is added to retrieve permanent tokens when available. The response contains an `access_token` which
 can be used for device provisioning.
 
-#### :one::six: Request
+#### :one::seven: Request:
 
 ```console
 curl -X POST \
@@ -1286,7 +1286,7 @@ curl -X POST \
 
 The Access token (also known as a Trust Token) must be added to the service group.
 
-#### :one::seven: Request
+#### :one::eight: Request:
 
 ```console
 curl -iX POST \
@@ -1311,7 +1311,7 @@ curl -iX POST \
 
 Once a trusted service group has been created, a device can be provisioned in the usual manner
 
-#### :one::eight: Request:
+#### :one::nine: Request:
 
 ```console
 curl -iX POST \
