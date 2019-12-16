@@ -1251,7 +1251,7 @@ To start the system with a PEP Proxy protecting access to between **Orion** and 
 following command:
 
 ```console
-./services southport
+./services northport
 ```
 
 ### Keyrock - Obtaining a permanent token
