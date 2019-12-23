@@ -1107,7 +1107,7 @@ async function buyItem(req, res) {
 
 # IoT Agent サウス・ポート の保護
 
-![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-iot-agent.png)
+![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-south-port.png)
 
 <a name="securing-an-iot-agent-south-port---pep-proxy-configuration"></a>
 
@@ -1359,7 +1359,7 @@ request(options, error => {
 
 # IoT Agent ノース・ポートの保護
 
-![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-iot-agent.png)
+![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-north-port.png)
 
 <a name="securing-an-iot-agent-north-port---iot-agent-configuration"></a>
 
