@@ -1240,7 +1240,7 @@ iot-agent:
 | IOTA_AUTH_HOST            | `keyrock`                              | The Identity Manager holding the application               |
 | IOTA_AUTH_PORT            | `3005`                                 | The port the Identity Manager is listening on              |
 | IOTA_AUTH_URL             | `http://keyrock:3005`                  | The URL for authentication requests                        |
-| IOTA_AUTH_CLIENT_ID       | `tutorial-dckr-site-0000-xpresswebapp` | the Id of the applicantion within Keyrock                  |
+| IOTA_AUTH_CLIENT_ID       | `tutorial-dckr-site-0000-xpresswebapp` | the ID of the applicantion within Keyrock                  |
 | IOTA_AUTH_CLIENT_SECRET   | `tutorial-dckr-host-0000-clientsecret` | The client secret of the application within Keyrock        |
 | IOTA_AUTH_PERMANENT_TOKEN | `true`                                 | Whether to use permanent tokens                            |
 | IOTA_AUTH_TOKEN_PATH      | `/oauth2/token`                        | the path to be used when requesting tokens                 |
@@ -1258,7 +1258,7 @@ following command:
 
 The Keyrock application has been configured to offer permanent tokens
 
-The standard `Authorization: Basic` header holds the base 64 concatentation of the client id and secret. The parameter
+The standard `Authorization: Basic` header holds the base 64 concatentation of the client ID and secret. The parameter
 `scope=permanent` is added to retrieve permanent tokens when available. The response contains an `access_token` which
 can be used for device provisioning.
 
