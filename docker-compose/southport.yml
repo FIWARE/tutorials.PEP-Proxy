@@ -179,9 +179,9 @@ services:
       - "WEB_APP_PORT=${TUTORIAL_APP_PORT}" # Port used by the content provider proxy and web-app for viewing data
       - "IOTA_HTTP_HOST=iot-agent-proxy"
       - "IOTA_HTTP_PORT=7897"
+      - "IOTA_DEFAULT_RESOURCE=/iot/d"
       - "DUMMY_DEVICES_PORT=${TUTORIAL_DUMMY_DEVICE_PORT}" # Port used by the dummy IOT devices to receive commands
       - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy Io devices
-      - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
       - "DUMMY_DEVICES_USER=iot_sensor_00000000-0000-0000-0000-000000000000"
       - "DUMMY_DEVICES_PASSWORD=test"
       - "CONTEXT_BROKER=http://orion-proxy:${ORION_PROXY_PORT}/v2" # URL of the PEP Proxy to update context
