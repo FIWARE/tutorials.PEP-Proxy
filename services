@@ -14,9 +14,13 @@ if (( $# != 1 )); then
 fi
 
 loadData () {
-	./import-data
+	docker run --rm -v $(pwd)/import-data:/import-data \
+		--network fiware_default \
+		--entrypoint /bin/ash curlimages/curl import-data
 	waitForIoTAgent
-	./provision-devices
+	docker run --rm -v $(pwd)/provision-devices:/provision-devices \
+		--network fiware_default \
+		--entrypoint /bin/ash curlimages/curl provision-devices
 	echo ""
 }
 
@@ -150,7 +154,9 @@ case "${command}" in
 		waitForKeyrock
 		export ORION_URL="http://orion-proxy:1027" 
 		addDatabaseIndex
-		./import-data
+		docker run --rm -v $(pwd)/import-data:/import-data \
+		--network fiware_default \
+		--entrypoint /bin/ash curlimages/curl import-data
 		echo
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"

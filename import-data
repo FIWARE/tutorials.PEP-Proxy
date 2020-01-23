@@ -7,11 +7,7 @@
 set -e
 
 
-curl () {
-  docker run --network fiware_default --rm appropriate/curl -s -o /dev/null \
-    "$@"
-  printf "."
-}
+
 
 echo -e "\n\n⏳ Waiting for \033[1;34mOrion\033[0m to be available\n"
 while [ `docker run --network fiware_default --rm appropriate/curl -s -o /dev/null -w %{http_code} 'http://orion:1026/version'` -eq 000 ]
@@ -24,7 +20,7 @@ printf "⏳ Loading context data "
 #
 # Create four Store Entities in various locations across Berlin
 #
-curl -X POST \
+curl -s -o /dev/null -X POST \
   'http://orion:1026/v2/op/update' \
   -H 'Content-Type: application/json' \
   -g -d '{
@@ -59,7 +55,7 @@ curl -X POST \
 #
 # Add Weather and Twitter Responses for Store 1 using random values
 #
-curl -X POST \
+curl -s -o /dev/null -X POST \
   http://orion:1026/v2/registrations \
   -H 'Content-Type: application/json' \
   -d '{
@@ -84,7 +80,7 @@ curl -X POST \
    "status": "active"
 }'
 
-curl -X POST \
+curl -s -o /dev/null -X POST \
   http://orion:1026/v2/registrations \
   -H 'Content-Type: application/json' \
   -d '{
@@ -112,7 +108,7 @@ curl -X POST \
 
 # Add Weather and Twitter Responses for Store 2 using real sources
 #
-# curl -X POST \
+# curl -s -o /dev/null -X POST \
 #   'http://orion:1026/v2/registrations' \
 #   -H 'Content-Type: application/json' \
 #   -d '{
@@ -137,7 +133,7 @@ curl -X POST \
 #   }
 # }'
 
-# curl -X POST \
+# curl -s -o /dev/null -X POST \
 #   'http://orion:1026/v2/registrations' \
 #   -H 'Content-Type: application/json' \
 #   -d '{
@@ -165,7 +161,7 @@ curl -X POST \
 # Create a series of Shelf Entities and place the in each Store.
 # Each shelf is designed to hold one product.
 #
-curl -X POST \
+curl -s -o /dev/null -X POST \
   'http://orion:1026/v2/op/update' \
   -H 'Content-Type: application/json' \
   -g -d '{
@@ -248,7 +244,7 @@ curl -X POST \
 # Create a series of Product Entities. 
 # These are a series of alcoholc and non-alcoholic drinks which are available to sell.
 #
-curl -X POST \
+curl -s -o /dev/null -X POST \
   'http://orion:1026/v2/op/update' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -316,7 +312,7 @@ curl -X POST \
 # Create a series of InventoryItems Entities. 
 # These the drinks on order in Store:001
 #
-curl -X POST \
+curl -s -o /dev/null -X POST \
   'http://orion:1026/v2/op/update' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -353,7 +349,7 @@ curl -X POST \
 # Create a series of InventoryItems Entities. 
 # These the drinks on order in Store:002
 #
-curl -X POST \
+curl -s -o /dev/null -X POST \
   'http://orion:1026/v2/op/update' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -382,7 +378,7 @@ curl -X POST \
 # These the drinks on order in Store:003
 # Note that Shelf Unit009 is currently unused
 #
-curl -X POST \
+curl -s -o /dev/null -X POST \
   'http://orion:1026/v2/op/update' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -419,7 +415,7 @@ curl -X POST \
 # Create a series of InventoryItems Entities. 
 # These the drinks on order in Store:004
 #
-curl -X POST \
+curl -s -o /dev/null -X POST \
   'http://orion:1026/v2/op/update' \
   -H 'Content-Type: application/json' \
   -d '{
