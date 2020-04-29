@@ -225,10 +225,10 @@ Orion Context Broker と IoT Agent はオープンソースの
 
 -   FIWARE
     [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) は
-    、[NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用して
+    、[NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用して
     リクエストを受信します
 -   [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/)
-    は、[NGSI](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用し
+    は、[NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用し
     てサウスバウンド・リクエストを受信し、それをデバイスのために
     [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
     に変換します。
