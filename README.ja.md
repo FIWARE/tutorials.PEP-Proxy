@@ -156,7 +156,7 @@ application) のオブジェクトを保護することができます。
 
 ## :arrow_forward: ビデオ : Wilma PEP Proxy の紹介
 
-[![](http://img.youtube.com/vi/8tGbUI18udM/0.jpg)](https://www.youtube.com/watch?v=8tGbUI18udM "Introduction")
+[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=8tGbUI18udM "Introduction")
 
 紹介ビデオを見るには上記の画像をクリックしてください :
 
@@ -494,7 +494,7 @@ curl -X GET \
 
 ## :arrow_forward: ビデオ : Wilma PEP Proxy の設定
 
-[![](http://img.youtube.com/vi/b4sYU78skrw/0.jpg)](https://www.youtube.com/watch?v=b4sYU78skrw "PEP Proxy Configuration")
+[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=b4sYU78skrw "PEP Proxy Configuration")
 
 上の画像をクリックすると、**Keyrock** を使用して、Wilma PEP Proxy を設定する方法
 のビデオが表示されます。
@@ -933,7 +933,7 @@ tutorial-app:
 
 ### :arrow_forward: ビデオ : REST API を保護
 
-[![](http://img.youtube.com/vi/coxFQEY0_So/0.jpg)](https://www.youtube.com/watch?v=coxFQEY0_So "Securing a REST API")
+[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=coxFQEY0_So "Securing a REST API")
 
 上記の画像をクリックすると、Wilma PEP Proxy を使用して REST API を保護するための
 ビデオが表示されます

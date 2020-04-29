@@ -133,7 +133,7 @@ tutorial:
 
 ## :arrow_forward: Video : Introduction to Wilma PEP Proxy
 
-[![](http://img.youtube.com/vi/8tGbUI18udM/0.jpg)](https://www.youtube.com/watch?v=8tGbUI18udM "Introduction")
+[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=8tGbUI18udM "Introduction")
 
 Click on the image above to see an introductory video
 
@@ -793,7 +793,7 @@ To start the system with a PEP Proxy protecting access to **Orion**, run the fol
 
 ### :arrow_forward: Video : Securing A REST API
 
-[![](http://img.youtube.com/vi/coxFQEY0_So/0.jpg)](https://www.youtube.com/watch?v=coxFQEY0_So "Securing a REST API")
+[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=coxFQEY0_So "Securing a REST API")
 
 Click on the image above to see a video about securing a REST API using the Wilma PEP Proxy
 
