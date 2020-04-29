@@ -409,7 +409,7 @@ accounts can be created by using either the Keyrock GUI or by using the REST API
 
 ## :arrow_forward: Video : Wilma PEP Proxy Configuration
 
-[![](http://img.youtube.com/vi/b4sYU78skrw/0.jpg)](https://www.youtube.com/watch?v=b4sYU78skrw "PEP Proxy Configuration")
+[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=b4sYU78skrw "PEP Proxy Configuration")
 
 Click on the image above to see a video about configuring the Wilma PEP Proxy using the **Keyrock** GUI
 
