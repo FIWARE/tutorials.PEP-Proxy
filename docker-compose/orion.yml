@@ -105,6 +105,9 @@ services:
         ipv4_address: 172.18.1.10
     depends_on:
       - keyrock
+    deploy:
+      restart_policy:
+        condition: on-failure
     ports:
       - "${ORION_PROXY_PORT}:${ORION_PROXY_PORT}" # localhost:1027
     expose:

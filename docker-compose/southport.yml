@@ -104,6 +104,9 @@ services:
         ipv4_address: 172.18.1.10
     depends_on:
       - keyrock
+    deploy:
+      restart_policy:
+        condition: on-failure
     ports:
       - "${ORION_PROXY_PORT}:${ORION_PROXY_PORT}" # localhost:1027
     expose:
@@ -122,6 +125,9 @@ services:
       - PEP_PASSWORD=test
       - PEP_PROXY_PDP=idm
       - PEP_PROXY_MAGIC_KEY=1234
+      - PEP_PROXY_PUBLIC_PATHS=/version
+    healthcheck:
+      test: curl --fail -s http://orion-proxy:${ORION_PROXY_PORT}/version || exit 1
 
   # PEP Proxy for the IoT Agent
   iot-agent-proxy:
@@ -133,6 +139,9 @@ services:
         ipv4_address: 172.18.1.11
     depends_on:
       - keyrock
+    deploy:
+      restart_policy:
+        condition: on-failure
     ports:
       - "7897:7897"
     expose:
