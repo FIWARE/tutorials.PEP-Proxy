@@ -205,8 +205,8 @@ services:
       - "KEYROCK_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp"
       - "KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret"
       - "CALLBACK_URL=http://localhost:${TUTORIAL_APP_PORT}/login"
-    healthcheck:
-      test: curl --fail -s http://tutorial:${TUTORIAL_APP_PORT}/version || exit 1
+
+
 
 
   # Database
@@ -223,6 +223,10 @@ services:
     command: --bind_ip_all --smallfiles
     volumes:
       - mongo-db:/data
+    healthcheck:
+      test: |
+        host=`hostname --ip-address || echo '127.0.0.1'`; 
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1    
 
   mysql-db:
     restart: always
