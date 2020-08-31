@@ -275,6 +275,7 @@ Orion Context Broker と IoT Agent はオープンソースの
 ```console
 git clone https://github.com/FIWARE/tutorials.PEP-Proxy.git
 cd tutorials.PEP-Proxy
+git checkout NGSI-v2
 
 ./services create
 ```
