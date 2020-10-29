@@ -14,18 +14,35 @@ if (( $# != 1 )); then
 fi
 
 loadData () {
+	export CONTEXT_BROKER="$1" 
+	addDatabaseIndex
+	waitForContext
+	waitForOrion
 	docker run --rm -v $(pwd)/import-data:/import-data \
 		--network fiware_default \
+		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
+		-e TUTORIAL_DATA_MODELS_CONTEXT="http://context-provider:3000/data-models/ngsi-context.jsonld" \
 		--entrypoint /bin/ash curlimages/curl import-data
 	waitForIoTAgent
 	docker run --rm -v $(pwd)/provision-devices:/provision-devices \
 		--network fiware_default \
+		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
+		-e TUTORIAL_DATA_MODELS_CONTEXT="http://context-provider:3000/data-models/ngsi-context.jsonld" \
 		--entrypoint /bin/ash curlimages/curl provision-devices
 	echo ""
 }
 
+waitForContext () {
+	echo -e "\n⏳ Waiting for \033[1m@context\033[0m to be available\n"
+	while [ `docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` -eq 000 ]
+	do 
+	  echo -e "@context HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` " (waiting for 200)"
+	  sleep 1
+	done
+}
+
 waitForKeyrock () {
-	printf "⏳ Waiting for \033[1;31mKeyrock\033[0m to be available"
+	printf "⏳ Waiting for \033[1;31mKeyrock\033[0m to be available\n"
 	
 	while [ `curl -s -o /dev/null -w %{http_code} 'http://localhost:3005/version'` -eq 000 ]
 	do 
@@ -119,10 +136,7 @@ case "${command}" in
 		echo -e "- \033[1;31mWilma\033[0m is a PEP Proxy around \033[1;34mOrion\033[0m"
 		startContainers false orion.yml
 		waitForKeyrock
-		export ORION_URL="http://orion:1026"
-		addDatabaseIndex
-		waitForOrion
-		loadData
+		loadData orion:1026
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
@@ -136,9 +150,7 @@ case "${command}" in
 		echo -e "- 2 instances of \033[1;31mWilma\033[0m as a PEP Proxy around \033[1;34mOrion\033[0m and between the Devices and \033[1;36mIoT-Agent\033[0m Southport"
 		startContainers false southport.yml
 		waitForKeyrock
-		addDatabaseIndex
-		waitForOrion
-		loadData
+		loadData orion:1026
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
@@ -152,13 +164,17 @@ case "${command}" in
 		echo -e "- \033[1;31mWilma\033[0m as a PEP Proxy between \033[1;34mOrion\033[0m and the \033[1;36mIoT-Agent\033[0m"
 		startContainers false northport.yml
 		waitForKeyrock
-		export ORION_URL="http://orion-proxy:1027" 
 		addDatabaseIndex
+		waitForContext
+		waitForOrion
+		CONTEXT_BROKER="orion:1026" 
 		docker run --rm -v $(pwd)/import-data:/import-data \
-		--network fiware_default \
-		--entrypoint /bin/ash curlimages/curl import-data
-		echo
+			--network fiware_default \
+			-e CONTEXT_BROKER=${CONTEXT_BROKER} \
+			-e TUTORIAL_DATA_MODELS_CONTEXT="http://context-provider:3000/data-models/ngsi-context.jsonld" \
+			--entrypoint /bin/ash curlimages/curl import-data
 		displayServices
+		echo
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
 	"stop")
