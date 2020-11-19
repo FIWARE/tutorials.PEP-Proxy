@@ -201,7 +201,8 @@ Therefore the overall architecture will consist of the following elements:
     -   Shows which products can be bought at each store
     -   Allows users to "buy" products and reduce the stock count.
     -   Allows authorized users into restricted areas
--   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2) using the
+-   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2) using
+    the
     [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
     protocol running over HTTP - access to certain resources is restricted.
 
@@ -915,7 +916,7 @@ function userCredentialGrant(req, res) {
     const email = req.body.email;
     const password = req.body.password;
 
-    oa.getOAuthPasswordCredentials(email, password).then(results => {
+    oa.getOAuthPasswordCredentials(email, password).then((results) => {
         req.session.access_token = results.access_token;
         return;
     });
@@ -1156,11 +1157,11 @@ const DUMMY_DEVICE_HTTP_HEADERS = { "Content-Type": "text/plain" };
 function initSecureDevices() {
     Security.oa
         .getOAuthPasswordCredentials(process.env.DUMMY_DEVICES_USER, process.env.DUMMY_DEVICES_PASSWORD)
-        .then(results => {
+        .then((results) => {
             DUMMY_DEVICE_HTTP_HEADERS["X-Auth-Token"] = results.access_token;
             return;
         })
-        .catch(error => {
+        .catch((error) => {
             debug(error);
             return;
         });
@@ -1178,7 +1179,7 @@ const options = {
     body: state
 };
 
-request(options, error => {
+request(options, (error) => {
     if (error) {
         debug(debugText + " " + error.code);
     }
