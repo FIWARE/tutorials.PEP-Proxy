@@ -64,6 +64,7 @@ Keyrock GUI と REST API の部分について詳しく説明します。
         -   [PEP Proxy - アクセス・トークンのない Orion へのアクセス拒否](#pep-proxy---no-access-to-orion-without-an-access-token)
         -   [Keyrock - ユーザによるアクセス・トークンの取得](#keyrock---user-obtains-an-access-token)
         -   [PEP Proxy - アクセス・トークンを使用して Orion にアクセス](#pep-proxy---accessing-orion-with-an-access-token)
+        -   [PEP Proxy - Authorization: Bearer による Orion へのアクセス](#pep-proxy---accessing-orion-with-an-authorization-bearer)
     -   [Orion の保護 - サンプル・コード](#securing-orion---sample-code)
 -   [IoT Agent サウス・ポート の保護](#securing-an-iot-agent-south-port)
     -   [IoT Agent サウス・ポート の保護 - PEP Proxy の設定](#securing-an-iot-agent-south-port---pep-proxy-configuration)
@@ -1020,6 +1021,41 @@ Proxy へのリクエストが行われた場合、そのリクエストは許�
 curl -X GET \
   http://localhost:1027/v2/entities/urn:ngsi-ld:Store:001?options=keyValues \
   -H 'X-Auth-Token: {{X-Access-token}}'
+```
+
+#### レスポンス:
+
+```json
+{
+    "id": "urn:ngsi-ld:Store:001",
+    "type": "Store",
+    "address": {
+        "streetAddress": "Bornholmer Straße 65",
+        "addressRegion": "Berlin",
+        "addressLocality": "Prenzlauer Berg",
+        "postalCode": "10439"
+    },
+    "location": {
+        "type": "Point",
+        "coordinates": [13.3986, 52.5547]
+    },
+    "name": "Bösebrücke Einkauf"
+}
+```
+
+<a name="pep-proxy---accessing-orion-with-an-authorization-bearer"></a>
+
+### PEP Proxy - Authorization: Bearer による Orion へのアクセス
+
+標準の `Authorization: Bearer` ヘッダを使用してユーザを識別することもできます。承認されたユーザからのリクエストが許可
+され、PEP Proxy の背後にあるサービス (この場合は Orion Context Broker) が期待どおりにデータを返します。
+
+#### :one::five: リクエスト:
+
+```console
+curl -X GET \
+  http://localhost:1027/v2/entities/urn:ngsi-ld:Store:001?options=keyValues \
+  -H 'Authorization: Bearer {{X-Access-token}}'
 ```
 
 #### レスポンス:
