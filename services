@@ -157,6 +157,10 @@ case "${command}" in
 		docker run --rm -v $(pwd)/import-data:/import-data \
 		--network fiware_default \
 		--entrypoint /bin/ash curlimages/curl import-data
+		waitForIoTAgent
+		docker run --rm -v $(pwd)/provision-groups:/provision-groups \
+		--network fiware_default \
+		--entrypoint /bin/ash curlimages/curl provision-groups
 		echo
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
