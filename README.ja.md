@@ -1308,6 +1308,7 @@ Ultralight IoT Agent の前にある PEP Proxy への POST リクエストは、
 curl -X POST \
   'http://localhost:7897/iot/d?k=4jggokgpepnvsb2uv4s40d59ov&i=motion001' \
   -H 'X-Auth-Token: {{X-Access-token}}' \
+  -H 'Content-Type: text/plain' \
   -d 'c|1'
 ```
 
