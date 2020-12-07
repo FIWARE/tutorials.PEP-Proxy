@@ -1,9 +1,11 @@
-[![FIWARE Banner](https://fiware.github.io/tutorials.PEP-Proxy/img/fiware.png)](https://www.fiware.org/developers)
+[![FIWARE Banner](https://fiware.github.io/tutorials.Working-with-Linked-Data/img/fiware.png)](https://www.fiware.org/developers)
+[![NGSI LD](https://img.shields.io/badge/NGSI-LD-d6604d.svg)](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.03.01_60/gs_cim009v010301p.pdf)
 
 [![FIWARE Security](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://github.com/FIWARE/catalogue/blob/master/security/README.md)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.PEP-Proxy.svg)](https://opensource.org/licenses/MIT)
 [![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware)
 <br/>
+[![JSON LD](https://img.shields.io/badge/JSON--LD-1.1-f06f38.svg)](https://w3c.github.io/json-ld-syntax/)
 [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
 <!-- prettier-ignore -->
@@ -55,16 +57,17 @@ Keyrock GUI と REST API の部分について詳しく説明します。
         -   [IoT Agents の 一覧](#list-iot-agents)
         -   [IoT Agent のパスワードをリセット](#reset-password-of-an-iot-agent)
         -   [IoT Agent を削除](#delete-an-iot-agent)
--   [Orion Context Broker のセキュリティ保護](#securing-the-orion-context-broker)
-    -   [Orion の保護 - PEP Proxy の設定](#securing-orion---pep-proxy-configuration)
-    -   [Orion の保護 - アプリケーションの設定](#securing-orion---application-configuration)
-    -   [Orion の保護 - 起動](#securing-orion---start-up)
+-   [Orion-LD Context Broker のセキュリティ保護](#securing-the-orion-context-broker)
+    -   [Orion-LD の保護 - PEP Proxy の設定](#securing-orion---pep-proxy-configuration)
+    -   [Orion-LD の保護 - アプリケーションの設定](#securing-orion---application-configuration)
+    -   [Orion-LD の保護 - 起動](#securing-orion---start-up)
         -   [:arrow_forward: ビデオ : REST API を保護](#arrow_forward-video--securing-a-rest-api)
     -   [ユーザが REST API を使用してアプリケーションへのログイン](#user-logs-in-to-the-application-using-the-rest-api)
-        -   [PEP Proxy - アクセス・トークンのない Orion へのアクセス拒否](#pep-proxy---no-access-to-orion-without-an-access-token)
+        -   [PEP Proxy - アクセス・トークンのない Orion-LD へのアクセス拒否](#pep-proxy---no-access-to-orion-without-an-access-token)
         -   [Keyrock - ユーザによるアクセス・トークンの取得](#keyrock---user-obtains-an-access-token)
-        -   [PEP Proxy - アクセス・トークンを使用して Orion にアクセス](#pep-proxy---accessing-orion-with-an-access-token)
-    -   [Orion の保護 - サンプル・コード](#securing-orion---sample-code)
+        -   [PEP Proxy - アクセス・トークンを使用して Orion-LD にアクセス](#pep-proxy---accessing-orion-with-an-access-token)
+        -   [PEP Proxy - Authorization: Bearer による Orion-LD へのアクセス](#pep-proxy---accessing-orion-ld-with-an-authorization-bearer)
+    -   [Orion-LD の保護 - サンプル・コード](#securing-orion---sample-code)
 -   [IoT Agent サウス・ポート の保護](#securing-an-iot-agent-south-port)
     -   [IoT Agent サウス・ポート の保護 - PEP Proxy の設定](#securing-an-iot-agent-south-port---pep-proxy-configuration)
     -   [IoT Agent サウス・ポート の保護 - アプリケーションの設定](#securing-an-iot-agent-south-port---application-configuration)
@@ -206,15 +209,15 @@ application) のオブジェクトを保護することができます。
 Proxy** インスタンスを追加することで、既存の在庫管理、および、センサ・ベースのア
 プリケーションへのアクセスを保護し、**Keyrock** が使用する **MySQL** データベー
 スに事前入力されたデータを使用します
-。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),
+。[Orion-LD Context Broker](https://fiware-orion.readthedocs.io/en/latest/),
 [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/),
 [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) Generic Enabler の 4 つ
 の FIWARE コンポーネントを使用し、[Wilma](https://fiware-pep-proxy.rtfd.io/)
 **PEP Proxy** の 1 つまたは 2 つのインスタンスを追加して、どのインタフェースを保
 護するかを決定します。アプリケーションが _“Powered by FIWARE”_ と認定されるには
-、Orion Context Broker を使用するだけで十分です。
+、Orion-LD Context Broker を使用するだけで十分です。
 
-Orion Context Broker と IoT Agent はオープンソースの
+Orion-LD Context Broker と IoT Agent はオープンソースの
 [MongoDB](https://www.mongodb.com/) 技術を利用して、保持している情報の永続性を保
 ちます
 。[以前のチュートリアル](https://github.com/FIWARE/tutorials.IoT-Sensors/)で作成
@@ -224,9 +227,9 @@ Orion Context Broker と IoT Agent はオープンソースの
 したがって、全体的なアーキテクチャは次の要素で構成されます :
 
 -   FIWARE
-    [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) は
-    、[NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用して
-    リクエストを受信します
+    [Orion-LD Context Broker](https://fiware-orion.readthedocs.io/en/latest/) は
+    、[NGSI-LD](https://forge.etsi.org/swagger/ui/?url=https://forge.etsi.org/gitlab/NGSI-LD/NGSI-LD/raw/master/spec/updated/full_api.json)
+    を使用してリクエストを受信します
 -   [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/)
     は、[NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用し
     てサウスバウンド・リクエストを受信し、それをデバイスのために
@@ -237,10 +240,10 @@ Orion Context Broker と IoT Agent はオープンソースの
     -   アプリケーションとユーザのための OAuth2 認証システム
     -   ID 管理のための Web サイトのグラフィカル・フロントエンド
     -   HTTP リクエストによる ID 管理用の同等の REST API
--   FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) は **Orion** および/または
+-   FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) は **Orion-LD** および/または
     **IoT Agent** マイクサービスへのアクセスを保護する PEP Proxy
 -   [MongoDB](https://www.mongodb.com/) データベース :
-    -   **Orion Context Broker** が、データ・エンティティ、サブスクリプション、
+    -   **Orion-LD Context Broker** が、データ・エンティティ、サブスクリプション、
         レジストレーションなどのコンテキスト・データ情報を保持するために使用しま
         す
     -   **IoT Agent** が、デバイスの URLs や Keys などのデバイス情報を保持するた
@@ -417,24 +420,39 @@ curl -iX POST \
 
 ```
 HTTP/1.1 201 Created
-X-Subject-Token: d848eb12-889f-433b-9811-6a4fbf0b86ca
+Content-Security-Policy: default-src 'self' img-src 'self' data:;script-src 'self' 'unsafe-inline';style-src 'self' https: 'unsafe-inline'
+X-DNS-Prefetch-Control: off
+Expect-CT: max-age=0
+X-Frame-Options: SAMEORIGIN
+Strict-Transport-Security: max-age=15552000; includeSubDomains
+X-Download-Options: noopen
+X-Content-Type-Options: nosniff
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: no-referrer
+X-XSS-Protection: 0
+Cache-Control: no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0
+X-Subject-Token: 730ba40f-8787-490e-aea8-9f1d98cc87e6
 Content-Type: application/json; charset=utf-8
 Content-Length: 138
-ETag: W/"8a-TVwlWNKBsa7cskJw55uE/wZl6L8"
-Date: Mon, 30 Jul 2018 12:07:54 GMT
+ETag: W/"8a-hYrW1bqaSy3GVQI34aexyHgPYmg"
+Set-Cookie: session=eyJyZWRpciI6Ii8ifQ==; path=/; expires=Thu, 03 Dec 2020 16:46:08 GMT; httponly
+Set-Cookie: session.sig=vwpRi_eyA0W2C0YYa-6mzMBHBIk; path=/; expires=Thu, 03 Dec 2020 16:46:08 GMT; httponly
+Date: Thu, 03 Dec 2020 15:46:08 GMT
 Connection: keep-alive
 ```
 
 ```json
 {
-    "token": {
-        "methods": ["password"],
-        "expires_at": "2018-07-30T13:02:37.116Z"
-    },
-    "idm_authorization_config": {
-        "level": "basic",
-        "authzforce": false
-    }
+  "token": {
+    "methods": [
+      "password"
+    ],
+    "expires_at": "2020-12-03T16:47:28.462Z"
+  },
+  "idm_authorization_config": {
+    "level": "basic",
+    "authzforce": false
+  }
 }
 ```
 
@@ -791,16 +809,16 @@ curl -X DELETE \
 
 <a name="securing-the-orion-context-broker"></a>
 
-# Orion Context Broker の保護
+# Orion-LD Context Broker の保護
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-orion.png)
 
 <a name="securing-orion---pep-proxy-configuration"></a>
 
-## Orion の保護 - PEP Proxy の設定
+## Orion-LD の保護 - PEP Proxy の設定
 
 `orion-proxy` コンテナは FIWARE **Wilma** のインスタンスであるポート `1027` で待
-機し、Orion Context Broker が NGSI リクエストを待機しているデフォルトのポートで
+機し、Orion-LD Context Broker が NGSI リクエストを待機しているデフォルトのポートで
 ある、`orion` の ポート `1026` にトラフィックを転送するように設定されます。
 
 ```yaml
@@ -864,10 +882,10 @@ orion-proxy:
 
 <a name="securing-orion---application-configuration"></a>
 
-## Orion の保護 - アプリケーションの設定
+## Orion-LD の保護 - アプリケーションの設定
 
 チュートリアル・アプリケーションはすでに Keyrock に登録されており、プログラムで
-はチュートリアル・アプリケーションは Orion Conext Broker の前にある Wilma PEP
+はチュートリアル・アプリケーションは Orion-LD Conext Broker の前にある Wilma PEP
 Proxy にリクエストを行います。すべてのリクエストに追加 の `access_token` ヘッダ
 が含まれている必要があります。
 
@@ -905,7 +923,7 @@ tutorial-app:
 
 すべての `tutorial` コンテナ設定は、以前のチュートリアルで説明されています。ただ
 し、以前のすべてのチュートリアルで示されているように、デフォルトのポート
-`1026' で **Orion** に直接アクセスするのではなく、すべての Context Broker のトラフィックが`orion-proxy`のポート`1027'
+`1026' で **Orion-LD** に直接アクセスするのではなく、すべての Context Broker のトラフィックが`orion-proxy`のポート`1027'
 に送信されるように、重要な変更が必要です。ここでは、関連する設定について詳しく説
 明します。
 
@@ -921,9 +939,9 @@ tutorial-app:
 
 <a name="securing-orion---start-up"></a>
 
-## Orion の保護 - 起動
+## Orion-LD の保護 - 起動
 
-**Orion** へのアクセスを保護する PEP Proxy を使用してシステムを起動するには、次
+**Orion-LD** へのアクセスを保護する PEP Proxy を使用してシステムを起動するには、次
 のコマンドを実行します :
 
 ```console
@@ -945,7 +963,7 @@ tutorial-app:
 
 <a name="pep-proxy---no-access-to-orion-without-an-access-token"></a>
 
-### PEP Proxy - アクセス・トークンのない Orion へのアクセス拒否
+### PEP Proxy - アクセス・トークンのない Orion-LD へのアクセス拒否
 
 セキュアなアクセスは、セキュアなサービスへのすべてのリクエストが PEP Proxy を介
 して間接的に行われるようにすることで保証されます。この場合、PEP Proxy は Context
@@ -957,8 +975,9 @@ Broker の前にあります。リクエストには、`X-Auth-Token` を含め�
 以下のようにアクセス・トークンなしで PEP Proxy へのリクエストが行われた場合は :
 
 ```console
-curl -X GET \
-  http://localhost:1027/v2/entities/urn:ngsi-ld:Store:001?options=keyValues
+curl -X GET 'http://localhost:1027/ngsi-ld/v1/entities/urn:ngsi-ld:Building:farm001?options=keyValues' \
+  -H 'Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
+  -H 'Content-Type: application/json'
 ```
 
 #### レスポンス
@@ -999,6 +1018,7 @@ curl -iX POST \
     "token_type": "Bearer",
     "expires_in": 3599,
     "refresh_token": "05e386edd9f95ed0e599c5004db8573e86dff874"
+    "scope":["bearer"]
 }
 ```
 
@@ -1008,43 +1028,95 @@ curl -iX POST \
 
 <a name="pep-proxy---accessing-orion-with-an-access-token"></a>
 
-### PEP Proxy - アクセス・トークンを使用して Orion にアクセス
+### PEP Proxy - アクセス・トークンを使用して Orion-LD にアクセス
 
-示されているように、`X-Auth-Token` ヘッダに有効なアクセス・トークンを含めて PEP
-Proxy へのリクエストが行われた場合、そのリクエストは許可され、PEP Proxy の背後に
-あるサービス (この場合は Orion Context Broker) が期待通りにデータを返します。
+前のレスポンスの `X-Auth-token` キーで取得された値を持つ `X-Auth-Token` ヘッダー
+に有効なアクセス・トークンを含めて PEP Proxy へのリクエストが行われた場合、
+リクエストは許可され、PEP Proxy の背後にあるサービス (この場合は Orion-LD
+Context Broker) が期待どおりにデータを返します。
 
 #### :one::four: リクエスト:
 
 ```console
-curl -X GET \
-  http://localhost:1027/v2/entities/urn:ngsi-ld:Store:001?options=keyValues \
-  -H 'X-Auth-Token: {{X-Access-token}}'
+curl -X GET 'http://localhost:1027/ngsi-ld/v1/entities/urn:ngsi-ld:Building:farm001?options=keyValues' \
+  -H 'Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
+  -H 'Content-Type: application/json' \
+  -H 'X-Auth-Token: {{X-Auth-token}}'
 ```
 
 #### レスポンス:
 
+レスポンスは、Farm001 に関する情報を返します:
+
 ```json
 {
-    "id": "urn:ngsi-ld:Store:001",
-    "type": "Store",
-    "address": {
-        "streetAddress": "Bornholmer Straße 65",
-        "addressRegion": "Berlin",
-        "addressLocality": "Prenzlauer Berg",
-        "postalCode": "10439"
-    },
-    "location": {
-        "type": "Point",
-        "coordinates": [13.3986, 52.5547]
-    },
-    "name": "Bösebrücke Einkauf"
+  "@context": "https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld",
+  "id": "urn:ngsi-ld:Building:farm001",
+  "type": "Building",
+  "category": "farm",
+  "address": {
+    "streetAddress": "Großer Stern 1",
+    "addressRegion": "Berlin",
+    "addressLocality": "Tiergarten",
+    "postalCode": "10557"
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      13.3505,
+      52.5144
+    ]
+  },
+  "name": "Victory Farm",
+  "owner": "urn:ngsi-ld:Person:person001"
+}
+```
+
+<a name="pep-proxy---accessing-orion-ld-with-an-authorization-bearer"/>
+
+### PEP Proxy - Authorization: Bearer による Orion-LD へのアクセス
+
+標準の `Authorization: Bearer` ヘッダを使用してユーザを識別することもできます。承認されたユーザからのリクエストが許可
+され、PEP Proxy の背後にあるサービス (この場合は Orion-LD Context Broker) が期待どおりにデータを返します。
+
+#### :one::five: Request:
+
+```console
+curl -X GET 'http://localhost:1027/ngsi-ld/v1/entities/urn:ngsi-ld:Building:barn002?options=keyValues' \
+  -H 'Link: <https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {{X-Auth-token}}'
+```
+
+#### Response:
+
+```json
+{
+  "@context": "https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld",
+  "id": "urn:ngsi-ld:Building:barn002",
+  "type": "Building",
+  "category": "barn",
+  "address": {
+    "streetAddress": "Straße des 17. Juni",
+    "addressRegion": "Berlin",
+    "addressLocality": "Tiergarten",
+    "postalCode": "10557"
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      13.3698,
+      52.5163
+    ]
+  },
+  "name": "Big Red Barn",
+  "owner": "urn:ngsi-ld:Person:person001"
 }
 ```
 
 <a name="securing-orion---sample-code"></a>
 
-## Orion の保護 - サンプル・コード
+## Orion-LD の保護 - サンプル・コード
 
 ユーザがユーザ・クレデンシャル・グラントを使用してアプリケーションにログインする
 と、そのユーザを識別する `access_token` を取得します。`access_token` は、セッシ
@@ -1244,7 +1316,7 @@ tutorial-app:
 
 ## サウス・ポート・トラフィックの保護 - 起動
 
-**Orion** と **IoT Agent** の両方へのアクセスを保護する PEP Proxies を使用してシ
+**Orion-LD** と **IoT Agent** の両方へのアクセスを保護する PEP Proxies を使用してシ
 ステムを起動するには、次のコマンドを実行します :
 
 ```console
@@ -1425,7 +1497,7 @@ iot-agent:
 
 ## IoT Agent ノース・ポートの保護 - 起動
 
-**Orion** と **IoT Agent** ノース・ポート間のアクセスを保護する PEP Proxy でシステムを起動するには、次のコマンドを
+**Orion-LD** と **IoT Agent** ノース・ポート間のアクセスを保護する PEP Proxy でシステムを起動するには、次のコマンドを
 実行します :
 
 
