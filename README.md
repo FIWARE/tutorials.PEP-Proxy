@@ -916,7 +916,7 @@ function userCredentialGrant(req, res) {
     const email = req.body.email;
     const password = req.body.password;
 
-    oa.getOAuthPasswordCredentials(email, password).then((results) => {
+    oa.getOAuthPasswordCredentials(email, password).then(results => {
         req.session.access_token = results.access_token;
         return;
     });
@@ -1158,11 +1158,11 @@ const DUMMY_DEVICE_HTTP_HEADERS = { "Content-Type": "text/plain" };
 function initSecureDevices() {
     Security.oa
         .getOAuthPasswordCredentials(process.env.DUMMY_DEVICES_USER, process.env.DUMMY_DEVICES_PASSWORD)
-        .then((results) => {
+        .then(results => {
             DUMMY_DEVICE_HTTP_HEADERS["X-Auth-Token"] = results.access_token;
             return;
         })
-        .catch((error) => {
+        .catch(error => {
             debug(error);
             return;
         });
@@ -1180,7 +1180,7 @@ const options = {
     body: state
 };
 
-request(options, (error) => {
+request(options, error => {
     if (error) {
         debug(debugText + " " + error.code);
     }
