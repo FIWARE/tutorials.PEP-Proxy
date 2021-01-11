@@ -35,6 +35,7 @@ services:
     command: -dbhost mongo-db -logLevel DEBUG
     healthcheck:
       test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
+      interval: 5s
 
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
@@ -103,7 +104,9 @@ services:
     secrets:
       - my_secret_data
     healthcheck:
-      test: curl --fail -s http://localhost:${KEYROCK_PORT}/version || exit 1
+      test: curl --fail -s http://keyrock:${KEYROCK_PORT}/version || exit 1
+      interval: 5s
+
 
   # PEP Proxy for Orion
   orion-proxy:
@@ -204,7 +207,9 @@ services:
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`; 
-        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1    
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+    
 
   mysql-db:
     restart: always
