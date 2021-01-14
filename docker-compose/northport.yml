@@ -76,7 +76,8 @@ services:
       - IOTA_AUTH_TOKEN_PATH=/oauth2/token
 
     healthcheck:
-      test: curl --fail -s http://iot-agent:${IOTA_NORTH_PORT}/iot/about || exit 1
+      interval: 5s
+
 
   # Keyrock is an Identity Management Front-End
   keyrock:
@@ -116,7 +117,8 @@ services:
       default:
         ipv4_address: 172.18.1.10
     depends_on:
-      - keyrock
+        keyrock:
+          condition: service_started
     deploy:
       restart_policy:
         condition: on-failure
@@ -140,7 +142,7 @@ services:
       - PEP_PROXY_MAGIC_KEY=1234
       - PEP_PROXY_PUBLIC_PATHS=/version
     healthcheck:
-      test: curl --fail -s http://orion-proxy:${ORION_PROXY_PORT}/version || exit 1
+      interval: 5s
 
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
@@ -148,9 +150,12 @@ services:
     hostname: tutorial
     container_name: fiware-tutorial
     depends_on:
-      - orion-proxy
-      - iot-agent
-      - keyrock
+      orion-proxy:
+        condition: service_started
+      iot-agent:
+        condition: service_started
+      keyrock :
+        condition: service_started
     networks:
       default:
         ipv4_address: 172.18.1.7
