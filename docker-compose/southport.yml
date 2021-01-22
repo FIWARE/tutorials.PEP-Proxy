@@ -62,7 +62,7 @@ services:
       - IOTA_JSON_LD_CONTEXT=http://context:3000/data-models/ngsi-context.jsonld
       - IOTA_FALLBACK_TENANT=openiot
     healthcheck:
-      test: curl --fail -s http://iot-agent:${IOTA_NORTH_PORT}/iot/about || exit 1
+      interval: 5s
 
   # Keyrock is an Identity Management Front-End
   keyrock:
@@ -90,7 +90,7 @@ services:
     secrets:
       - my_secret_data
     healthcheck:
-      test: curl --fail -s http://localhost:${KEYROCK_PORT}/version || exit 1
+      interval: 5s
 
   # PEP Proxy for Orion
   orion-proxy:
@@ -125,7 +125,7 @@ services:
       - PEP_PROXY_MAGIC_KEY=1234
       - PEP_PROXY_PUBLIC_PATHS=/version
     healthcheck:
-      test: curl --fail -s http://orion-proxy:${ORION_PROXY_PORT}/version || exit 1
+      interval: 5s
 
   # PEP Proxy for the IoT Agent
   iot-agent-proxy:
@@ -158,6 +158,8 @@ services:
       - PEP_PASSWORD=test
       - PEP_PROXY_PDP=idm
       - PEP_PROXY_MAGIC_KEY=1234
+    healthcheck:
+      interval: 5s
 
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:

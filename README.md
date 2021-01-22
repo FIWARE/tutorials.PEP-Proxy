@@ -4,10 +4,8 @@
 [![FIWARE Security](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://github.com/FIWARE/catalogue/blob/master/security/README.md)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.PEP-Proxy.svg)](https://opensource.org/licenses/MIT)
 [![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware)
-<br/>
-[![JSON LD](https://img.shields.io/badge/JSON--LD-1.1-f06f38.svg)](https://w3c.github.io/json-ld-syntax/)
+<br/> [![JSON LD](https://img.shields.io/badge/JSON--LD-1.1-f06f38.svg)](https://w3c.github.io/json-ld-syntax/)
 [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
-
 
 This tutorial uses the FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy combined with **Keyrock** to secure
 access to endpoints exposed by FIWARE generic enablers. Users (or other actors) must log-in and use a token to gain
@@ -195,8 +193,8 @@ Therefore the overall architecture will consist of the following elements:
 -   FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a PEP Proxy securing access to the **Orion** and/or **IoT
     Agent** microservices
 -   The underlying [MongoDB](https://www.mongodb.com/) database :
-    -   Used by the **Orion-LD Context Broker** to hold context data information such as data entities, subscriptions and
-        registrations
+    -   Used by the **Orion-LD Context Broker** to hold context data information such as data entities, subscriptions
+        and registrations
     -   Used by the **IoT Agent** to hold device information such as device URLs and Keys
 -   A [MySQL](https://www.mysql.com/) database :
     -   Used to persist user identities, applications, roles and permissions
@@ -205,7 +203,8 @@ Therefore the overall architecture will consist of the following elements:
     -   Shows which products can be bought at each store
     -   Allows users to "buy" products and reduce the stock count.
     -   Allows authorized users into restricted areas
--   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2) using the
+-   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2) using
+    the
     [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
     protocol running over HTTP - access to certain resources is restricted.
 
@@ -368,16 +367,14 @@ Connection: keep-alive
 
 ```json
 {
-  "token": {
-    "methods": [
-      "password"
-    ],
-    "expires_at": "2020-12-03T16:47:28.462Z"
-  },
-  "idm_authorization_config": {
-    "level": "basic",
-    "authzforce": false
-  }
+    "token": {
+        "methods": ["password"],
+        "expires_at": "2020-12-03T16:47:28.462Z"
+    },
+    "idm_authorization_config": {
+        "level": "basic",
+        "authzforce": false
+    }
 }
 ```
 
@@ -753,7 +750,7 @@ Level 3 - _Advanced Authorization_.
 ## Securing Orion-LD - Application Configuration
 
 The tutorial application has already been registered in **Keyrock**, programmatically the tutorial application will be
-making requests to the **Wilma** PEP Proxy in front of the **Orion-LD Context Broker**. Every request must now include 
+making requests to the **Wilma** PEP Proxy in front of the **Orion-LD Context Broker**. Every request must now include
 an additional `X-Auth-Token` header.
 
 ```yaml
@@ -869,7 +866,7 @@ The response returns an access code to identify the user:
     "token_type": "Bearer",
     "expires_in": 3599,
     "refresh_token": "05e386edd9f95ed0e599c5004db8573e86dff874",
-    "scope":["bearer"]
+    "scope": ["bearer"]
 }
 ```
 
@@ -878,9 +875,9 @@ grants on the page. A successful log-in will return an access token.
 
 ### PEP Proxy - Accessing Orion-LD with an Access Token
 
-If a request to the PEP Proxy is made including a valid access token in the `X-Auth-Token` header with the value 
-obtained in the `X-Auth-token` key in the previous response, the request is permitted and the service behind the 
-PEP Proxy (in this case the Orion-LD Context Broker) will return the data as expected.
+If a request to the PEP Proxy is made including a valid access token in the `X-Auth-Token` header with the value
+obtained in the `X-Auth-token` key in the previous response, the request is permitted and the service behind the PEP
+Proxy (in this case the Orion-LD Context Broker) will return the data as expected.
 
 #### :one::four: Request:
 
@@ -919,7 +916,6 @@ The response returns the information regarding the Farm001:
 }
 ```
 
-
 ### PEP Proxy - Accessing Orion-LD with an Authorization: Bearer
 
 The standard `Authorization: Bearer` header can also be used to identity the user, the request from an authorized user
@@ -939,25 +935,22 @@ curl -X GET 'http://localhost:1027/ngsi-ld/v1/entities/urn:ngsi-ld:Building:barn
 
 ```json
 {
-  "@context": "https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld",
-  "id": "urn:ngsi-ld:Building:barn002",
-  "type": "Building",
-  "category": "barn",
-  "address": {
-    "streetAddress": "Straße des 17. Juni",
-    "addressRegion": "Berlin",
-    "addressLocality": "Tiergarten",
-    "postalCode": "10557"
-  },
-  "location": {
-    "type": "Point",
-    "coordinates": [
-      13.3698,
-      52.5163
-    ]
-  },
-  "name": "Big Red Barn",
-  "owner": "urn:ngsi-ld:Person:person001"
+    "@context": "https://fiware.github.io/tutorials.Step-by-Step/tutorials-context.jsonld",
+    "id": "urn:ngsi-ld:Building:barn002",
+    "type": "Building",
+    "category": "barn",
+    "address": {
+        "streetAddress": "Straße des 17. Juni",
+        "addressRegion": "Berlin",
+        "addressLocality": "Tiergarten",
+        "postalCode": "10557"
+    },
+    "location": {
+        "type": "Point",
+        "coordinates": [13.3698, 52.5163]
+    },
+    "name": "Big Red Barn",
+    "owner": "urn:ngsi-ld:Person:person001"
 }
 ```
 
@@ -973,7 +966,7 @@ function userCredentialGrant(req, res) {
     const email = req.body.email;
     const password = req.body.password;
 
-    oa.getOAuthPasswordCredentials(email, password).then(results => {
+    oa.getOAuthPasswordCredentials(email, password).then((results) => {
         req.session.access_token = results.access_token;
         return;
     });
@@ -1001,7 +994,7 @@ async function buyItem(req, res) {
         req.params.inventoryId,
         {
             options: "keyValues",
-            type: "InventoryItem"
+            type: "InventoryItem",
         },
         setAuthHeaders(req)
     );
@@ -1011,7 +1004,7 @@ async function buyItem(req, res) {
         req.params.inventoryId,
         { shelfCount: { type: "Integer", value: count } },
         {
-            type: "InventoryItem"
+            type: "InventoryItem",
         },
         setAuthHeaders(req)
     );
@@ -1215,11 +1208,11 @@ const DUMMY_DEVICE_HTTP_HEADERS = { "Content-Type": "text/plain" };
 function initSecureDevices() {
     Security.oa
         .getOAuthPasswordCredentials(process.env.DUMMY_DEVICES_USER, process.env.DUMMY_DEVICES_PASSWORD)
-        .then(results => {
+        .then((results) => {
             DUMMY_DEVICE_HTTP_HEADERS["X-Auth-Token"] = results.access_token;
             return;
         })
-        .catch(error => {
+        .catch((error) => {
             debug(error);
             return;
         });
@@ -1234,10 +1227,10 @@ const options = {
     url: UL_URL,
     qs: { k: UL_API_KEY, i: deviceId },
     headers: DUMMY_DEVICE_HTTP_HEADERS,
-    body: state
+    body: state,
 };
 
-request(options, error => {
+request(options, (error) => {
     if (error) {
         debug(debugText + " " + error.code);
     }
