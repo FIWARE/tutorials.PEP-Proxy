@@ -28,13 +28,13 @@ services:
     networks:
       default:
         ipv4_address: 172.18.1.9
-
     ports:
       - "${ORION_LD_PORT}:${ORION_LD_PORT}" # localhost:1026
     command: -dbhost mongo-db -logLevel DEBUG -forwarding
     healthcheck:
       test: curl --fail -s http://orion:${ORION_LD_PORT}/version || exit 1
- 
+      interval: 5s
+
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
     image: fiware/iotagent-ul #:${ULTRALIGHT_VERSION}
@@ -93,7 +93,8 @@ services:
     secrets:
       - my_secret_data
     healthcheck:
-      test: curl --fail -s http://localhost:${KEYROCK_PORT}/version || exit 1
+      interval: 5s
+
 
   # PEP Proxy for Orion
   orion-proxy:
@@ -104,7 +105,8 @@ services:
       default:
         ipv4_address: 172.18.1.10
     depends_on:
-      - keyrock
+      keyrock:
+        condition: service_started
     deploy:
       restart_policy:
         condition: on-failure
@@ -136,10 +138,12 @@ services:
     hostname: tutorial
     container_name: fiware-tutorial
     depends_on:
-      - orion-proxy
-      - iot-agent
-      - keyrock
-      - mongo-db
+      orion-proxy :
+        condition: service_started
+      iot-agent:
+        condition: service_started
+      keyrock:
+        condition: service_started
     networks:
       default:
         ipv4_address: 172.18.1.7
@@ -187,13 +191,14 @@ services:
       - "${MONGO_DB_PORT}:${MONGO_DB_PORT}" # localhost:27017
     networks:
       - default
-
     volumes:
       - mongo-db:/data
     healthcheck:
       test: |
         host=`hostname --ip-address || echo '127.0.0.1'`; 
-        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1    
+        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+      interval: 5s
+    
 
   mysql-db:
     restart: always

@@ -38,8 +38,7 @@ getHeartbeat(){
 
 waitForOrion () {
 	echo -e "\n⏳ Waiting for \033[1;34mOrion-LD\033[0m to be available\n"
-	getHeartbeat "${ORION}"
-	while [ "${response}" -eq 000 ]
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-orion` == "healthy" ]
 	do
 		echo -e "\nContext Broker HTTP state: ${response} (waiting for 200)"
 		pause 6
@@ -105,11 +104,8 @@ waitForMongo () {
 
 
 loadData () {
-	export CONTEXT_BROKER="$1" 
-	waitForMongo
-	addDatabaseIndex
 	waitForContext
-	waitForOrion
+	export CONTEXT_BROKER="$1" 
 	docker run --rm -v $(pwd)/import-data:/import-data \
 		--network fiware_default \
 		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
@@ -198,8 +194,11 @@ case "${command}" in
 		echo -e "- \033[1;31mKeyrock\033[0m is an Identity Management Front-End"
 		echo -e "- \033[1;31mWilma\033[0m is a PEP Proxy around \033[1;34mOrion\033[0m"
 		startContainers false orion.yml
-		waitForKeyrock
+		waitForMongo
+		addDatabaseIndex
+		waitForOrion
 		loadData orion:1026
+		waitForKeyrock
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
@@ -212,8 +211,11 @@ case "${command}" in
 		echo -e "- \033[1;31mKeyrock\033[0m is an Identity Management Front-End"
 		echo -e "- 2 instances of \033[1;31mWilma\033[0m as a PEP Proxy around \033[1;34mOrion\033[0m and between the Devices and \033[1;36mIoT-Agent\033[0m Southport"
 		startContainers false southport.yml
-		waitForKeyrock
+		waitForMongo
+		addDatabaseIndex
+		waitForOrion
 		loadData orion:1026
+		waitForKeyrock
 		displayServices
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
@@ -226,9 +228,8 @@ case "${command}" in
 		echo -e "- \033[1;31mKeyrock\033[0m is an Identity Management Front-End"
 		echo -e "- \033[1;31mWilma\033[0m as a PEP Proxy between \033[1;34mOrion\033[0m and the \033[1;36mIoT-Agent\033[0m"
 		startContainers false northport.yml
-		waitForKeyrock
+		waitForMongo
 		addDatabaseIndex
-		waitForContext
 		waitForOrion
 		CONTEXT_BROKER="orion:1026" 
 		docker run --rm -v $(pwd)/import-data:/import-data \
@@ -236,6 +237,7 @@ case "${command}" in
 			-e CONTEXT_BROKER=${CONTEXT_BROKER} \
 			-e TUTORIAL_DATA_MODELS_CONTEXT=${CONTEXT} \
 			--entrypoint /bin/ash curlimages/curl import-data
+		waitForKeyrock
 		displayServices
 		echo
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
