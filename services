@@ -171,13 +171,13 @@ addDatabaseIndex () {
 startContainers () {
 	echo ""
 	export IDM_HTTPS_ENABLED="$1" 
-	docker-compose --env-file=.env --log-level ERROR -f docker-compose/$2 -p fiware up -d --remove-orphans
+	docker-compose --log-level ERROR -f docker-compose/$2 -p fiware up -d --remove-orphans
 	echo ""
 }
 
 stoppingContainers () {
 	echo "Stopping containers"
-	docker-compose --env-file=.env --log-level ERROR -f docker-compose/southport.yml  -p fiware down -v --remove-orphans
+	docker-compose --log-level ERROR -f docker-compose/southport.yml  -p fiware down -v --remove-orphans
 }
 
 command="$1"
@@ -243,14 +243,17 @@ case "${command}" in
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
 	"stop")
+		export $(cat .env | grep "#" -v)
 		stoppingContainers
 		;;
 	"start")
+		export $(cat .env | grep "#" -v)
 		./services orion
 		;;
 	"create")
+		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
-		docker-compose --env-file=.env --log-level ERROR -f docker-compose/orion.yml -p fiware pull
+		docker-compose --log-level ERROR -f docker-compose/orion.yml -p fiware pull
 		;;
 	*)
 		echo "Command not Found."
