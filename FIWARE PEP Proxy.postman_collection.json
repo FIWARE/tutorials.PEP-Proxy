@@ -88,7 +88,6 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "b886ca21-2e87-489c-be24-cfa0df809954",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -98,7 +97,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "30bf17a0-2033-4794-8351-f34ce2b67811",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -279,7 +277,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "387e4c2b-2ca2-4f82-9062-5cad900bcb98",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -289,15 +286,13 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "2b873967-538b-4fe3-839c-e7eeffb7d9ba",
 								"type": "text/javascript",
 								"exec": [
 									""
 								]
 							}
 						}
-					],
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "IoT Agent CRUD Actions",
@@ -504,7 +499,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "19ac2874-e6e9-43d4-8560-de18473d7a3a",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -514,15 +508,13 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b544eada-13d0-40bd-b53c-b715a1f94dd2",
 								"type": "text/javascript",
 								"exec": [
 									""
 								]
 							}
 						}
-					],
-					"_postman_isSubFolder": true
+					]
 				}
 			],
 			"description": "User accounts have been created in a [previous tutorial](https://github.com/Fiware/tutorials.Identity-Management). Non-human\nactors such as a PEP Proxy can be set up in the same manner. The account for each PEP Proxy, IoT Agent or IoT Sensor will \nmerely consist of a Username and password linked to an application within Keyrock. PEP Proxy and IoT Agents accounts can\nbe created by using either the Keyrock GUI or by using the REST API.\n\n## Video : Wilma PEP Proxy Configuration\n\n[![](http://img.youtube.com/vi/b4sYU78skrw/0.jpg)](https://www.youtube.com/watch?v=b4sYU78skrw \"PEP Proxy Configuration\")\n\nClick on the image above to see a video about configuring the Wilma PEP Proxy using the **Keyrock** GUI\n\n## Managing PEP Proxies and IoT Agents - Start Up\n\nTo start the system run the following command:\n\n```console\n./services orion\n```\n\nThis will start up **Keyrock** with a series of users. There are already two existing applications \nand an existing PEP Proxy Account associated with the application.\n",
@@ -530,7 +522,6 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "58d4e080-c9bf-4e19-aab9-08d332b71cba",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -540,7 +531,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f1ed306e-fcb8-470c-9d81-0e0e2d385f7f",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -681,6 +671,33 @@
 						"description": "The standard  `Authorization: Bearer` header can also be used to identity the user,\nthe request from an authorized user is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as\nexpected."
 					},
 					"response": []
+				},
+				{
+					"name": "PEP Proxy - Accessing Orion with an Access Token Copy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth-Token",
+								"value": "{{X-Access-token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:1027/v2/entities/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "1027",
+							"path": [
+								"v2",
+								"entities",
+								""
+							]
+						},
+						"description": "If a request to the PEP Proxy is made including a valid access token in the `X-Auth-Token` header as shown, the request\nis permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as\nexpected."
+					},
+					"response": []
 				}
 			],
 			"description": "![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-orion.png)\n\n## Securing Orion - PEP Proxy Configuration\n\nThe `orion-proxy` container is an instance of FIWARE **Wilma** listening on port `1027`, it is configured to forward traffic to\n`orion` on port `1026`, which is the default port that the Orion Context Broker is listening to for NGSI Requests.\n\n```yaml\n  orion-proxy:\n    image: fiware/pep-proxy\n    container_name: fiware-orion-proxy\n    hostname: orion-proxy\n    networks:\n      default:\n        ipv4_address: 172.18.1.10\n    depends_on:\n      - keyrock\n    ports:\n      - \"1027:1027\"\n    expose:\n      - \"1027\"\n    environment:\n      - PEP_PROXY_APP_HOST=orion\n      - PEP_PROXY_APP_PORT=1026\n      - PEP_PROXY_PORT=1027\n      - PEP_PROXY_IDM_HOST=keyrock\n      - PEP_PROXY_HTTPS_ENABLED=false\n      - PEP_PROXY_AUTH_ENABLED=false\n      - PEP_PROXY_IDM_SSL_ENABLED=false\n      - PEP_PROXY_IDM_PORT=3005\n      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp\n      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000\n      - PEP_PASSWORD=test\n      - PEP_PROXY_PDP=idm\n      - PEP_PROXY_MAGIC_KEY=1234\n```\n\nThe `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by adding new entries to the application in **Keyrock**,\nhowever, in this tutorial, they have been pre-defined by populating the **MySQL** database with data on start-up.\n\nThe `orion-proxy` container is listening on a single port:\n\n* The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to the **Wilma** instance\n  without being part of the same network. \n\n\n| Key |Value|Description|\n|-----|-----|-----------|\n| PEP_PROXY_APP_HOST |`orion` | The hostname of the service behind the PEP Proxy |\n| PEP_PROXY_APP_PORT |`1026` | The port of the service behind the PEP Proxy |\n| PEP_PROXY_PORT |`1027` | The port that the PEP Proxy is listening on |\n| PEP_PROXY_IDM_HOST | `keyrock`| The hostname for the Identity Manager |\n| PEP_PROXY_HTTPS_ENABLED | `false`| Whether the PEP Proxy itself is running under HTTPS |\n| PEP_PROXY_AUTH_ENABLED | `false`| Whether the PEP Proxy is checking for Authorization |\n| PEP_PROXY_IDM_SSL_ENABLED | `false`| Whether the Identity Manager is running under HTTPS |\n| PEP_PROXY_IDM_PORT | `3005`|  The Port for the Identity Manager instance|\n| PEP_PROXY_APP_ID | `tutorial-dckr-site-0000-xpresswebapp`| |\n| PEP_PROXY_USERNAME | `pep_proxy_00000000-0000-0000-0000-000000000000`|  The Username for the PEP Proxy |\n| PEP_PASSWORD | `test`|  The Password for the PEP Proxy |\n| PEP_PROXY_PDP | `idm`| The Type of service offering the Policy Decision Point|\n| PEP_PROXY_MAGIC_KEY | `1234` | |\n\nFor this example, the PEP Proxy is checking for Level 1 - *Authentication Access* not  Level 2 - *Basic Authorization* or \nLevel 3 - *Advanced Authorization*. \n\n\n\n## Securing Orion - Application Configuration\n\nThe tutorial application has already been registered in **Keyrock**, programmatically the tutorial application will\nbe making requests to the **Wilma** PEP Proxy in front of the **Orion Conext Broker**. Every request must now include\nan additional `access_token` header.\n\n```yaml\n  tutorial-app:\n    image: fiware/tutorials.context-provider\n    hostname: tutorial-app\n    container_name: tutorial-app\n    depends_on:\n        - orion-proxy\n        - iot-agent\n        - keyrock\n    networks:\n      default:\n        ipv4_address: 172.18.1.7\n        aliases:\n          - iot-sensors\n    expose:\n        - \"3000\"\n        - \"3001\"\n    ports:\n        - \"3000:3000\"\n        - \"3001:3001\"\n    environment:\n        - \"WEB_APP_PORT=3000\"\n        - \"SECURE_ENDPOINTS=true\"\n        - \"CONTEXT_BROKER=http://orion-proxy:1027/v2\"\n        - \"KEYROCK_URL=http://localhost\"\n        - \"KEYROCK_IP_ADDRESS=http://172.18.1.5\"\n        - \"KEYROCK_PORT=3005\"\n        - \"KEYROCK_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp\"\n        - \"KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret\"\n        - \"CALLBACK_URL=http://localhost:3000/login\"\n```\n\nAll of the `tutorial` container settings have been described in previous tutorials. One important change is necessary however,\nrather than accessing **Orion** directly on the default port `1026` as shown in all previous tutorials, all context broker\ntraffic is now sent to `orion-proxy` on port `1027`. As a reminder, the relevant settings are detailed below:\n\n| Key |Value|Description|\n|-----|-----|-----------|\n|WEB_APP_PORT|`3000`|Port used by web-app which displays the login screen & etc.|\n|KEYROCK_URL|`http://localhost`| This is URL of the **Keyrock** Web Front-End itself, used for redirection when forwarding users |\n|KEYROCK_IP_ADDRESS|`http://172.18.1.5`| This is URL of the **Keyrock** OAuth Communications |\n|KEYROCK_PORT|`3005` | This is the port that **Keyrock** is listening on.|\n|KEYROCK_CLIENT_ID|`tutorial-dckr-site-0000-xpresswebapp`| The Client ID defined by Keyrock for this application |\n|KEYROCK_CLIENT_SECRET|`tutorial-dckr-site-0000-clientsecret`| The Client Secret defined by Keyrock for this application |\n|CALLBACK_URL|`http://localhost:3000/login`| The callback URL used by Keyrock when a challenge has succeeded.|\n\n## Securing Orion - Start up\n\nTo start the system with a PEP Proxy protecting  access to **Orion**, run the following command:\n\n```console\n./services orion\n```\n\n\n### Video : Securing A REST API\n\n[![](http://img.youtube.com/vi/coxFQEY0_So/0.jpg)](https://www.youtube.com/watch?v=coxFQEY0_So \"Securing a REST API\")\n\nClick on the image above to see a video about securing a REST API using the Wilma PEP Proxy\n\n\n\n## Securing Orion - Sample Code\n\nWhen a User logs in to the application using the User Credentials Grant, an `access_token` is obtained which identifies the User.\nThe  `access_token`  is stored in session:\n\n```javascript\nfunction userCredentialGrant(req, res){\n    debug('userCredentialGrant');\n\n    const email = req.body.email;\n    const password = req.body.password;\n\n    oa.getOAuthPasswordCredentials(email, password)\n    .then(results => {\n        req.session.access_token =  results.access_token;\n        return;\n    })\n}\n```\n\nFor each subsequent request, the `access_token` is supplied in the `X-Auth-Token` Header\n\n```javascript\nfunction setAuthHeaders(req){\n  const headers = {};\n  if (req.session.access_token) {\n    headers['X-Auth-Token'] = req.session.access_token;\n  }\n  return headers;\n}\n```\n\nFor example, when buying an item, two requests are made, the same  `X-Auth-Token` Header must be added to each request - therefore\nthe User can be identified and access granted.\n\n```javascript\nasync function buyItem(req, res) {\n\n  const inventory = await retrieveEntity(req.params.inventoryId, {\n    options: 'keyValues',\n    type: 'InventoryItem',\n  }, setAuthHeaders(req));\n  const count = inventory.shelfCount - 1;\n\n  await updateExistingEntityAttributes(\n    req.params.inventoryId,\n    { shelfCount: { type: 'Integer', value: count } },\n    {\n      type: 'InventoryItem',\n    }, setAuthHeaders(req)\n  );\n  res.redirect(`/app/store/${inventory.refStore}/till`);\n}\n```",
@@ -688,7 +705,6 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "96981a47-ff81-43fb-b694-b80cc9a06f06",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -698,7 +714,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "900a4c35-38c9-4e7d-a52d-35913760b3ba",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -794,7 +809,6 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "6d3383f2-97c3-43c6-a850-81bba51d5b17",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -804,15 +818,13 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a21a68b9-aa92-4710-845f-c16bfe75511a",
 						"type": "text/javascript",
 						"exec": [
 							""
 						]
 					}
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Securing an IoT Agent North Port",
@@ -943,7 +955,6 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "6d3383f2-97c3-43c6-a850-81bba51d5b17",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -953,22 +964,19 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a21a68b9-aa92-4710-845f-c16bfe75511a",
 						"type": "text/javascript",
 						"exec": [
 							""
 						]
 					}
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		}
 	],
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "f32d4f4e-6a77-4b0a-9cd1-7fdc58c14247",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -978,7 +986,6 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "453a7383-bb2a-4e01-8ed4-7355fb12520f",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -988,52 +995,36 @@
 	],
 	"variable": [
 		{
-			"id": "889f9060-1500-42a4-a954-6854bdb810dc",
 			"key": "keyrock",
-			"value": "localhost:3005",
-			"type": "string"
+			"value": "localhost:3005"
 		},
 		{
-			"id": "5367c71a-87b5-4211-bdca-2a0aa475601f",
 			"key": "X-Auth-token",
-			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-			"type": "string"
+			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
 		},
 		{
-			"id": "5b3f18b4-3e86-4d0b-975e-b3cb36dc99e1",
 			"key": "X-Subject-token",
-			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-			"type": "string"
+			"value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
 		},
 		{
-			"id": "0e61501d-21c8-4306-ae19-7f6a3e3877fc",
 			"key": "application-id",
-			"value": "tutorial-dckr-site-0000-xpresswebapp",
-			"type": "string"
+			"value": "tutorial-dckr-site-0000-xpresswebapp"
 		},
 		{
-			"id": "57d06cb9-9f34-4c1c-979f-5be8c611c943",
 			"key": "X-Access-token",
-			"value": " 79d07d0139c66b75fc25f56a88008553f12f6ac7",
-			"type": "string"
+			"value": " 79d07d0139c66b75fc25f56a88008553f12f6ac7"
 		},
 		{
-			"id": "8277517e-a78c-4b8c-9343-5cb72dac343a",
 			"key": "Authorization",
-			"value": "dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==",
-			"type": "string"
+			"value": "dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA=="
 		},
 		{
-			"id": "84825d68-7c99-463f-bd21-af76ee76e65f",
 			"key": "iot-agent-id",
-			"value": "iot_sensor_00000000-0000-0000-0000-000000000000",
-			"type": "string"
+			"value": "iot_sensor_00000000-0000-0000-0000-000000000000"
 		},
 		{
-			"id": "e7e51ce5-619b-460c-8b9f-a0aa02ba76c5",
 			"key": "pep-proxy-id",
-			"value": "pep_proxy_00000000-0000-0000-0000-000000000000",
-			"type": "string"
+			"value": "pep_proxy_00000000-0000-0000-0000-000000000000"
 		}
 	]
 }
