@@ -1504,28 +1504,34 @@ curl -X POST \
 
 ### IoT Agent - 信頼できるサービス・グループのプロビジョニング
 
-アクセス・トークン (トラスト・トークンとも呼ばれる) をサービス・グループに追加する必要があります。
+アクセス・トークン (トラスト・トークンとも呼ばれる) をサービス・グループに追加する必要があります。`resource` と `apikey`
+は、サービス・グループのプロビジョニング段階で設定された値に対応します。この場合、モーション・センサ・グループは
+次のようにプロビジョニングされています:
+
+```json
+{
+     "apikey":      "1068318794",
+     "cbroker":     "http://orion:1026",
+     "entity_type": "Motion",
+     "resource":    "/iot/d",
+}
+```
 
 #### :one::eight: リクエスト:
 
 ```console
-curl -iX POST \
-  'http://localhost:4041/iot/services' \
+curl -iX PUT \
+  'http://localhost:4041/iot/services?resource=/iot/d&apikey=1068318794' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
   -d '{
- "services": [
-   {
-     "apikey":      "4jggokgpepnvsb2uv4s40d59ov",
-     "cbroker":     "http://orion:1026",
-     "entity_type": "Motion",
-     "resource":    "/iot/d",
-     "trust": "e37aeef5d48c9c1a3d4adf72626a8745918d4355"
-   }
- ]
+     "cbroker": "http://orion-proxy:1027",
+     "trust": "30a5ce4c71e416bd199dcdcb7f8bcd8d70e8bb5e"
 }'
 ```
+
+モーション・センサ・リクエストは `orion-proxy` を介して送信され、生成されたトラスト・トークンを使用して自身を識別します。
 
 <a name="iot-agent---provisioning-a-sensor"></a>
 
