@@ -117,6 +117,8 @@ services:
     expose:
       - "${ORION_PROXY_PORT}"
     environment:
+      - DEBUG=pep-proxy:*
+      - PEP_PROXY_DEBUG=true
       - PEP_PROXY_APP_HOST=orion
       - PEP_PROXY_APP_PORT=${ORION_PORT}
       - PEP_PROXY_PORT=${ORION_PROXY_PORT}
@@ -132,7 +134,7 @@ services:
       - PEP_PROXY_MAGIC_KEY=1234
       - PEP_PROXY_PUBLIC_PATHS=/version
     healthcheck:
-      interval: 5s
+      interval: 50s
 
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
