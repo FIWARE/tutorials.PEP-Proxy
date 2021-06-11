@@ -106,6 +106,31 @@ LOCK TABLES `authzforce` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `delegation_evidence`
+--
+
+DROP TABLE IF EXISTS `delegation_evidence`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `delegation_evidence` (
+  `policy_issuer` varchar(255) NOT NULL,
+  `access_subject` varchar(255) NOT NULL,
+  `policy` json NOT NULL,
+  PRIMARY KEY (`policy_issuer`,`access_subject`),
+  UNIQUE KEY `policy_issuer_access_subject_unique` (`policy_issuer`,`access_subject`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `delegation_evidence`
+--
+
+LOCK TABLES `delegation_evidence` WRITE;
+/*!40000 ALTER TABLE `delegation_evidence` DISABLE KEYS */;
+/*!40000 ALTER TABLE `delegation_evidence` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `eidas_credentials`
 --
 
@@ -181,7 +206,7 @@ DROP TABLE IF EXISTS `oauth_access_token`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oauth_access_token` (
-  `access_token` varchar(255) NOT NULL,
+  `access_token` text NOT NULL,
   `expires` datetime DEFAULT NULL,
   `scope` varchar(255) DEFAULT NULL,
   `refresh_token` varchar(255) DEFAULT NULL,
@@ -191,8 +216,9 @@ CREATE TABLE `oauth_access_token` (
   `user_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `iot_id` varchar(255) DEFAULT NULL,
   `authorization_code` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`access_token`),
-  UNIQUE KEY `access_token` (`access_token`),
+  `hash` char(64) NOT NULL,
+  PRIMARY KEY (`hash`),
+  UNIQUE KEY `oauth_access_token_hash_uk` (`hash`),
   KEY `oauth_client_id` (`oauth_client_id`),
   KEY `user_id` (`user_id`),
   KEY `iot_id` (`iot_id`),
@@ -209,14 +235,13 @@ CREATE TABLE `oauth_access_token` (
 LOCK TABLES `oauth_access_token` WRITE;
 /*!40000 ALTER TABLE `oauth_access_token` DISABLE KEYS */;
 INSERT INTO `oauth_access_token` VALUES 
-('15682667caa4bb5ac15056fee3836b2980288bf2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','admin',NULL,NULL),
-('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','alice',NULL,NULL),
-('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','bob',NULL,NULL),
-('cccccccccccccccccccccccccccccccccccccccc','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'cccccccc-cccc-cccc-cccc-cccccccccccc','charlie',NULL,NULL),
-('d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d1d1d1d1-dddd-dddd-dddd-d1d1d1d1d1d1','detective1',NULL,NULL),
-('d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d2d2d2d2-dddd-dddd-dddd-d2d2d2d2d2d2','detective2',NULL,NULL),
-('m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m1m1m1m1-mmmm-mmmm-mmmm-m1m1m1m1m1m1','manager1',NULL,NULL),
-('m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m2m2m2m2-mmmm-mmmm-mmmm-m2m2m2m2m2m2','manager2',NULL,NULL);
+('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','alice',NULL,NULL, '12661599e24923dc17384a28644fbd2c0e30fa1cc7295772470d22729b054c8b'),
+('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','bob',NULL,NULL, '8d94b35f8eea7e1577e30fc75646dfeb4dd0982a083635028998d53ef590c7ec'),
+('cccccccccccccccccccccccccccccccccccccccc','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'cccccccc-cccc-cccc-cccc-cccccccccccc','charlie',NULL,NULL, 'f57858edab011913ac0a5d92f04987f4b34eab0d702c8198c1900871d7d87198'),
+('d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d1d1d1d1-dddd-dddd-dddd-d1d1d1d1d1d1','detective1',NULL,NULL, '18a4605f12def28bbbbab7bbef23fe6e204d73432d9aee8514fc168037945221'),
+('d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d2d2d2d2-dddd-dddd-dddd-d2d2d2d2d2d2','detective2',NULL,NULL, '1df5d6346470cc81d7a533f67a8399c052b5fc608b94972557138e10a335c5e1'),
+('m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m1m1m1m1-mmmm-mmmm-mmmm-m1m1m1m1m1m1','manager1',NULL,NULL, '853d6a374a92501e3e93d28184f9217941793ff646b636c04b35d20169c0d3b7'),
+('m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m2m2m2m2-mmmm-mmmm-mmmm-m2m2m2m2m2m2','manager2',NULL,NULL, '5603ade3a9d2303dbf3f28a35023a53c28297dc7db955784ac09b4c294ecae8b');
 
 /*!40000 ALTER TABLE `oauth_access_token` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -237,7 +262,9 @@ CREATE TABLE `oauth_authorization_code` (
   `extra` json DEFAULT NULL,
   `oauth_client_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `user_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `nonce` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`authorization_code`),
+
   UNIQUE KEY `authorization_code` (`authorization_code`),
   KEY `oauth_client_id` (`oauth_client_id`),
   KEY `user_id` (`user_id`),
