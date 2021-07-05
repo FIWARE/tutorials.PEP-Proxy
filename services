@@ -86,7 +86,7 @@ waitForIoTAgent () {
 
 waitForKeyrock () {
 	echo -e "⏳ Waiting for \033[1;31mKeyrock\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-keyrock` == "healthy" ]	
+	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-keyrock` == "healthy" ]
 	do
 		echo -e "\nKeyrock HTTP state: ${response} (waiting for 200)"
 		pause 9
@@ -97,7 +97,7 @@ waitForKeyrock () {
 waitForMongo () {
 	echo -e "\n⏳ Waiting for \033[1mMongoDB\033[0m to be available\n"
 	while ! [ `docker inspect --format='{{.State.Health.Status}}' db-mongo` == "healthy" ]
-	do 
+	do
 		sleep 1
 	done
 }
@@ -105,7 +105,7 @@ waitForMongo () {
 
 loadData () {
 	waitForContext
-	export CONTEXT_BROKER="$1" 
+	export CONTEXT_BROKER="$1"
 	docker run --rm -v $(pwd)/import-data:/import-data \
 		--network fiware_default \
 		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
@@ -123,7 +123,7 @@ loadData () {
 waitForContext () {
 	echo -e "\n⏳ Waiting for \033[1m@context\033[0m to be available\n"
 	while [ `docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` -eq 000 ]
-	do 
+	do
 	  echo -e "@context HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` " (waiting for 200)"
 	  sleep 1
 	done
@@ -142,7 +142,7 @@ addDatabaseIndex () {
 	db = conn.getDB("orion");
 	db.createCollection("entities");
 	db.entities.createIndex({"_id.servicePath": 1, "_id.id": 1, "_id.type": 1}, {unique: true});
-	db.entities.createIndex({"_id.type": 1}); 
+	db.entities.createIndex({"_id.type": 1});
 	db.entities.createIndex({"_id.id": 1});' > /dev/null
 
 	docker exec  db-mongo mongo --eval '
@@ -150,7 +150,7 @@ addDatabaseIndex () {
 	db = conn.getDB("orion-openiot");
 	db.createCollection("entities");
 	db.entities.createIndex({"_id.servicePath": 1, "_id.id": 1, "_id.type": 1}, {unique: true});
-	db.entities.createIndex({"_id.type": 1}); 
+	db.entities.createIndex({"_id.type": 1});
 	db.entities.createIndex({"_id.id": 1});' > /dev/null
 	echo -e " \033[1;32mdone\033[0m"
 
@@ -160,7 +160,7 @@ addDatabaseIndex () {
 	db = conn.getDB("iotagentul");
 	db.createCollection("devices");
 	db.devices.createIndex({"_id.service": 1, "_id.id": 1, "_id.type": 1});
-	db.devices.createIndex({"_id.type": 1}); 
+	db.devices.createIndex({"_id.type": 1});
 	db.devices.createIndex({"_id.id": 1});
 	db.createCollection("groups");
 	db.groups.createIndex({"_id.resource": 1, "_id.apikey": 1, "_id.service": 1});
@@ -170,7 +170,7 @@ addDatabaseIndex () {
 
 startContainers () {
 	echo ""
-	export IDM_HTTPS_ENABLED="$1" 
+	export IDM_HTTPS_ENABLED="$1"
 	docker-compose --log-level ERROR -f docker-compose/$2 -p fiware up -d --remove-orphans
 	echo ""
 }
@@ -186,6 +186,7 @@ case "${command}" in
         echo "usage: services [create|orion|northport]"
         ;;
     "orion")
+		export $(cat .env | grep "#" -v)
 		stoppingContainers
 		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;31mKeyrock\033[0m, \033[1;31mWilma\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
@@ -203,6 +204,7 @@ case "${command}" in
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
 	"southport")
+		export $(cat .env | grep "#" -v)
 		stoppingContainers
 		echo -e "Starting eight containers \033[1;34mOrion\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;31mKeyrock\033[0m, \033[1;31mWilma\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
@@ -220,6 +222,7 @@ case "${command}" in
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
 	"northport")
+		export $(cat .env | grep "#" -v)
 		stoppingContainers
 		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;31mKeyrock\033[0m, \033[1;31mWilma\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
@@ -231,7 +234,7 @@ case "${command}" in
 		waitForMongo
 		addDatabaseIndex
 		waitForOrion
-		CONTEXT_BROKER="orion:1026" 
+		CONTEXT_BROKER="orion:1026"
 		docker run --rm -v $(pwd)/import-data:/import-data \
 			--network fiware_default \
 			-e CONTEXT_BROKER=${CONTEXT_BROKER} \
@@ -261,6 +264,3 @@ case "${command}" in
 		exit 127;
 		;;
 esac
-
-
-
