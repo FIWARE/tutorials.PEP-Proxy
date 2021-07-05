@@ -17,7 +17,7 @@ printf "⏳ Provisioning IoT devices "
 # Create a service groups for all UltraLight IoT devices
 #
 
-curl -X POST  \
+curl -s -o /dev/null -X POST  \
   "http://iot-agent:$IOTA_NORTH_PORT/iot/services" \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
