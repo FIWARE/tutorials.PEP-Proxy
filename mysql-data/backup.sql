@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 5.7.22, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.35, for Linux (x86_64)
 --
 -- Host: localhost    Database: idm
 -- ------------------------------------------------------
@@ -38,7 +38,26 @@ CREATE TABLE `SequelizeMeta` (
 
 LOCK TABLES `SequelizeMeta` WRITE;
 /*!40000 ALTER TABLE `SequelizeMeta` DISABLE KEYS */;
-INSERT INTO `SequelizeMeta` VALUES ('201802190000-CreateUserTable.js'),('201802190003-CreateUserRegistrationProfileTable.js'),('201802190005-CreateOrganizationTable.js'),('201802190008-CreateOAuthClientTable.js'),('201802190009-CreateUserAuthorizedApplicationTable.js'),('201802190010-CreateRoleTable.js'),('201802190015-CreatePermissionTable.js'),('201802190020-CreateRoleAssignmentTable.js'),('201802190025-CreateRolePermissionTable.js'),('201802190030-CreateUserOrganizationTable.js'),('201802190035-CreateIotTable.js'),('201802190040-CreatePepProxyTable.js'),('201802190045-CreateAuthZForceTable.js'),('201802190050-CreateAuthTokenTable.js'),('201802190060-CreateOAuthAuthorizationCodeTable.js'),('201802190065-CreateOAuthAccessTokenTable.js'),('201802190070-CreateOAuthRefreshTokenTable.js'),('201802190075-CreateOAuthScopeTable.js'),('20180405125424-CreateUserTourAttribute.js'),('20180612134640-CreateEidasTable.js');
+INSERT INTO `SequelizeMeta` VALUES ('201802190000-CreateUserTable.js'),
+('201802190003-CreateUserRegistrationProfileTable.js'),
+('201802190005-CreateOrganizationTable.js'),
+('201802190008-CreateOAuthClientTable.js'),
+('201802190009-CreateUserAuthorizedApplicationTable.js'),
+('201802190010-CreateRoleTable.js'),
+('201802190015-CreatePermissionTable.js'),
+('201802190020-CreateRoleAssignmentTable.js'),
+('201802190025-CreateRolePermissionTable.js'),
+('201802190030-CreateUserOrganizationTable.js'),
+('201802190035-CreateIotTable.js'),
+('201802190040-CreatePepProxyTable.js'),
+('201802190045-CreateAuthZForceTable.js'),
+('201802190050-CreateAuthTokenTable.js'),
+('201802190060-CreateOAuthAuthorizationCodeTable.js'),
+('201802190065-CreateOAuthAccessTokenTable.js'),
+('201802190070-CreateOAuthRefreshTokenTable.js'),
+('201802190075-CreateOAuthScopeTable.js'),
+('20180405125424-CreateUserTourAttribute.js'),
+('20180612134640-CreateEidasTable.js');
 /*!40000 ALTER TABLE `SequelizeMeta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -70,11 +89,11 @@ CREATE TABLE `auth_token` (
 
 LOCK TABLES `auth_token` WRITE;
 /*!40000 ALTER TABLE `auth_token` DISABLE KEYS */;
-INSERT INTO `auth_token` VALUES 
+INSERT INTO `auth_token` VALUES ('51f2e380-c959-4dee-a0af-380f730137c3','2036-07-30 13:02:37',1,'admin',NULL),
+('6e2a380a-0570-4172-846b-b4a3dbd8adc6','2021-07-30 15:34:31',1,NULL,'pep_proxy_00000000-0000-0000-0000-000000000000'),
 ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','2036-07-30 12:04:45',1,'aaaaaaaa-good-0000-0000-000000000000',NULL),
 ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','2036-07-30 12:38:13',1,'bbbbbbbb-good-0000-0000-000000000000',NULL),
-('cccccccc-cccc-cccc-cccc-cccccccccccc','2036-07-31 09:36:13',1,'cccccccc-good-0000-0000-000000000000',NULL),
-('51f2e380-c959-4dee-a0af-380f730137c3','2036-07-30 13:02:37',1,'admin',NULL);
+('cccccccc-cccc-cccc-cccc-cccccccccccc','2036-07-31 09:36:13',1,'cccccccc-good-0000-0000-000000000000',NULL);
 /*!40000 ALTER TABLE `auth_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -234,15 +253,14 @@ CREATE TABLE `oauth_access_token` (
 
 LOCK TABLES `oauth_access_token` WRITE;
 /*!40000 ALTER TABLE `oauth_access_token` DISABLE KEYS */;
-INSERT INTO `oauth_access_token` VALUES 
-('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','alice',NULL,NULL, '12661599e24923dc17384a28644fbd2c0e30fa1cc7295772470d22729b054c8b'),
-('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','bob',NULL,NULL, '8d94b35f8eea7e1577e30fc75646dfeb4dd0982a083635028998d53ef590c7ec'),
-('cccccccccccccccccccccccccccccccccccccccc','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'cccccccc-cccc-cccc-cccc-cccccccccccc','charlie',NULL,NULL, 'f57858edab011913ac0a5d92f04987f4b34eab0d702c8198c1900871d7d87198'),
-('d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d1d1d1d1-dddd-dddd-dddd-d1d1d1d1d1d1','detective1',NULL,NULL, '18a4605f12def28bbbbab7bbef23fe6e204d73432d9aee8514fc168037945221'),
-('d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d2d2d2d2-dddd-dddd-dddd-d2d2d2d2d2d2','detective2',NULL,NULL, '1df5d6346470cc81d7a533f67a8399c052b5fc608b94972557138e10a335c5e1'),
-('m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m1m1m1m1-mmmm-mmmm-mmmm-m1m1m1m1m1m1','manager1',NULL,NULL, '853d6a374a92501e3e93d28184f9217941793ff646b636c04b35d20169c0d3b7'),
-('m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m2m2m2m2-mmmm-mmmm-mmmm-m2m2m2m2m2m2','manager2',NULL,NULL, '5603ade3a9d2303dbf3f28a35023a53c28297dc7db955784ac09b4c294ecae8b');
-
+INSERT INTO `oauth_access_token` VALUES ('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','alice',NULL,NULL,'12661599e24923dc17384a28644fbd2c0e30fa1cc7295772470d22729b054c8b'),
+('d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d1d1d1d1-dddd-dddd-dddd-d1d1d1d1d1d1','detective1',NULL,NULL,'18a4605f12def28bbbbab7bbef23fe6e204d73432d9aee8514fc168037945221'),
+('d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d2d2d2d2-dddd-dddd-dddd-d2d2d2d2d2d2','detective2',NULL,NULL,'1df5d6346470cc81d7a533f67a8399c052b5fc608b94972557138e10a335c5e1'),
+('m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m2m2m2m2-mmmm-mmmm-mmmm-m2m2m2m2m2m2','manager2',NULL,NULL,'5603ade3a9d2303dbf3f28a35023a53c28297dc7db955784ac09b4c294ecae8b'),
+('m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m1m1m1m1-mmmm-mmmm-mmmm-m1m1m1m1m1m1','manager1',NULL,NULL,'853d6a374a92501e3e93d28184f9217941793ff646b636c04b35d20169c0d3b7'),
+('c3db45e6712f6755e4b2dd741a119534d8e7c6d7','2021-07-30 15:49:25','bearer','7faa3a84a334498709fba70016a8430f1ef9cfa0',1,NULL,'tutorial-dckr-site-0000-xpresswebapp','bbbbbbbb-good-0000-0000-000000000000',NULL,NULL,'8b5e77ae0fe8726e4dc019c9d84bd4a52f1615193ee9cb8434efa85d910334cf'),
+('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','bob',NULL,NULL,'8d94b35f8eea7e1577e30fc75646dfeb4dd0982a083635028998d53ef590c7ec'),
+('cccccccccccccccccccccccccccccccccccccccc','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'cccccccc-cccc-cccc-cccc-cccccccccccc','charlie',NULL,NULL,'f57858edab011913ac0a5d92f04987f4b34eab0d702c8198c1900871d7d87198');
 /*!40000 ALTER TABLE `oauth_access_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -264,7 +282,6 @@ CREATE TABLE `oauth_authorization_code` (
   `user_id` char(36) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `nonce` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`authorization_code`),
-
   UNIQUE KEY `authorization_code` (`authorization_code`),
   KEY `oauth_client_id` (`oauth_client_id`),
   KEY `user_id` (`user_id`),
@@ -315,16 +332,8 @@ CREATE TABLE `oauth_client` (
 
 LOCK TABLES `oauth_client` WRITE;
 /*!40000 ALTER TABLE `oauth_client` DISABLE KEYS */;
-INSERT INTO `oauth_client` VALUES
-('tutorial-dckr-site-0000-xpresswebapp','FIWARE Tutorial',
-  'FIWARE Application protected by OAuth2 and Keyrock',  'tutorial-dckr-site-0000-clientsecret',
-  'http://localhost:3000','http://localhost:3000/login',NULL,'default',
-  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer,permanent', NULL),
-('trusted-dckr-app-0000-000000000000','Trusted Application',
-  'Second application protected by OAuth2 and Keyrock','trusted-dckr-app-0000-clientsecret',
-  '','',NULL,'default',
-  'password','code',NULL,NULL,NULL,'bearer', NULL);
-
+INSERT INTO `oauth_client` VALUES ('trusted-dckr-app-0000-000000000000','Trusted Application','Second application protected by OAuth2 and Keyrock','trusted-dckr-app-0000-clientsecret','','',NULL,'default','password','code',NULL,NULL,NULL,'bearer',NULL),
+('tutorial-dckr-site-0000-xpresswebapp','FIWARE Tutorial','FIWARE Application protected by OAuth2 and Keyrock','tutorial-dckr-site-0000-clientsecret','http://localhost:3000','http://localhost:3000/login',NULL,'default','authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer,permanent',NULL);
 /*!40000 ALTER TABLE `oauth_client` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -361,7 +370,8 @@ CREATE TABLE `oauth_refresh_token` (
 
 LOCK TABLES `oauth_refresh_token` WRITE;
 /*!40000 ALTER TABLE `oauth_refresh_token` DISABLE KEYS */;
-INSERT INTO `oauth_refresh_token` VALUES ('4eb1f99f80f37c81a8ef85d92eae836919887e1e','2018-08-13 11:14:21',NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','admin',NULL, NULL,NULL);
+INSERT INTO `oauth_refresh_token` VALUES ('4eb1f99f80f37c81a8ef85d92eae836919887e1e','2018-08-13 11:14:21',NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','admin',NULL,NULL,NULL),
+('7faa3a84a334498709fba70016a8430f1ef9cfa0','2021-08-13 14:49:25','bearer','tutorial-dckr-site-0000-xpresswebapp','bbbbbbbb-good-0000-0000-000000000000',NULL,1,NULL);
 /*!40000 ALTER TABLE `oauth_refresh_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -414,8 +424,8 @@ CREATE TABLE `organization` (
 LOCK TABLES `organization` WRITE;
 /*!40000 ALTER TABLE `organization` DISABLE KEYS */;
 INSERT INTO `organization` VALUES 
-('security-team-0000-0000-000000000000','Security','Security Group for Store Detectives',NULL,'default'),
-('managers-team-0000-0000-000000000000','Management','Management Group for Store Managers',NULL,'default');
+('managers-team-0000-0000-000000000000','Management','Management Group for Store Managers',NULL,'default'),
+('security-team-0000-0000-000000000000','Security','Security Group for Store Detectives',NULL,'default');
 /*!40000 ALTER TABLE `organization` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -478,16 +488,15 @@ CREATE TABLE `permission` (
 
 LOCK TABLES `permission` WRITE;
 /*!40000 ALTER TABLE `permission` DISABLE KEYS */;
-INSERT INTO `permission` VALUES 
-('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app',0,NULL,0),
+INSERT INTO `permission` VALUES ('1','Get and assign all internal application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app',0,NULL,0),
 ('2','Manage the application',NULL,1,NULL,NULL,NULL,'idm_admin_app',0,NULL,0),
 ('3','Manage roles',NULL,1,NULL,NULL,NULL,'idm_admin_app',0,NULL,0),
 ('4','Manage authorizations',NULL,1,NULL,NULL,NULL,'idm_admin_app',0,NULL,0),
 ('5','Get and assign all public application roles',NULL,1,NULL,NULL,NULL,'idm_admin_app',0,NULL,0),
 ('6','Get and assign only public owned roles',NULL,1,NULL,NULL,NULL,'idm_admin_app',0,NULL,0),
-('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0),
-('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0),
 ('alrmbell-ring-0000-0000-000000000000','Ring Alarm Bell',NULL,0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0),
+('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0),
+('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0),
 ('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0);
 /*!40000 ALTER TABLE `permission` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -516,10 +525,10 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES 
-('security-role-0000-0000-000000000000','Security Team',0,'tutorial-dckr-site-0000-xpresswebapp'),
-('managers-role-0000-0000-000000000000','Management',0,'tutorial-dckr-site-0000-xpresswebapp'),
-('provider','Provider',1,'idm_admin_app'),('purchaser','Purchaser',1,'idm_admin_app');
+INSERT INTO `role` VALUES ('managers-role-0000-0000-000000000000','Management',0,'tutorial-dckr-site-0000-xpresswebapp'),
+('provider','Provider',1,'idm_admin_app'),
+('purchaser','Purchaser',1,'idm_admin_app'),
+('security-role-0000-0000-000000000000','Security Team',0,'tutorial-dckr-site-0000-xpresswebapp');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -555,8 +564,7 @@ CREATE TABLE `role_assignment` (
 
 LOCK TABLES `role_assignment` WRITE;
 /*!40000 ALTER TABLE `role_assignment` DISABLE KEYS */;
-INSERT INTO `role_assignment` VALUES 
-(1,NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','provider',NULL,'96154659-cb3b-4d2d-afef-18d6aec0518e'),
+INSERT INTO `role_assignment` VALUES (1,NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','provider',NULL,'96154659-cb3b-4d2d-afef-18d6aec0518e'),
 (2,'member','8ca60ce9-32f9-42d6-a013-a19b3af0c13d','provider','74f5299e-3247-468c-affb-957cda03f0c4',NULL),
 (3,NULL,'222eda27-958b-4f0c-a5cb-e4114fb170c3','provider',NULL,'admin'),
 (4,NULL,'222eda27-958b-4f0c-a5cb-e4114fb170c3','provider',NULL,'96154659-cb3b-4d2d-afef-18d6aec0518e'),
@@ -566,7 +574,6 @@ INSERT INTO `role_assignment` VALUES
 (11,'member','tutorial-dckr-site-0000-xpresswebapp','security-role-0000-0000-000000000000','security-team-0000-0000-000000000000',NULL),
 (12,NULL,'tutorial-dckr-site-0000-xpresswebapp','managers-role-0000-0000-000000000000',NULL,'bbbbbbbb-good-0000-0000-000000000000'),
 (13,'member','tutorial-dckr-site-0000-xpresswebapp','managers-role-0000-0000-000000000000','managers-team-0000-0000-000000000000',NULL);
-
 /*!40000 ALTER TABLE `role_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -595,21 +602,20 @@ CREATE TABLE `role_permission` (
 
 LOCK TABLES `role_permission` WRITE;
 /*!40000 ALTER TABLE `role_permission` DISABLE KEYS */;
-INSERT INTO `role_permission` VALUES 
-(1,'provider','1'),(2,'provider','2'),(3,'provider','3'),(4,'provider','4'),(5,'provider','5'),(6,'provider','6'),
+INSERT INTO `role_permission` VALUES (1,'provider','1'),
+(2,'provider','2'),
+(3,'provider','3'),
+(4,'provider','4'),
+(5,'provider','5'),
+(6,'provider','6'),
 (7,'purchaser','5'),
 (8,'security-role-0000-0000-000000000000','alrmbell-ring-0000-0000-000000000000'),
 (9,'security-role-0000-0000-000000000000','entrance-open-0000-0000-000000000000'),
 (10,'managers-role-0000-0000-000000000000','alrmbell-ring-0000-0000-000000000000'),
 (11,'managers-role-0000-0000-000000000000','increase-stck-0000-0000-000000000000'),
 (12,'managers-role-0000-0000-000000000000','pricechg-stck-0000-0000-000000000000');
-
-
-
-
 /*!40000 ALTER TABLE `role_permission` ENABLE KEYS */;
 UNLOCK TABLES;
-
 
 --
 -- Table structure for table `trusted_application`
@@ -627,7 +633,7 @@ CREATE TABLE `trusted_application` (
   KEY `trusted_oauth_client_id` (`trusted_oauth_client_id`),
   CONSTRAINT `trusted_application_ibfk_1` FOREIGN KEY (`oauth_client_id`) REFERENCES `oauth_client` (`id`) ON DELETE CASCADE,
   CONSTRAINT `trusted_application_ibfk_2` FOREIGN KEY (`trusted_oauth_client_id`) REFERENCES `oauth_client` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -636,8 +642,7 @@ CREATE TABLE `trusted_application` (
 
 LOCK TABLES `trusted_application` WRITE;
 /*!40000 ALTER TABLE `trusted_application` DISABLE KEYS */;
-INSERT INTO `trusted_application` VALUES 
-(1,'tutorial-dckr-site-0000-xpresswebapp','trusted-dckr-app-0000-000000000000');
+INSERT INTO `trusted_application` VALUES (1,'tutorial-dckr-site-0000-xpresswebapp','trusted-dckr-app-0000-000000000000');
 /*!40000 ALTER TABLE `trusted_application` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -676,17 +681,18 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES 
-('aaaaaaaa-good-0000-0000-000000000000','alice', 'Alice is the admin',NULL,'default',0,'alice-the-admin@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,1,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
-('bbbbbbbb-good-0000-0000-000000000000','bob','Bob is the regional manager',NULL,'default',0,'bob-the-manager@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
-('cccccccc-good-0000-0000-000000000000','charlie','Charlie is head of security',NULL,'default',0,'charlie-security@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
-('manager1-good-0000-0000-000000000000','manager1','Manager works for Bob',NULL,'default',0,'manager1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
-('manager2-good-0000-0000-000000000000','manager2','Manager works for Bob',NULL,'default',0,'manager2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
-('detective1-good-0000-0000-000000000000','detective1','Detective works for Charlie',NULL,'default',0,'detective1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
-('detective2-good-0000-0000-000000000000','detective2','Detective works for Charlie',NULL,'default',0,'detective2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
-('eve-evil-0000-0000-000000000000','eve','Eve the Eavesdropper',NULL,'default',0,'eve@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
-('mallory-evil-0000-0000-000000000000','mallory','Mallory the malicious attacker',NULL,'default',0,'mallory@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
-('rob-evil-0000-0000-000000000000','rob','Rob the Robber' ,NULL,'default',0,'rob@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL);/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+INSERT INTO `user` VALUES
+ ('aaaaaaaa-good-0000-0000-000000000000','alice','Alice is the admin',NULL,'default',0,'alice-the-admin@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,1,'{\"visible_attributes\": [\"username\", \"description\", \"identity_attributes\"]}',NULL,0,NULL),
+ ('bbbbbbbb-good-0000-0000-000000000000','bob','Bob is the regional manager','','default',0,'bob-the-manager@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,0,'{\"shared_attributes\": [\"username\", \"description\"], \"visible_attributes\": [\"username\", \"description\", \"website\", \"identity_attributes\"], \"identity_attributes\": {\"color\": \"4\", \"reach\": \"8\", \"vocal\": \"6\", \"vision\": \"4\", \"hearing\": \"5\", \"cognition\": \"9\", \"manipulation\": \"7\"}}',NULL,0,NULL),
+ ('cccccccc-good-0000-0000-000000000000','charlie','Charlie is head of security',NULL,'default',0,'charlie-security@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\", \"identity_attributes\"]}',NULL,0,NULL),
+ ('detective1-good-0000-0000-0000000000','detective1','Detective works for Charlie',NULL,'default',0,'detective1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\", \"identity_attributes\"]}',NULL,0,NULL),
+ ('detective2-good-0000-0000-0000000000','detective2','Detective works for Charlie',NULL,'default',0,'detective2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\", \"identity_attributes\"]}',NULL,0,NULL),
+ ('eve-evil-0000-0000-000000000000','eve','Eve the Eavesdropper',NULL,'default',0,'eve@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\", \"identity_attributes\"]}',NULL,0,NULL),
+ ('mallory-evil-0000-0000-000000000000','mallory','Mallory the malicious attacker',NULL,'default',0,'mallory@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\", \"identity_attributes\"]}',NULL,0,NULL),
+ ('manager1-good-0000-0000-000000000000','manager1','Manager works for Bob',NULL,'default',0,'manager1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\", \"identity_attributes\"]}',NULL,0,NULL),
+ ('manager2-good-0000-0000-000000000000','manager2','Manager works for Bob',NULL,'default',0,'manager2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\", \"identity_attributes\"]}',NULL,0,NULL),
+ ('rob-evil-0000-0000-000000000000','rob','Rob the Robber',NULL,'default',0,'rob@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0','fbba54b6750b16e8','2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\", \"identity_attributes\"]}',NULL,0,NULL);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -707,7 +713,7 @@ CREATE TABLE `user_authorized_application` (
   KEY `oauth_client_id` (`oauth_client_id`),
   CONSTRAINT `user_authorized_application_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
   CONSTRAINT `user_authorized_application_ibfk_2` FOREIGN KEY (`oauth_client_id`) REFERENCES `oauth_client` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -716,8 +722,8 @@ CREATE TABLE `user_authorized_application` (
 
 LOCK TABLES `user_authorized_application` WRITE;
 /*!40000 ALTER TABLE `user_authorized_application` DISABLE KEYS */;
-INSERT INTO `user_authorized_application` VALUES 
-(1,'admin','8ca60ce9-32f9-42d6-a013-a19b3af0c13d', NULL, NULL);
+INSERT INTO `user_authorized_application` VALUES (1,'admin','8ca60ce9-32f9-42d6-a013-a19b3af0c13d',NULL,NULL),
+(2,'bbbbbbbb-good-0000-0000-000000000000','tutorial-dckr-site-0000-xpresswebapp','username,email,description,shared_attributes','2021-07-30 14:49:25');
 /*!40000 ALTER TABLE `user_authorized_application` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -748,14 +754,14 @@ CREATE TABLE `user_organization` (
 LOCK TABLES `user_organization` WRITE;
 /*!40000 ALTER TABLE `user_organization` DISABLE KEYS */;
 INSERT INTO `user_organization` VALUES 
-(2,'owner', 'aaaaaaaa-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
-(3,'owner', 'aaaaaaaa-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
-(4,'owner', 'bbbbbbbb-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
+(2,'owner','aaaaaaaa-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
+(3,'owner','aaaaaaaa-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
+(4,'owner','bbbbbbbb-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
 (5,'member','manager1-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
 (6,'member','manager2-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
-(7,'owner', 'cccccccc-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
-(8,'member','detective1-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
-(9,'member','detective2-good-0000-0000-000000000000','security-team-0000-0000-000000000000');
+(7,'owner','cccccccc-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
+(8,'member','detective1-good-0000-0000-0000000000','security-team-0000-0000-000000000000'),
+(9,'member','detective2-good-0000-0000-0000000000','security-team-0000-0000-000000000000');
 /*!40000 ALTER TABLE `user_organization` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -800,4 +806,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-08-10  9:03:58
+-- Dump completed on 2021-07-30 14:56:21

@@ -70,7 +70,8 @@ services:
 
   # Keyrock is an Identity Management Front-End
   keyrock:
-    image: fiware/idm:${KEYROCK_VERSION}
+    #image: fiware/idm:${KEYROCK_VERSION}
+    image: keyrock
     container_name: fiware-keyrock
     hostname: keyrock
     networks:
@@ -138,7 +139,8 @@ services:
 
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
-    image: fiware/tutorials.context-provider
+    #image: fiware/tutorials.context-provider
+    image: tutorial
     hostname: tutorial
     container_name: fiware-tutorial
     depends_on:
