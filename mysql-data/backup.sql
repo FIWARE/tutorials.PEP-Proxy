@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: idm
 -- ------------------------------------------------------
--- Server version 5.7.22
+-- Server version 5.7.35
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -661,7 +661,7 @@ CREATE TABLE `user` (
   `date_password` datetime DEFAULT NULL,
   `enabled` tinyint(1) DEFAULT '0',
   `admin` tinyint(1) DEFAULT '0',
-  `extra` varchar(255) DEFAULT NULL,
+  `extra` json DEFAULT NULL,
   `scope` varchar(80) DEFAULT NULL,
   `starters_tour_ended` tinyint(1) DEFAULT '0',
   `eidas_id` varchar(255) DEFAULT NULL,
@@ -677,16 +677,16 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES 
-('aaaaaaaa-good-0000-0000-000000000000','alice', 'Alice is the admin',NULL,'default',0,'alice-the-admin@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,1,NULL,NULL,0,NULL),
-('bbbbbbbb-good-0000-0000-000000000000','bob','Bob is the regional manager',NULL,'default',0,'bob-the-manager@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('cccccccc-good-0000-0000-000000000000','charlie','Charlie is head of security',NULL,'default',0,'charlie-security@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('manager1-good-0000-0000-000000000000','manager1','Manager works for Bob',NULL,'default',0,'manager1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('manager2-good-0000-0000-000000000000','manager2','Manager works for Bob',NULL,'default',0,'manager2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('detective1-good-0000-0000-000000000000','detective1','Detective works for Charlie',NULL,'default',0,'detective1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('detective2-good-0000-0000-000000000000','detective2','Detective works for Charlie',NULL,'default',0,'detective2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('eve-evil-0000-0000-000000000000','eve','Eve the Eavesdropper',NULL,'default',0,'eve@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('mallory-evil-0000-0000-000000000000','mallory','Mallory the malicious attacker',NULL,'default',0,'mallory@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('rob-evil-0000-0000-000000000000','rob','Rob the Robber' ,NULL,'default',0,'rob@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL);/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+('aaaaaaaa-good-0000-0000-000000000000','alice', 'Alice is the admin',NULL,'default',0,'alice-the-admin@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,1,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
+('bbbbbbbb-good-0000-0000-000000000000','bob','Bob is the regional manager',NULL,'default',0,'bob-the-manager@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
+('cccccccc-good-0000-0000-000000000000','charlie','Charlie is head of security',NULL,'default',0,'charlie-security@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
+('manager1-good-0000-0000-000000000000','manager1','Manager works for Bob',NULL,'default',0,'manager1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
+('manager2-good-0000-0000-000000000000','manager2','Manager works for Bob',NULL,'default',0,'manager2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
+('detective1-good-0000-0000-000000000000','detective1','Detective works for Charlie',NULL,'default',0,'detective1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
+('detective2-good-0000-0000-000000000000','detective2','Detective works for Charlie',NULL,'default',0,'detective2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
+('eve-evil-0000-0000-000000000000','eve','Eve the Eavesdropper',NULL,'default',0,'eve@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
+('mallory-evil-0000-0000-000000000000','mallory','Mallory the malicious attacker',NULL,'default',0,'mallory@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL),
+('rob-evil-0000-0000-000000000000','rob','Rob the Robber' ,NULL,'default',0,'rob@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,'{\"visible_attributes\": [\"username\", \"description\"]}',NULL,0,NULL);/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
