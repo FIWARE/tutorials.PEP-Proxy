@@ -93,6 +93,7 @@ services:
       - IDM_ADMIN_USER=alice
       - IDM_ADMIN_EMAIL=alice-the-admin@test.com
       - IDM_ADMIN_PASS=test
+      - IDM_PDP_LEVEL=payload #basic|advanced
     secrets:
       - my_secret_data
     healthcheck:
@@ -101,7 +102,8 @@ services:
 
   # PEP Proxy for Orion
   orion-proxy:
-    image: fiware/pep-proxy:${WILMA_VERSION}
+    #image: fiware/pep-proxy:${WILMA_VERSION}
+    image: pep
     container_name: fiware-orion-proxy
     hostname: orion-proxy
     networks:
@@ -125,13 +127,16 @@ services:
       - PEP_PROXY_PORT=${ORION_PROXY_PORT}
       - PEP_PROXY_IDM_HOST=keyrock
       - PEP_PROXY_HTTPS_ENABLED=false
-      - PEP_PROXY_AUTH_ENABLED=false
+      - PEP_PROXY_AUTH_ENABLED=true
       - PEP_PROXY_IDM_SSL_ENABLED=false
       - PEP_PROXY_IDM_PORT=${KEYROCK_PORT}
       - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
       - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
       - PEP_PASSWORD=test
-      - PEP_PROXY_PDP=idm
+      - PEP_PROXY_PDP=opa # iShare|idm|authzforce|xacml
+      - PEP_PROXY_PDP_HOST=keyrock
+      - PEP_PROXY_PDP_PORT=${KEYROCK_PORT}
+      - PEP_PROXY_PDP_PATH=/pdp/open_policy_agent
       - PEP_PROXY_MAGIC_KEY=1234
       - PEP_PROXY_PUBLIC_PATHS=/version
     healthcheck:
