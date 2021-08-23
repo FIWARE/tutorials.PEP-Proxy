@@ -2,13 +2,16 @@
 #
 #  Command Line Interface to start all services associated with the Getting-Started Tutorial
 #
-#  For this tutorial the commands are merely a convenience script to run docker-compose
-#
+#  For this tutorial the commands are merely a convenience script to run ${dockerCmd}#
 
 set -e
 
-if (( $# != 1 )); then
-    echo "Illegal number of parameters"
+dockerCmd="docker compose"
+if (( $# == 2 )); then
+    dockerCmd="docker-compose"
+fi
+
+if (( $# < 1 )); then    echo "Illegal number of parameters"
     echo "usage: services [create|orion|southport|northport]"
     exit 1
 fi
@@ -111,14 +114,14 @@ addDatabaseIndex () {
 startContainers () {
 	echo ""
 	export IDM_HTTPS_ENABLED="$1" 
-	docker-compose -f docker-compose/$2  up -d --remove-orphans
+	${dockerCmd} -f docker-compose/$2 up -d --remove-orphans
 	echo ""
 }
 
 stoppingContainers () {
 	export $(cat .env | grep "#" -v)
 	echo "Stopping running containers"
-	docker-compose -f docker-compose/southport.yml   down -v --remove-orphans
+	${dockerCmd} -f docker-compose/southport.yml down -v --remove-orphans
 }
 
 command="$1"
@@ -195,7 +198,7 @@ case "${command}" in
 		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker pull curlimages/curl
-		docker-compose -f docker-compose/orion.yml  pull
+		${dockerCmd} -f docker-compose/orion.yml  pull
 		;;
 	*)
 		echo "Command not Found."
