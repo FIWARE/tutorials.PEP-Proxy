@@ -139,7 +139,7 @@ services:
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
     image: fiware/tutorials.context-provider
-    hostname: tutorial
+    hostname: iot-sensors
     container_name: fiware-tutorial
     depends_on:
       orion-proxy :
@@ -152,7 +152,7 @@ services:
       default:
         ipv4_address: 172.18.1.7
         aliases:
-          - iot-sensors
+          - tutorial
           - context-provider
     expose:
       - "${TUTORIAL_APP_PORT}"

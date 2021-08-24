@@ -875,7 +875,7 @@ Proxy にリクエストを行います。すべてのリクエストに追加 �
 ```yaml
 tutorial-app:
     image: fiware/tutorials.context-provider
-    hostname: tutorial-app
+    hostname: iot-sensors-app
     container_name: tutorial-app
     depends_on:
         - orion-proxy
@@ -885,7 +885,7 @@ tutorial-app:
         default:
             ipv4_address: 172.18.1.7
             aliases:
-                - iot-sensors
+                - tutorial
     expose:
         - "3000"
         - "3001"
@@ -1228,7 +1228,7 @@ Agent** の前にある 2 番目の **Wilma** PEP Proxy にリクエストしま
 ```yaml
 tutorial-app:
     image: fiware/tutorials.context-provider
-    hostname: tutorial-app
+    hostname: iot-sensors-app
     container_name: tutorial-app
     depends_on:
         - orion-proxy
@@ -1238,7 +1238,7 @@ tutorial-app:
         default:
             ipv4_address: 172.18.1.7
             aliases:
-                - iot-sensors
+                - tutorial
     expose:
         - "3000"
         - "3001"
