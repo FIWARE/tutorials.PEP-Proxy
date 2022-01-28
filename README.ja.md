@@ -1408,6 +1408,8 @@ request(options, error => {
 
 ```yaml
 iot-agent:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent

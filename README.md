@@ -1198,6 +1198,8 @@ The `iot-agent` container is listening on port `4041`, it is configured to forwa
 
 ```yaml
 iot-agent:
+    labels:
+      org.fiware: 'tutorial'
     image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent
