@@ -74,10 +74,10 @@ services:
 
   # Keyrock is an Identity Management Front-End
   keyrock:
-    #labels:
+    labels:
       org.fiware: 'tutorial'
     image: fiware/idm:${KEYROCK_VERSION}
-    image: keyrock-slim
+    #image: keyrock-slim
     container_name: fiware-keyrock
     hostname: keyrock
     networks:
@@ -107,8 +107,8 @@ services:
 
   # PEP Proxy for Orion
   orion-proxy:
-    image: pep-slim
-    #labels:
+    #image: pep-slim
+    labels:
       org.fiware: 'tutorial'
     image: fiware/pep-proxy:${WILMA_VERSION}
     container_name: fiware-orion-proxy
