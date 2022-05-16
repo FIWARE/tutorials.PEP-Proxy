@@ -3,8 +3,7 @@
 [![FIWARE Security](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/security.svg)](https://github.com/FIWARE/catalogue/blob/master/security/README.md)
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.PEP-Proxy.svg)](https://opensource.org/licenses/MIT)
 [![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware)
-<br/>
-[![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
+<br/> [![Documentation](https://img.shields.io/readthedocs/fiware-tutorials.svg)](https://fiware-tutorials.rtfd.io)
 
 <!-- prettier-ignore -->
 
@@ -24,7 +23,7 @@ Keyrock GUI と REST API の部分について詳しく説明します。
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/6b143a6b3ad8bcba69cf)
 
-# コンテンツ
+## コンテンツ
 
 <details>
 <summary>詳細 <b>(クリックして拡大)</b></summary>
@@ -80,6 +79,7 @@ Keyrock GUI と REST API の部分について詳しく説明します。
         -   [Keyrock - 永久トークンの取得](#keyrock---obtaining-a-permanent-token)
         -   [IoT Agent - 信頼できるサービス・グループのプロビジョニング](#iot-agent---provisioning-a-trusted-service-group)
         -   [IoT Agent - センサのプロビジョニング](#iot-agent---provisioning-a-sensor)
+-   [次のステップ](#next-steps)
 
 </details>
 
@@ -1093,7 +1093,7 @@ function userCredentialGrant(req, res) {
     const email = req.body.email;
     const password = req.body.password;
 
-    oa.getOAuthPasswordCredentials(email, password).then(results => {
+    oa.getOAuthPasswordCredentials(email, password).then((results) => {
         req.session.access_token = results.access_token;
         return;
     });
@@ -1363,11 +1363,11 @@ const DUMMY_DEVICE_HTTP_HEADERS = { "Content-Type": "text/plain" };
 function initSecureDevices() {
     Security.oa
         .getOAuthPasswordCredentials(process.env.DUMMY_DEVICES_USER, process.env.DUMMY_DEVICES_PASSWORD)
-        .then(results => {
+        .then((results) => {
             DUMMY_DEVICE_HTTP_HEADERS["X-Auth-Token"] = results.access_token;
             return;
         })
-        .catch(error => {
+        .catch((error) => {
             debug(error);
             return;
         });
@@ -1386,7 +1386,7 @@ const options = {
     body: state
 };
 
-request(options, error => {
+request(options, (error) => {
     if (error) {
         debug(debugText + " " + error.code);
     }
@@ -1512,10 +1512,10 @@ curl -X POST \
 
 ```json
 {
-     "apikey":      "1068318794",
-     "cbroker":     "http://orion:1026",
-     "entity_type": "Motion",
-     "resource":    "/iot/d",
+    "apikey": "1068318794",
+    "cbroker": "http://orion:1026",
+    "entity_type": "Motion",
+    "resource": "/iot/d"
 }
 ```
 
@@ -1568,8 +1568,17 @@ curl -iX POST \
 '
 ```
 
+<a name="next-steps"></a>
+
+# 次のステップ
+
+高度な機能を追加することで、アプリケーションに複雑さを加える方法を知りたいですか
+？このシリーズ
+の[他のチュートリアル](https://www.letsfiware.jp/fiware-tutorials)を読むことで見
+つけることができます。
+
 ---
 
 ## License
 
-[MIT](LICENSE) © 2018-2020 FIWARE Foundation e.V.
+[MIT](LICENSE) © 2018-2022 FIWARE Foundation e.V.
