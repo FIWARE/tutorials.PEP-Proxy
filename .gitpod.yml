@@ -1,0 +1,17 @@
+ports:
+  - name: Tutorial
+    description: Dummy IoT Sensors over HTTP
+    port: 3000
+    onOpen: open-browser
+  - name: Keyrock
+    description: Identity Manager
+    port: 3005
+    onOpen: open-browser
+  - name: Orion
+    description: Context Broker
+    port: 1026
+    onOpen: notify
+  - name: Orion-Proxy
+    description: PEP Proxy
+    port: 1027
+    onOpen: ignore
