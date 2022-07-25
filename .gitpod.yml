@@ -1,8 +1,12 @@
 ports:
-  - name: Tutorial
-    description: Dummy IoT Sensors over HTTP
+  - name: Tutorial App
+    description: Web app displaying context data
     port: 3000
     onOpen: open-browser
+  - name: Tutorial Devices
+    description: Dummy IoT Sensors over HTTP
+    port: 3001
+    onOpen: ignore
   - name: Keyrock
     description: Identity Manager
     port: 3005
@@ -11,11 +15,15 @@ ports:
     description: Context Broker
     port: 1026
     onOpen: notify
-  - name: IoT Agent
-    description: IoT Agent North Port
+  - name: IoT Agent (North Port)
+    description: NGSI data and device provisioning
     port: 4041
     onOpen: ignore
-  - name: Orion-Proxy
+  - name: IoT Agent (South Port)
+    description: Ultralight HTTP measures
+    port: 7896
+    onOpen: ignore
+  - name: Wilma
     description: PEP Proxy
     port: 1027
     onOpen: ignore

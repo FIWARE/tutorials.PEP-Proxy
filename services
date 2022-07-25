@@ -86,6 +86,7 @@ waitForIoTAgent () {
 displayServices () {
 	echo ""
 	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" --filter name=fiware-*
+	gp ports list 2> /dev/null
 	echo ""
 }
 
