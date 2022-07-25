@@ -41,7 +41,6 @@ services:
     container_name: fiware-iot-agent
     depends_on:
       - orion-proxy
-      - iot-agent
       - keyrock
       - mongo-db
     networks:
