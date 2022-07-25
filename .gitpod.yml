@@ -11,7 +11,19 @@ ports:
     description: Context Broker
     port: 1026
     onOpen: notify
+  - name: IoT Agent
+    description: IoT Agent North Port
+    port: 4041
+    onOpen: ignore
   - name: Orion-Proxy
     description: PEP Proxy
     port: 1027
+    onOpen: ignore
+  - name: MongoDB
+    description: Database for Orion + IoT Agent
+    port: 27017
+    onOpen: ignore
+  - name: MySQL
+    description: Database for Keyrock
+    port: 3306
     onOpen: ignore
