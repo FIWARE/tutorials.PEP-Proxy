@@ -16,7 +16,7 @@ relevant to authenticating other services are described in detail.
 [Postman documentation](https://fiware.github.io/tutorials.PEP-Proxy/) for these calls is also available.
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/6b143a6b3ad8bcba69cf)
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/FIWARE/tutorials.PEP-Proxy/tree/NGSI-v2)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/alinonet/tutorials.PEP-Proxy/tree/NGSI-v2)
 
 -   このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
 
