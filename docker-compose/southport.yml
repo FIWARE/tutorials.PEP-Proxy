@@ -97,6 +97,7 @@ services:
       - IDM_ADMIN_USER=alice
       - IDM_ADMIN_EMAIL=alice-the-admin@test.com
       - IDM_ADMIN_PASS=test
+      - IDM_CSP_FORM_ACTION=*
     secrets:
       - my_secret_data
     healthcheck:
@@ -259,6 +260,7 @@ services:
     labels:
       org.fiware: 'tutorial'
     image: mysql:${MYSQL_DB_VERSION}
+    platform: linux/amd64
     hostname: mysql-db
     container_name: db-mysql
     expose:

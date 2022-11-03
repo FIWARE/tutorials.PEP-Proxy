@@ -77,7 +77,6 @@ services:
     labels:
       org.fiware: 'tutorial'
     image: fiware/idm:${KEYROCK_VERSION}
-    #image: keyrock-slim
     container_name: fiware-keyrock
     hostname: keyrock
     networks:
@@ -99,6 +98,7 @@ services:
       - IDM_ADMIN_USER=alice
       - IDM_ADMIN_EMAIL=alice-the-admin@test.com
       - IDM_ADMIN_PASS=test
+      - IDM_CSP_FORM_ACTION=*
     secrets:
       - my_secret_data
     healthcheck:
