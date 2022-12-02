@@ -319,7 +319,7 @@ INSERT INTO `oauth_client` VALUES
 ('tutorial-dckr-site-0000-xpresswebapp','FIWARE Tutorial',
   'FIWARE Application protected by OAuth2 and Keyrock',  'tutorial-dckr-site-0000-clientsecret',
   'http://localhost:3000','http://localhost:3000/login',NULL,'default',
-  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer,permanent', NULL),
+  'authorization_code,implicit,password,client_credentials,refresh_token','code',NULL,NULL,NULL,'bearer,jwt,permanent', '51129f085f3e1a80'),
 ('trusted-dckr-app-0000-000000000000','Trusted Application',
   'Second application protected by OAuth2 and Keyrock','trusted-dckr-app-0000-clientsecret',
   '','',NULL,'default',
@@ -491,7 +491,8 @@ INSERT INTO `permission` VALUES
 ('increase-stck-0000-0000-000000000000','Order Stock','Increase Stock Count',0,'GET','/app/order-stock',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0,NULL,NULL,NULL),
 ('entrance-open-0000-0000-000000000000','Unlock','Unlock main entrance',0,'POST','/door/unlock',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0,NULL,NULL,NULL),
 ('alrmbell-ring-0000-0000-000000000000','Ring Alarm Bell',NULL,0,'POST','/bell/ring',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0,NULL,NULL,NULL),
-('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0,NULL,NULL,NULL);
+('pricechg-stck-0000-0000-000000000000','Access Price Changes',NULL,0,'GET','/app/price-change',NULL,'tutorial-dckr-site-0000-xpresswebapp',0,NULL,0,NULL,NULL,NULL),
+('orion-context-0000-0000-000000000000','Access Context Broker',NULL,0,'GET','\/v2\/entities(\/|$).*',NULL,'tutorial-dckr-site-0000-xpresswebapp',1,NULL,0,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -605,7 +606,9 @@ INSERT INTO `role_permission` VALUES
 (9,'security-role-0000-0000-000000000000','entrance-open-0000-0000-000000000000'),
 (10,'managers-role-0000-0000-000000000000','alrmbell-ring-0000-0000-000000000000'),
 (11,'managers-role-0000-0000-000000000000','increase-stck-0000-0000-000000000000'),
-(12,'managers-role-0000-0000-000000000000','pricechg-stck-0000-0000-000000000000');
+(12,'managers-role-0000-0000-000000000000','pricechg-stck-0000-0000-000000000000'),
+(13,'security-role-0000-0000-000000000000','orion-context-0000-0000-000000000000'),
+(14,'managers-role-0000-0000-000000000000','orion-context-0000-0000-000000000000');
 
 
 

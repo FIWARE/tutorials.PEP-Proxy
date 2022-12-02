@@ -18,64 +18,70 @@ relevant to authenticating other services are described in detail.
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/6b143a6b3ad8bcba69cf)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/FIWARE/tutorials.PEP-Proxy/tree/NGSI-v2)
 
--   このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
+- このチュートリアルは[日本語](README.ja.md)でもご覧いただけます。
 
 ## Contents
 
 <details>
 <summary><strong>Details</strong></summary>
 
--   [Securing Microservices with a PEP Proxy](#securing-microservices-with-a-pep-proxy)
-    -   [Standard Concepts of Identity Management](#standard-concepts-of-identity-management)
-    -   [:arrow_forward: Video : Introduction to Wilma PEP Proxy](#arrow_forward-video--introduction-to-wilma-pep-proxy)
--   [Prerequisites](#prerequisites)
-    -   [Docker](#docker)
-    -   [Cygwin](#cygwin)
--   [Architecture](#architecture)
--   [Start Up](#start-up)
-    -   [Dramatis Personae](#dramatis-personae)
-    -   [Logging In to Keyrock using the REST API](#logging-in-to-keyrock-using-the-rest-api)
-        -   [Create Token with Password](#create-token-with-password)
-        -   [Get Token Info](#get-token-info)
--   [Managing PEP Proxies and IoT Agents](#managing-pep-proxies-and-iot-agents)
-    -   [:arrow_forward: Video : Wilma PEP Proxy Configuration](#arrow_forward-video--wilma-pep-proxy-configuration)
-    -   [Managing PEP Proxies and IoT Agents - Start Up](#managing-pep-proxies-and-iot-agents---start-up)
-    -   [PEP Proxy CRUD Actions](#pep-proxy-crud-actions)
-        -   [Create a PEP Proxy](#create-a-pep-proxy)
-        -   [Read PEP Proxy details](#read-pep-proxy-details)
-        -   [Reset Password of a PEP Proxy](#reset-password-of-a-pep-proxy)
-        -   [Delete a PEP Proxy](#delete-a-pep-proxy)
-    -   [IoT Agent CRUD Actions](#iot-agent-crud-actions)
-        -   [Create an IoT Agent](#create-an-iot-agent)
-        -   [Read IoT Agent details](#read-iot-agent-details)
-        -   [List IoT Agents](#list-iot-agents)
-        -   [Reset Password of an IoT Agent](#reset-password-of-an-iot-agent)
-        -   [Delete an IoT Agent](#delete-an-iot-agent)
--   [Securing the Orion Context Broker](#securing-the-orion-context-broker)
-    -   [Securing Orion - PEP Proxy Configuration](#securing-orion---pep-proxy-configuration)
-    -   [Securing Orion - Application Configuration](#securing-orion---application-configuration)
-    -   [Securing Orion - Start up](#securing-orion---start-up)
-        -   [:arrow_forward: Video : Securing A REST API](#arrow_forward-video--securing-a-rest-api)
-    -   [User Logs In to the Application using the REST API](#user-logs-in-to-the-application-using-the-rest-api)
-        -   [PEP Proxy - No Access to Orion without an Access Token](#pep-proxy---no-access-to-orion-without-an-access-token)
-        -   [Keyrock - User Obtains an Access Token](#keyrock---user-obtains-an-access-token)
-        -   [PEP Proxy - Accessing Orion with an Access Token](#pep-proxy---accessing-orion-with-an-access-token)
-        -   [PEP Proxy - Accessing Orion with an Authorization: Bearer](pep-proxy---accessing-orion-awith-an-authorization-bearer)
-    -   [Securing Orion - Sample Code](#securing-orion---sample-code)
--   [Securing an IoT Agent South Port](#securing-an-iot-agent-south-port)
-    -   [Securing an IoT Agent South Port - PEP Proxy Configuration](#securing-an-iot-agent-south-port---pep-proxy-configuration)
-    -   [Securing an IoT Agent South Port - Application Configuration](#securing-an-iot-agent-south-port---application-configuration)
-    -   [Securing South Port Traffic - Start up](#securing-south-port-traffic---start-up)
-    -   [IoT Sensor Logs In to the Application using the REST API](#iot-sensor-logs-in-to-the-application-using-the-rest-api)
-        -   [Keyrock - IoT Sensor Obtains an Access Token](#keyrock---iot-sensor-obtains-an-access-token)
-        -   [PEP Proxy - Accessing IoT Agent with an Access Token](#pep-proxy---accessing-iot-agent-with-an-access-token)
-    -   [Securing South Port Traffic - Sample Code](#securing-south-port-traffic---sample-code)
--   [Securing an IoT Agent North Port](#securing-an-iot-agent-north-port)
-    -   [Securing an IoT Agent North Port - IoT Agent Configuration](#securing-an-iot-agent-north-port---iot-agent-configuration)
-    -   [Securing an IoT Agent North Port - Start up](#securing-an-iot-agent-north-port---start-up)
-        -   [Keyrock - Obtaining a permanent token](#keyrock---obtaining-a-permanent-token)
-        -   [IoT Agent - provisioning a trusted service group](#iot-agent---provisioning-a-trusted-service-group)
-        -   [IoT Agent - provisioning a sensor](#iot-agent---provisioning-a-sensor)
+- [Securing Microservices with a PEP Proxy](#securing-microservices-with-a-pep-proxy)
+  - [Standard Concepts of Identity Management](#standard-concepts-of-identity-management)
+  - [:arrow_forward: Video : Introduction to Wilma PEP Proxy](#arrow_forward-video--introduction-to-wilma-pep-proxy)
+- [Prerequisites](#prerequisites)
+  - [Docker](#docker)
+  - [Cygwin](#cygwin)
+- [Architecture](#architecture)
+- [Start Up](#start-up)
+  - [Dramatis Personae](#dramatis-personae)
+  - [Logging In to Keyrock using the REST API](#logging-in-to-keyrock-using-the-rest-api)
+    - [Create Token with Password](#create-token-with-password)
+    - [Get Token Info](#get-token-info)
+- [Managing PEP Proxies and IoT Agents](#managing-pep-proxies-and-iot-agents)
+  - [:arrow_forward: Video : Wilma PEP Proxy Configuration](#arrow_forward-video--wilma-pep-proxy-configuration)
+  - [Managing PEP Proxies and IoT Agents - Start Up](#managing-pep-proxies-and-iot-agents---start-up)
+  - [PEP Proxy CRUD Actions](#pep-proxy-crud-actions)
+    - [Create a PEP Proxy](#create-a-pep-proxy)
+    - [Read PEP Proxy details](#read-pep-proxy-details)
+    - [Reset Password of a PEP Proxy](#reset-password-of-a-pep-proxy)
+    - [Delete a PEP Proxy](#delete-a-pep-proxy)
+  - [IoT Agent CRUD Actions](#iot-agent-crud-actions)
+    - [Create an IoT Agent](#create-an-iot-agent)
+    - [Read IoT Agent details](#read-iot-agent-details)
+    - [List IoT Agents](#list-iot-agents)
+    - [Reset Password of an IoT Agent](#reset-password-of-an-iot-agent)
+    - [Delete an IoT Agent](#delete-an-iot-agent)
+- [Securing the Orion Context Broker (Wilma PEP)](#securing-the-orion-context-broker-wilma-pep)
+  - [Securing Orion - PEP Proxy Configuration](#securing-orion---pep-proxy-configuration)
+  - [Securing Orion - Application Configuration](#securing-orion---application-configuration)
+  - [Securing Orion - Start up](#securing-orion---start-up)
+    - [:arrow_forward: Video : Securing A REST API](#arrow_forward-video--securing-a-rest-api)
+  - [User Logs In to the Application using the REST API](#user-logs-in-to-the-application-using-the-rest-api)
+    - [PEP Proxy - No Access to Orion without an Access Token](#pep-proxy---no-access-to-orion-without-an-access-token)
+    - [Keyrock - User Obtains an Access Token](#keyrock---user-obtains-an-access-token)
+    - [PEP Proxy - Accessing Orion with an Access Token](#pep-proxy---accessing-orion-with-an-access-token)
+    - [PEP Proxy - Accessing Orion with an Authorization: Bearer](#pep-proxy---accessing-orion-with-an-authorization-bearer)
+  - [Securing Orion - Sample Code](#securing-orion---sample-code)
+- [Securing the Orion Context Broker (Kong PEP)](#securing-the-orion-context-broker-kong-pep)
+  - [Securing Orion - Start up](#securing-orion---start-up-1)
+  - [User Logs In to the Application using the REST API](#user-logs-in-to-the-application-using-the-rest-api-1)
+    - [PEP Proxy - No Access to Orion without an Access Token](#pep-proxy---no-access-to-orion-without-an-access-token-1)
+    - [Keyrock - User Obtains an Access Token](#keyrock---user-obtains-an-access-token-1)
+    - [PEP Proxy - Accessing Orion with an Access Token](#pep-proxy---accessing-orion-with-an-access-token-1)
+- [Securing an IoT Agent South Port](#securing-an-iot-agent-south-port)
+  - [Securing an IoT Agent South Port - PEP Proxy Configuration](#securing-an-iot-agent-south-port---pep-proxy-configuration)
+  - [Securing an IoT Agent South Port - Application Configuration](#securing-an-iot-agent-south-port---application-configuration)
+  - [Securing South Port Traffic - Start up](#securing-south-port-traffic---start-up)
+  - [IoT Sensor Logs In to the Application using the REST API](#iot-sensor-logs-in-to-the-application-using-the-rest-api)
+    - [Keyrock - IoT Sensor Obtains an Access Token](#keyrock---iot-sensor-obtains-an-access-token)
+    - [PEP Proxy - Accessing IoT Agent with an Access Token](#pep-proxy---accessing-iot-agent-with-an-access-token)
+  - [Securing South Port Traffic - Sample Code](#securing-south-port-traffic---sample-code)
+- [Securing an IoT Agent North Port](#securing-an-iot-agent-north-port)
+  - [Securing an IoT Agent North Port - IoT Agent Configuration](#securing-an-iot-agent-north-port---iot-agent-configuration)
+  - [Securing an IoT Agent North Port - Start up](#securing-an-iot-agent-north-port---start-up)
+    - [Keyrock - Obtaining a permanent token](#keyrock---obtaining-a-permanent-token)
+    - [IoT Agent - provisioning a trusted service group](#iot-agent---provisioning-a-trusted-service-group)
+    - [IoT Agent - provisioning a sensor](#iot-agent---provisioning-a-sensor)
 
 </details>
 
@@ -109,23 +115,23 @@ Unauthorized users are simply returned a **401 - Unauthorized** response.
 
 The following common objects are found with the **Keyrock** Identity Management database:
 
--   **User** - Any signed up user able to identify themselves with an eMail and password. Users can be assigned rights
-    individually or as a group
--   **Application** - Any securable FIWARE application consisting of a series of microservices
--   **Organization** - A group of users who can be assigned a series of rights. Altering the rights of the organization
-    effects the access of all users of that organization
--   **OrganizationRole** - Users can either be members or admins of an organization - Admins are able to add and remove
-    users from their organization, members merely gain the roles and permissions of an organization. This allows each
-    organization to be responsible for their members and removes the need for a super-admin to administer all rights
--   **Role** - A role is a descriptive bucket for a set of permissions. A role can be assigned to either a single user
-    or an organization. A signed-in user gains all the permissions from all of their own roles plus all of the roles
-    associated to their organization
--   **Permission** - An ability to do something on a resource within the system
+- **User** - Any signed up user able to identify themselves with an eMail and password. Users can be assigned rights
+  individually or as a group
+- **Application** - Any securable FIWARE application consisting of a series of microservices
+- **Organization** - A group of users who can be assigned a series of rights. Altering the rights of the organization
+  effects the access of all users of that organization
+- **OrganizationRole** - Users can either be members or admins of an organization - Admins are able to add and remove
+  users from their organization, members merely gain the roles and permissions of an organization. This allows each
+  organization to be responsible for their members and removes the need for a super-admin to administer all rights
+- **Role** - A role is a descriptive bucket for a set of permissions. A role can be assigned to either a single user
+  or an organization. A signed-in user gains all the permissions from all of their own roles plus all of the roles
+  associated to their organization
+- **Permission** - An ability to do something on a resource within the system
 
 Additionally two further non-human application objects can be secured within a FIWARE application:
 
--   **IoTAgent** - a proxy between IoT Sensors and the Context Broker
--   **PEPProxy** - a middleware for use between generic enablers challenging the rights of a user.
+- **IoTAgent** - a proxy between IoT Sensors and the Context Broker
+- **PEPProxy** - a middleware for use between generic enablers challenging the rights of a user.
 
 The relationship between the objects can be seen below - the entities marked in red are used directly within this
 tutorial:
@@ -145,9 +151,9 @@ Click on the image above to see an introductory video
 To keep things simple both components will be run using [Docker](https://www.docker.com). **Docker** is a container
 technology which allows to different components isolated into their respective environments.
 
--   To install Docker on Windows follow the instructions [here](https://docs.docker.com/docker-for-windows/)
--   To install Docker on Mac follow the instructions [here](https://docs.docker.com/docker-for-mac/)
--   To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
+- To install Docker on Windows follow the instructions [here](https://docs.docker.com/docker-for-windows/)
+- To install Docker on Mac follow the instructions [here](https://docs.docker.com/docker-for-mac/)
+- To install Docker on Linux follow the instructions [here](https://docs.docker.com/install/)
 
 **Docker Compose** is a tool for defining and running multi-container Docker applications. A
 [YAML file](https://raw.githubusercontent.com/Fiware/tutorials.Identity-Management/master/docker-compose.yml) is used
@@ -178,34 +184,34 @@ keep persistence of the information they hold. We will also be using the dummy I
 
 Therefore the overall architecture will consist of the following elements:
 
--   The FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests using
-    [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
--   The FIWARE [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) which will receive
-    southbound requests using [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) and convert them to
-    [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
-    commands for the devices
--   FIWARE [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) offer a complement Identity Management System
-    including:
-    -   An OAuth2 authentication system for Applications and Users
-    -   A site graphical frontend for Identity Management Administration
-    -   An equivalent REST API for Identity Management via HTTP requests
--   FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a PEP Proxy securing access to the **Orion** and/or **IoT
-    Agent** microservices
--   The underlying [MongoDB](https://www.mongodb.com/) database :
-    -   Used by the **Orion Context Broker** to hold context data information such as data entities, subscriptions and
-        registrations
-    -   Used by the **IoT Agent** to hold device information such as device URLs and Keys
--   A [MySQL](https://www.mysql.com/) database :
-    -   Used to persist user identities, applications, roles and permissions
--   The **Stock Management Frontend** does the following:
-    -   Displays store information
-    -   Shows which products can be bought at each store
-    -   Allows users to "buy" products and reduce the stock count.
-    -   Allows authorized users into restricted areas
--   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2) using
-    the
-    [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
-    protocol running over HTTP - access to certain resources is restricted.
+- The FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests using
+  [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
+- The FIWARE [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) which will receive
+  southbound requests using [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) and convert them to
+  [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+  commands for the devices
+- FIWARE [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) offer a complement Identity Management System
+  including:
+  - An OAuth2 authentication system for Applications and Users
+  - A site graphical frontend for Identity Management Administration
+  - An equivalent REST API for Identity Management via HTTP requests
+- FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) is a PEP Proxy securing access to the **Orion** and/or **IoT
+  Agent** microservices
+- The underlying [MongoDB](https://www.mongodb.com/) database :
+  - Used by the **Orion Context Broker** to hold context data information such as data entities, subscriptions and
+    registrations
+  - Used by the **IoT Agent** to hold device information such as device URLs and Keys
+- A [MySQL](https://www.mysql.com/) database :
+  - Used to persist user identities, applications, roles and permissions
+- The **Stock Management Frontend** does the following:
+  - Displays store information
+  - Shows which products can be bought at each store
+  - Allows users to "buy" products and reduce the stock count.
+  - Allows authorized users into restricted areas
+- A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2) using
+  the
+  [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+  protocol running over HTTP - access to certain resources is restricted.
 
 Since all interactions between the elements are initiated by HTTP requests, the entities can be containerized and run
 from exposed ports.
@@ -246,19 +252,19 @@ Where `<command>` will vary depending upon the exercise we wish to activate.
 
 The following people at `test.com` legitimately have accounts within the Application
 
--   Alice, she will be the Administrator of the **Keyrock** Application
--   Bob, the Regional Manager of the supermarket chain - he has several store managers under him:
-    -   Manager1
-    -   Manager2
--   Charlie, the Head of Security of the supermarket chain - he has several store detectives under him:
-    -   Detective1
-    -   Detective2
+- Alice, she will be the Administrator of the **Keyrock** Application
+- Bob, the Regional Manager of the supermarket chain - he has several store managers under him:
+  - Manager1
+  - Manager2
+- Charlie, the Head of Security of the supermarket chain - he has several store detectives under him:
+  - Detective1
+  - Detective2
 
 The following people at `example.com` have signed up for accounts, but have no reason to be granted access
 
--   Eve - Eve the Eavesdropper
--   Mallory - Mallory the malicious attacker
--   Rob - Rob the Robber
+- Eve - Eve the Eavesdropper
+- Mallory - Mallory the malicious attacker
+- Rob - Rob the Robber
 
 <details>
   <summary>
@@ -353,14 +359,14 @@ Connection: keep-alive
 
 ```json
 {
-    "token": {
-        "methods": ["password"],
-        "expires_at": "2018-07-30T13:02:37.116Z"
-    },
-    "idm_authorization_config": {
-        "level": "basic",
-        "authzforce": false
-    }
+  "token": {
+    "methods": ["password"],
+    "expires_at": "2018-07-30T13:02:37.116Z"
+  },
+  "idm_authorization_config": {
+    "level": "basic",
+    "authzforce": false
+  }
 }
 ```
 
@@ -389,17 +395,17 @@ The response will return the details of the associated user
 
 ```json
 {
-    "access_token": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-    "expires": "2036-07-30T12:04:45.000Z",
-    "valid": true,
-    "User": {
-        "id": "aaaaaaaa-good-0000-0000-000000000000",
-        "username": "alice",
-        "email": "alice-the-admin@test.com",
-        "date_password": "2018-07-30T11:41:14.000Z",
-        "enabled": true,
-        "admin": true
-    }
+  "access_token": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "expires": "2036-07-30T12:04:45.000Z",
+  "valid": true,
+  "User": {
+    "id": "aaaaaaaa-good-0000-0000-000000000000",
+    "username": "alice",
+    "email": "alice-the-admin@test.com",
+    "date_password": "2018-07-30T11:41:14.000Z",
+    "enabled": true,
+    "admin": true
+  }
 }
 ```
 
@@ -462,10 +468,10 @@ created with a unique `id` and `password` and the values will be returned in the
 
 ```json
 {
-    "pep_proxy": {
-        "id": "pep_proxy_ac80aaf8-0ac3-4bd8-8042-5e8f587679b7",
-        "password": "pep_proxy_23d805e7-1b93-434a-8e69-0798dcdd6726"
-    }
+  "pep_proxy": {
+    "id": "pep_proxy_ac80aaf8-0ac3-4bd8-8042-5e8f587679b7",
+    "password": "pep_proxy_23d805e7-1b93-434a-8e69-0798dcdd6726"
+  }
 }
 ```
 
@@ -486,10 +492,10 @@ curl -X GET \
 
 ```json
 {
-    "pep_proxy": {
-        "id": "pep_proxy_f84bcba2-3300-4f13-a4bb-7bdbd358b201",
-        "oauth_client_id": "tutorial-dckr-site-0000-xpresswebapp"
-    }
+  "pep_proxy": {
+    "id": "pep_proxy_f84bcba2-3300-4f13-a4bb-7bdbd358b201",
+    "oauth_client_id": "tutorial-dckr-site-0000-xpresswebapp"
+  }
 }
 ```
 
@@ -514,7 +520,7 @@ The response returns a new password for the PEP Proxy Account
 
 ```json
 {
-    "new_password": "pep_proxy_2bc8996e-29bf-4195-ac39-d1116e429602"
+  "new_password": "pep_proxy_2bc8996e-29bf-4195-ac39-d1116e429602"
 }
 ```
 
@@ -567,10 +573,10 @@ A new account will be created with a unique `id` and `password` and the values w
 
 ```json
 {
-    "iot": {
-        "id": "iot_sensor_f1d0ca9e-b519-4a8d-b6ae-1246e443dd7e",
-        "password": "iot_sensor_8775b438-6e66-4a6e-87c2-45c6525351ee"
-    }
+  "iot": {
+    "id": "iot_sensor_f1d0ca9e-b519-4a8d-b6ae-1246e443dd7e",
+    "password": "iot_sensor_8775b438-6e66-4a6e-87c2-45c6525351ee"
+  }
 }
 ```
 
@@ -591,10 +597,10 @@ curl -X GET \
 
 ```json
 {
-    "iot": {
-        "id": "iot_sensor_00000000-0000-0000-0000-000000000000",
-        "oauth_client_id": "tutorial-dckr-site-0000-xpresswebapp"
-    }
+  "iot": {
+    "id": "iot_sensor_00000000-0000-0000-0000-000000000000",
+    "oauth_client_id": "tutorial-dckr-site-0000-xpresswebapp"
+  }
 }
 ```
 
@@ -615,14 +621,14 @@ curl -X GET \
 
 ```json
 {
-    "iots": [
-        {
-            "id": "iot_sensor_00000000-0000-0000-0000-000000000000"
-        },
-        {
-            "id": "iot_sensor_c0fa0a77-ea9e-4a82-8118-b4d3c6b230b1"
-        }
-    ]
+  "iots": [
+    {
+      "id": "iot_sensor_00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "id": "iot_sensor_c0fa0a77-ea9e-4a82-8118-b4d3c6b230b1"
+    }
+  ]
 }
 ```
 
@@ -647,7 +653,7 @@ The response returns a new password for the IoT Agent account.
 
 ```json
 {
-    "new_password": "iot_sensor_114cb79c-bf69-444a-82a1-e6e85187dacd"
+  "new_password": "iot_sensor_114cb79c-bf69-444a-82a1-e6e85187dacd"
 }
 ```
 
@@ -665,7 +671,7 @@ curl -X DELETE \
   -H 'X-Auth-token: {{X-Auth-token}}'
 ```
 
-# Securing the Orion Context Broker
+# Securing the Orion Context Broker (Wilma PEP)
 
 ![](https://fiware.github.io/tutorials.PEP-Proxy/img/pep-proxy-orion.png)
 
@@ -677,32 +683,32 @@ Requests.
 
 ```yaml
 orion-proxy:
-    image: fiware/pep-proxy
-    container_name: fiware-orion-proxy
-    hostname: orion-proxy
-    networks:
-        default:
-            ipv4_address: 172.18.1.10
-    depends_on:
-        - keyrock
-    ports:
-        - "1027:1027"
-    expose:
-        - "1027"
-    environment:
-        - PEP_PROXY_APP_HOST=orion
-        - PEP_PROXY_APP_PORT=1026
-        - PEP_PROXY_PORT=1027
-        - PEP_PROXY_IDM_HOST=keyrock
-        - PEP_PROXY_HTTPS_ENABLED=false
-        - PEP_PROXY_AUTH_ENABLED=false
-        - PEP_PROXY_IDM_SSL_ENABLED=false
-        - PEP_PROXY_IDM_PORT=3005
-        - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
-        - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
-        - PEP_PASSWORD=test
-        - PEP_PROXY_PDP=idm
-        - PEP_PROXY_MAGIC_KEY=1234
+  image: fiware/pep-proxy
+  container_name: fiware-orion-proxy
+  hostname: orion-proxy
+  networks:
+    default:
+      ipv4_address: 172.18.1.10
+  depends_on:
+    - keyrock
+  ports:
+    - "1027:1027"
+  expose:
+    - "1027"
+  environment:
+    - PEP_PROXY_APP_HOST=orion
+    - PEP_PROXY_APP_PORT=1026
+    - PEP_PROXY_PORT=1027
+    - PEP_PROXY_IDM_HOST=keyrock
+    - PEP_PROXY_HTTPS_ENABLED=false
+    - PEP_PROXY_AUTH_ENABLED=false
+    - PEP_PROXY_IDM_SSL_ENABLED=false
+    - PEP_PROXY_IDM_PORT=3005
+    - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
+    - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
+    - PEP_PASSWORD=test
+    - PEP_PROXY_PDP=idm
+    - PEP_PROXY_MAGIC_KEY=1234
 ```
 
 The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by adding new entries to the application in
@@ -711,8 +717,8 @@ start-up.
 
 The `orion-proxy` container is listening on a single port:
 
--   The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to
-    the **Wilma** instance without being part of the same network.
+- The PEP Proxy Port - `1027` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to
+  the **Wilma** instance without being part of the same network.
 
 | Key                       | Value                                            | Description                                            |
 | ------------------------- | ------------------------------------------------ | ------------------------------------------------------ |
@@ -741,34 +747,34 @@ additional `access_token` header.
 
 ```yaml
 tutorial-app:
-    image: fiware/tutorials.context-provider
-    hostname: iot-sensors-app
-    container_name: tutorial-app
-    depends_on:
-        - orion-proxy
-        - iot-agent
-        - keyrock
-    networks:
-        default:
-            ipv4_address: 172.18.1.7
-            aliases:
-                - tutorial
-    expose:
-        - "3000"
-        - "3001"
-    ports:
-        - "3000:3000"
-        - "3001:3001"
-    environment:
-        - "WEB_APP_PORT=3000"
-        - "SECURE_ENDPOINTS=true"
-        - "CONTEXT_BROKER=http://orion-proxy:1027/v2"
-        - "KEYROCK_URL=http://localhost"
-        - "KEYROCK_IP_ADDRESS=http://172.18.1.5"
-        - "KEYROCK_PORT=3005"
-        - "KEYROCK_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp"
-        - "KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret"
-        - "CALLBACK_URL=http://localhost:3000/login"
+  image: fiware/tutorials.context-provider
+  hostname: iot-sensors-app
+  container_name: tutorial-app
+  depends_on:
+    - orion-proxy
+    - iot-agent
+    - keyrock
+  networks:
+    default:
+      ipv4_address: 172.18.1.7
+      aliases:
+        - tutorial
+  expose:
+    - "3000"
+    - "3001"
+  ports:
+    - "3000:3000"
+    - "3001:3001"
+  environment:
+    - "WEB_APP_PORT=3000"
+    - "SECURE_ENDPOINTS=true"
+    - "CONTEXT_BROKER=http://orion-proxy:1027/v2"
+    - "KEYROCK_URL=http://localhost"
+    - "KEYROCK_IP_ADDRESS=http://172.18.1.5"
+    - "KEYROCK_PORT=3005"
+    - "KEYROCK_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp"
+    - "KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret"
+    - "CALLBACK_URL=http://localhost:3000/login"
 ```
 
 All of the `tutorial` container settings have been described in previous tutorials. One important change is necessary
@@ -847,10 +853,10 @@ The response returns an access code to identify the user:
 
 ```json
 {
-    "access_token": "a7e22dfe2bd7d883c8621b9eb50797a7f126eeab",
-    "token_type": "Bearer",
-    "expires_in": 3599,
-    "refresh_token": "05e386edd9f95ed0e599c5004db8573e86dff874"
+  "access_token": "a7e22dfe2bd7d883c8621b9eb50797a7f126eeab",
+  "token_type": "Bearer",
+  "expires_in": 3599,
+  "refresh_token": "05e386edd9f95ed0e599c5004db8573e86dff874"
 }
 ```
 
@@ -889,19 +895,19 @@ curl -X GET \
 
 ```json
 {
-    "id": "urn:ngsi-ld:Store:001",
-    "type": "Store",
-    "address": {
-        "streetAddress": "Bornholmer Straße 65",
-        "addressRegion": "Berlin",
-        "addressLocality": "Prenzlauer Berg",
-        "postalCode": "10439"
-    },
-    "location": {
-        "type": "Point",
-        "coordinates": [13.3986, 52.5547]
-    },
-    "name": "Bösebrücke Einkauf"
+  "id": "urn:ngsi-ld:Store:001",
+  "type": "Store",
+  "address": {
+    "streetAddress": "Bornholmer Straße 65",
+    "addressRegion": "Berlin",
+    "addressLocality": "Prenzlauer Berg",
+    "postalCode": "10439"
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [13.3986, 52.5547]
+  },
+  "name": "Bösebrücke Einkauf"
 }
 ```
 
@@ -912,15 +918,15 @@ the User. The `access_token` is stored in session:
 
 ```javascript
 function userCredentialGrant(req, res) {
-    debug("userCredentialGrant");
+  debug("userCredentialGrant");
 
-    const email = req.body.email;
-    const password = req.body.password;
+  const email = req.body.email;
+  const password = req.body.password;
 
-    oa.getOAuthPasswordCredentials(email, password).then((results) => {
-        req.session.access_token = results.access_token;
-        return;
-    });
+  oa.getOAuthPasswordCredentials(email, password).then((results) => {
+    req.session.access_token = results.access_token;
+    return;
+  });
 }
 ```
 
@@ -928,11 +934,11 @@ For each subsequent request, the `access_token` is supplied in the `X-Auth-Token
 
 ```javascript
 function setAuthHeaders(req) {
-    const headers = {};
-    if (req.session.access_token) {
-        headers["X-Auth-Token"] = req.session.access_token;
-    }
-    return headers;
+  const headers = {};
+  if (req.session.access_token) {
+    headers["X-Auth-Token"] = req.session.access_token;
+  }
+  return headers;
 }
 ```
 
@@ -941,25 +947,205 @@ therefore the User can be identified and access granted.
 
 ```javascript
 async function buyItem(req, res) {
-    const inventory = await retrieveEntity(
-        req.params.inventoryId,
-        {
-            options: "keyValues",
-            type: "InventoryItem"
-        },
-        setAuthHeaders(req)
-    );
-    const count = inventory.shelfCount - 1;
+  const inventory = await retrieveEntity(
+    req.params.inventoryId,
+    {
+      options: "keyValues",
+      type: "InventoryItem",
+    },
+    setAuthHeaders(req)
+  );
+  const count = inventory.shelfCount - 1;
 
-    await updateExistingEntityAttributes(
-        req.params.inventoryId,
-        { shelfCount: { type: "Integer", value: count } },
-        {
-            type: "InventoryItem"
-        },
-        setAuthHeaders(req)
-    );
-    res.redirect(`/app/store/${inventory.refStore}/till`);
+  await updateExistingEntityAttributes(
+    req.params.inventoryId,
+    { shelfCount: { type: "Integer", value: count } },
+    {
+      type: "InventoryItem",
+    },
+    setAuthHeaders(req)
+  );
+  res.redirect(`/app/store/${inventory.refStore}/till`);
+}
+```
+
+# Securing the Orion Context Broker (Kong PEP)
+
+FIWARE is not limited to using a single security stack. Since the authorization token is held in a header, security
+is effectively orthogonal to processing of a context broker, and the developer is free to chose their preferred
+Identity Manager, PDP and PEP. As an example, we can swap out the Wilma PEP Proxy and use the [Kong](https://konghq.com/)
+API Management tool in coordination with a [Kong Plugin](https://github.com/FIWARE/kong-plugins-fiware) for Keyrock.
+
+![](https://fiware.github.io/tutorials.PEP-Proxy/img/kong-orion.png)
+
+The `kong-api-gateway` container is an instance of **Kong** listening on port `8000`, it includes a **plugin to use **Keyrock\*\* as a PDP and is configured to forward
+traffic to `orion` on port `1026`, which is the default port that the Orion Context Broker is listening to for NGSI
+Requests.
+
+```yaml
+kong-api-gateway:
+  image: quay.io/fiware/kong
+  container_name: fiware-orion-kong
+  hostname: orion-proxy
+  networks:
+    default:
+      ipv4_address: 172.18.1.10
+  ports:
+    - "8000:8000/tcp"
+  environment:
+    - KONG_DATABASE=off
+    - KONG_DECLARATIVE_CONFIG=/etc/kong/kong.yaml
+    - KONG_PLUGINS=bundled,pep-plugin
+    - KONG_PLUGINSERVER_NAMES= pep-plugin
+    - "KONG_PLUGINSERVER_PEP_PLUGIN_QUERY_CMD=/go-plugins/pep-plugin -dump"
+    - "KONG_PLUGINSERVER_PEP_PLUGIN_START_CMD=/go-plugins/pep-plugin"
+    - KONG_LOG_LEVEL=debug
+```
+
+The declarative config holds additional information such as the hostname and location of the `keyrock`PDP
+and the name and port of the proxied broker (`orion`)
+
+```yaml
+services:
+  - host: "orion"
+    name: "orion-oidc"
+    port: 1026
+    protocol: http
+    routes:
+      - name: orion-oidc
+        paths:
+          - /orion
+        strip_path: true
+    plugins:
+      - name: pep-plugin
+        config:
+          authorizationendpointtype: Keyrock
+          authorizationendpointaddress: http://keyrock:3005/user/
+          keyrockappid: tutorial-dckr-site-0000-xpresswebapp
+          pathprefix: /orion
+```
+
+The `keyrockappid` would usually be obtained by adding a new entry to the application in
+**Keyrock**, however, in this tutorial, they have been predefined by populating the **MySQL** database with data on
+start-up.
+
+The `kong-api-gateway` container is listening on a single port:
+
+- The API Gateway Port - `8000` is exposed purely for tutorial access - so that cUrl or Postman can make requests directly to
+  the **Kong** instance without being part of the same network.
+
+| Key                                    | Value                         | Description                                         |
+| -------------------------------------- | ----------------------------- | --------------------------------------------------- |
+| KONG_DATABASE                          | `off`                         | Whether to use a database to hold the configuration |
+| KONG_DECLARATIVE_CONFIG                | `/etc/kong/kong.yaml`         | The location of the configuration file              |
+| KONG_PLUGINS                           | `bundled,pep-plugin`          | List of included plugins                            |
+| KONG_PLUGINSERVER_NAMES                | `pep-plugin`                  | Names of configurable pluins                        |
+| KONG_PLUGINSERVER_PEP_PLUGIN_QUERY_CMD | `go-plugins/pep-plugin -dump` | Command for querying the plugin                     |
+| KONG_PLUGINSERVER_PEP_PLUGIN_START_CMD | `/go-plugins/pep-plugin`      | Command issued at plugin start up                   |
+| KONG_LOG_LEVEL                         | `debug`                       | Debug level of Kong                                 |
+
+This Docker image of **Kong** is generated to include several FIWARE specific plugins. [Kong Plugins](https://docs.konghq.com/hub/) enable the gateway to be extended and apply multiple security mechanisms.
+
+## Securing Orion - Start up
+
+To start the system with a Kong API Gateway protecting access to **Orion**, run the following command:
+
+```console
+./services orion-kong
+```
+
+## User Logs In to the Application using the REST API
+
+### PEP Proxy - No Access to Orion without an Access Token
+
+Secured Access can be ensured by requiring all requests to the secured service are made indirectly
+via the API Gateway. Due to the manner in which Kong has been configured in the `kong.yaml`,
+all Context Broker access can be made under the path `/orion` - for example to retrieve all entities a user would use `http://localhost:8000/orion/v2/entities/` (in
+this case Kong is acting as a PEP Proxy is found in front of the Context Broker).
+
+Successful requests must include an `Authentiction` header, failure to
+present a valid token results in a denial of access.
+
+#### :one::six: Request:
+
+If a request to the PEP Proxy is made without any access token as shown:
+
+```console
+curl -X GET \
+  http://localhost:8000/orion/v2/entities/urn:ngsi-ld:Store:001?options=keyValues
+```
+
+#### Response:
+
+The response is a **401 Unauthorized** error code, with the following explanation:
+
+```
+Request forbidden by authorization service Keyrock.
+```
+
+### Keyrock - User Obtains an Access Token
+
+#### :one::seven: Request:
+
+To log in to the application using the user-credentials flow send a POST request to **Keyrock** using the `oauth2/token`
+endpoint with the `grant_type=password`. For example to log-in as Alice the Admin:
+
+```console
+curl -iX POST \
+  'http://localhost:3005/oauth2/token' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Basic dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data "username=alice-the-admin@test.com&password=test&grant_type=password"
+```
+
+#### Response:
+
+The response returns an access code to identify the user:
+
+```json
+{
+  "access_token": "a7e22dfe2bd7d883c8621b9eb50797a7f126eeab",
+  "token_type": "Bearer",
+  "expires_in": 3599,
+  "refresh_token": "05e386edd9f95ed0e599c5004db8573e86dff874"
+}
+```
+
+This can also be done by entering the Tutorial Application on http:/localhost and logging in using any of the OAuth2
+grants on the page. A successful log-in will return an access token.
+
+### PEP Proxy - Accessing Orion with an Access Token
+
+If a request to the PEP Proxy is made including a valid access token in the `X-Auth-Token` header as shown, the request
+is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
+expected.
+
+#### :one::eight: Request:
+
+```console
+curl -X GET \
+  http://localhost:8000/orion/v2/entities/urn:ngsi-ld:Store:001?options=keyValues \
+  -H 'Authorization: Bearer {{X-Access-token}}'
+```
+
+#### Response:
+
+```json
+{
+  "id": "urn:ngsi-ld:Store:001",
+  "type": "Store",
+  "address": {
+    "streetAddress": "Bornholmer Straße 65",
+    "addressRegion": "Berlin",
+    "addressLocality": "Prenzlauer Berg",
+    "postalCode": "10439"
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [13.3986, 52.5547]
+  },
+  "name": "Bösebrücke Einkauf"
 }
 ```
 
@@ -975,32 +1161,32 @@ Requests.
 
 ```yaml
 iot-agent-proxy:
-    image: fiware/pep-proxy
-    container_name: fiware-iot-agent-proxy
-    hostname: iot-agent-proxy
-    networks:
-        default:
-            ipv4_address: 172.18.1.11
-    depends_on:
-        - keyrock
-    ports:
-        - "7897:7897"
-    expose:
-        - "7897"
-    environment:
-        - PEP_PROXY_APP_HOST=iot-agent
-        - PEP_PROXY_APP_PORT=7896
-        - PEP_PROXY_PORT=7897
-        - PEP_PROXY_IDM_HOST=keyrock
-        - PEP_PROXY_HTTPS_ENABLED=false
-        - PEP_PROXY_AUTH_ENABLED=false
-        - PEP_PROXY_IDM_SSL_ENABLED=false
-        - PEP_PROXY_IDM_PORT=3005
-        - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
-        - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
-        - PEP_PASSWORD=test
-        - PEP_PROXY_PDP=idm
-        - PEP_PROXY_MAGIC_KEY=1234
+  image: fiware/pep-proxy
+  container_name: fiware-iot-agent-proxy
+  hostname: iot-agent-proxy
+  networks:
+    default:
+      ipv4_address: 172.18.1.11
+  depends_on:
+    - keyrock
+  ports:
+    - "7897:7897"
+  expose:
+    - "7897"
+  environment:
+    - PEP_PROXY_APP_HOST=iot-agent
+    - PEP_PROXY_APP_PORT=7896
+    - PEP_PROXY_PORT=7897
+    - PEP_PROXY_IDM_HOST=keyrock
+    - PEP_PROXY_HTTPS_ENABLED=false
+    - PEP_PROXY_AUTH_ENABLED=false
+    - PEP_PROXY_IDM_SSL_ENABLED=false
+    - PEP_PROXY_IDM_PORT=3005
+    - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
+    - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
+    - PEP_PASSWORD=test
+    - PEP_PROXY_PDP=idm
+    - PEP_PROXY_MAGIC_KEY=1234
 ```
 
 The `PEP_PROXY_APP_ID` and `PEP_PROXY_USERNAME` would usually be obtained by adding new entries to the application in
@@ -1009,8 +1195,8 @@ start-up.
 
 The `iot-agent-proxy` container is listening on a single port:
 
--   The PEP Proxy Port - `7897` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to
-    this **Wilma** instance without being part of the same network.
+- The PEP Proxy Port - `7897` is exposed purely for tutorial access - so that cUrl or Postman can requests directly to
+  this **Wilma** instance without being part of the same network.
 
 | Key                       | Value                                            | Description                                            |
 | ------------------------- | ------------------------------------------------ | ------------------------------------------------------ |
@@ -1040,32 +1226,32 @@ requests to a second **Wilma** PEP Proxy in front of the **IoT Agent**.
 
 ```yaml
 tutorial-app:
-    image: fiware/tutorials.context-provider
-    hostname: iot-sensors-app
-    container_name: tutorial-app
-    depends_on:
-        - orion-proxy
-        - iot-agent-proxy
-        - keyrock
-    networks:
-        default:
-            ipv4_address: 172.18.1.7
-            aliases:
-                - tutorial
-    expose:
-        - "3000"
-        - "3001"
-    ports:
-        - "3000:3000"
-        - "3001:3001"
-    environment:
-        - "IOTA_HTTP_HOST=iot-agent-proxy"
-        - "IOTA_HTTP_PORT=7897"
-        - "DUMMY_DEVICES_PORT=3001" # Port used by the dummy IoT devices to receive commands
-        - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy IoT devices
-        - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
-        - "DUMMY_DEVICES_USER=iot_sensor_00000000-0000-0000-0000-000000000000"
-        - "DUMMY_DEVICES_PASSWORD=test"
+  image: fiware/tutorials.context-provider
+  hostname: iot-sensors-app
+  container_name: tutorial-app
+  depends_on:
+    - orion-proxy
+    - iot-agent-proxy
+    - keyrock
+  networks:
+    default:
+      ipv4_address: 172.18.1.7
+      aliases:
+        - tutorial
+  expose:
+    - "3000"
+    - "3001"
+  ports:
+    - "3000:3000"
+    - "3001:3001"
+  environment:
+    - "IOTA_HTTP_HOST=iot-agent-proxy"
+    - "IOTA_HTTP_PORT=7897"
+    - "DUMMY_DEVICES_PORT=3001" # Port used by the dummy IoT devices to receive commands
+    - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy IoT devices
+    - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
+    - "DUMMY_DEVICES_USER=iot_sensor_00000000-0000-0000-0000-000000000000"
+    - "DUMMY_DEVICES_PASSWORD=test"
 ```
 
 The `tutorial` container hosts the dummy Ultralight sensors. Rather than accessing the **IoT Agent** directly on port
@@ -1121,10 +1307,10 @@ The response returns an access code to identify the device:
 
 ```json
 {
-    "access_token": "a7e22dfe2bd7d883c8621b9eb50797a7f126eeab",
-    "token_type": "Bearer",
-    "expires_in": 3599,
-    "refresh_token": "05e386edd9f95ed0e599c5004db8573e86dff874"
+  "access_token": "a7e22dfe2bd7d883c8621b9eb50797a7f126eeab",
+  "token_type": "Bearer",
+  "expires_in": 3599,
+  "refresh_token": "05e386edd9f95ed0e599c5004db8573e86dff874"
 }
 ```
 
@@ -1137,7 +1323,7 @@ The POST request to a PEP Proxy in front to the Ultralight IoT Agent identifies 
 the source of the request as being registered in Keyrock, and therefore the measurement will be successfully passed on
 to the IoT Agent itself.
 
-#### :one::six: Request:
+#### :one::nine: Request:
 
 ```console
 curl -X POST \
@@ -1157,16 +1343,19 @@ const DUMMY_DEVICE_HTTP_HEADERS = { "Content-Type": "text/plain" };
 
 ```javascript
 function initSecureDevices() {
-    Security.oa
-        .getOAuthPasswordCredentials(process.env.DUMMY_DEVICES_USER, process.env.DUMMY_DEVICES_PASSWORD)
-        .then((results) => {
-            DUMMY_DEVICE_HTTP_HEADERS["X-Auth-Token"] = results.access_token;
-            return;
-        })
-        .catch((error) => {
-            debug(error);
-            return;
-        });
+  Security.oa
+    .getOAuthPasswordCredentials(
+      process.env.DUMMY_DEVICES_USER,
+      process.env.DUMMY_DEVICES_PASSWORD
+    )
+    .then((results) => {
+      DUMMY_DEVICE_HTTP_HEADERS["X-Auth-Token"] = results.access_token;
+      return;
+    })
+    .catch((error) => {
+      debug(error);
+      return;
+    });
 }
 ```
 
@@ -1174,17 +1363,17 @@ Each HTTP request thereafter includes the `X-Auth-Token` Header in the request i
 
 ```javascript
 const options = {
-    method: "POST",
-    url: UL_URL,
-    qs: { k: UL_API_KEY, i: deviceId },
-    headers: DUMMY_DEVICE_HTTP_HEADERS,
-    body: state
+  method: "POST",
+  url: UL_URL,
+  qs: { k: UL_API_KEY, i: deviceId },
+  headers: DUMMY_DEVICE_HTTP_HEADERS,
+  body: state,
 };
 
 request(options, (error) => {
-    if (error) {
-        debug(debugText + " " + error.code);
-    }
+  if (error) {
+    debug(debugText + " " + error.code);
+  }
 });
 ```
 
@@ -1199,43 +1388,43 @@ The `iot-agent` container is listening on port `4041`, it is configured to forwa
 
 ```yaml
 iot-agent:
-    labels:
-      org.fiware: 'tutorial'
-    image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
-    hostname: iot-agent
-    container_name: fiware-iot-agent
-    depends_on:
-        - mongo-db
-        - orion
-    networks:
-        - default
-    ports:
-        - "4041:4041"
-        - "7896:7896"
-    environment:
-        - IOTA_CB_HOST=orion-proxy
-        - IOTA_CB_PORT=1027
-        - IOTA_NORTH_PORT=4041
-        - IOTA_REGISTRY_TYPE=mongodb
-        - IOTA_LOG_LEVEL=DEBUG
-        - IOTA_TIMESTAMP=true
-        - IOTA_CB_NGSI_VERSION=v2
-        - IOTA_AUTOCAST=true
-        - IOTA_MONGO_HOST=mongo-db
-        - IOTA_MONGO_PORT=27017
-        - IOTA_MONGO_DB=iotagentul
-        - IOTA_HTTP_PORT=7896
-        - IOTA_PROVIDER_URL=http://iot-agent:4041
-        - IOTA_AUTH_ENABLED=true
-        - IOTA_AUTH_TYPE=oauth2
-        - IOTA_AUTH_HEADER=Authorization
-        - IOTA_AUTH_HOST=keyrock
-        - IOTA_AUTH_PORT=3005
-        - IOTA_AUTH_URL=http://keyrock:3005
-        - IOTA_AUTH_TOKEN_PATH=/oauth2/token
-        - IOTA_AUTH_PERMANENT_TOKEN=true
-        - IOTA_AUTH_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp
-        - IOTA_AUTH_CLIENT_SECRET=tutorial-dckr-host-0000-clientsecret
+  labels:
+    org.fiware: "tutorial"
+  image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
+  hostname: iot-agent
+  container_name: fiware-iot-agent
+  depends_on:
+    - mongo-db
+    - orion
+  networks:
+    - default
+  ports:
+    - "4041:4041"
+    - "7896:7896"
+  environment:
+    - IOTA_CB_HOST=orion-proxy
+    - IOTA_CB_PORT=1027
+    - IOTA_NORTH_PORT=4041
+    - IOTA_REGISTRY_TYPE=mongodb
+    - IOTA_LOG_LEVEL=DEBUG
+    - IOTA_TIMESTAMP=true
+    - IOTA_CB_NGSI_VERSION=v2
+    - IOTA_AUTOCAST=true
+    - IOTA_MONGO_HOST=mongo-db
+    - IOTA_MONGO_PORT=27017
+    - IOTA_MONGO_DB=iotagentul
+    - IOTA_HTTP_PORT=7896
+    - IOTA_PROVIDER_URL=http://iot-agent:4041
+    - IOTA_AUTH_ENABLED=true
+    - IOTA_AUTH_TYPE=oauth2
+    - IOTA_AUTH_HEADER=Authorization
+    - IOTA_AUTH_HOST=keyrock
+    - IOTA_AUTH_PORT=3005
+    - IOTA_AUTH_URL=http://keyrock:3005
+    - IOTA_AUTH_TOKEN_PATH=/oauth2/token
+    - IOTA_AUTH_PERMANENT_TOKEN=true
+    - IOTA_AUTH_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp
+    - IOTA_AUTH_CLIENT_SECRET=tutorial-dckr-host-0000-clientsecret
 ```
 
 | Key                       | Value                                  | Description                                                |
@@ -1268,7 +1457,7 @@ The standard `Authorization: Basic` header holds the base 64 concatentation of t
 `scope=permanent` is added to retrieve permanent tokens when available. The response contains an `access_token` which
 can be used for device provisioning.
 
-#### :one::seven: Request:
+#### :two::zero: Request:
 
 ```console
 curl -X POST \
@@ -1282,9 +1471,9 @@ curl -X POST \
 
 ```json
 {
-    "access_token": "e37aeef5d48c9c1a3d4adf72626a8745918d4355",
-    "token_type": "Bearer",
-    "scope": ["permanent"]
+  "access_token": "e37aeef5d48c9c1a3d4adf72626a8745918d4355",
+  "token_type": "Bearer",
+  "scope": ["permanent"]
 }
 ```
 
@@ -1296,14 +1485,14 @@ been provisioned as shown:
 
 ```json
 {
-    "apikey": "1068318794",
-    "cbroker": "http://orion:1026",
-    "entity_type": "Motion",
-    "resource": "/iot/d"
+  "apikey": "1068318794",
+  "cbroker": "http://orion:1026",
+  "entity_type": "Motion",
+  "resource": "/iot/d"
 }
 ```
 
-#### :one::eight: Request:
+#### :two::one: Request:
 
 ```console
 curl -iX PUT \
@@ -1323,7 +1512,7 @@ The Motion sensor requests are now sent via the `orion-proxy` and identify thems
 
 Once a trusted service group has been created, a device can be provisioned in the usual manner
 
-#### :one::nine: Request:
+#### :two::two: Request:
 
 ```console
 curl -iX POST \
@@ -1354,4 +1543,4 @@ curl -iX POST \
 
 ## License
 
-[MIT](LICENSE) © 2018-2020 FIWARE Foundation e.V.
+[MIT](LICENSE) © 2018-2022 FIWARE Foundation e.V.

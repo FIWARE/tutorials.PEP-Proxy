@@ -106,12 +106,11 @@ services:
 
 
   # PEP Proxy for Orion
-  orion-proxy:
-    #image: pep-slim
+  kong-api-gateway:
     labels:
       org.fiware: 'tutorial'
-    image: fiware/pep-proxy:${WILMA_VERSION}
-    container_name: fiware-orion-proxy
+    image: quay.io/fiware/kong:${KONG_VERSION}
+    container_name: fiware-orion-kong
     hostname: orion-proxy
     networks:
       default:
@@ -123,28 +122,19 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "${ORION_PROXY_PORT}:${ORION_PROXY_PORT}" # localhost:1027
-    expose:
-      - "${ORION_PROXY_PORT}"
+      - "8000:8000/tcp"
     environment:
-      - DEBUG=pep-proxy:*
-      - PEP_PROXY_DEBUG=true
-      - PEP_PROXY_APP_HOST=orion
-      - PEP_PROXY_APP_PORT=${ORION_PORT}
-      - PEP_PROXY_PORT=${ORION_PROXY_PORT}
-      - PEP_PROXY_IDM_HOST=keyrock
-      - PEP_PROXY_HTTPS_ENABLED=false
-      - PEP_PROXY_AUTH_ENABLED=false
-      - PEP_PROXY_IDM_SSL_ENABLED=false
-      - PEP_PROXY_IDM_PORT=${KEYROCK_PORT}
-      - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
-      - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
-      - PEP_PASSWORD=test
-      - PEP_PROXY_PDP=idm
-      - PEP_PROXY_MAGIC_KEY=1234
-      - PEP_PROXY_PUBLIC_PATHS=/version
-    healthcheck:
-      interval: 50s
+      - KONG_DATABASE=off
+      - KONG_DECLARATIVE_CONFIG=/etc/kong/kong.yaml
+      - KONG_PLUGINS=bundled,pep-plugin
+      - KONG_PLUGINSERVER_NAMES= pep-plugin
+      - "KONG_PLUGINSERVER_PEP_PLUGIN_QUERY_CMD=/go-plugins/pep-plugin -dump"
+      - "KONG_PLUGINSERVER_PEP_PLUGIN_START_CMD=/go-plugins/pep-plugin"
+      - KONG_LOG_LEVEL=debug
+
+    volumes:
+      - ../kong/kong.yaml:/etc/kong/kong.yaml
+    
 
   # Tutorial acts as a series of dummy IoT Sensors over HTTP
   tutorial:
@@ -154,8 +144,6 @@ services:
     hostname: iot-sensors
     container_name: fiware-tutorial
     depends_on:
-      orion-proxy :
-        condition: service_started
       iot-agent:
         condition: service_started
       keyrock:
