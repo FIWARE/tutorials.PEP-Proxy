@@ -951,7 +951,7 @@ async function buyItem(req, res) {
         req.params.inventoryId,
         {
             options: "keyValues",
-            type: "InventoryItem",
+            type: "InventoryItem"
         },
         setAuthHeaders(req)
     );
@@ -961,7 +961,7 @@ async function buyItem(req, res) {
         req.params.inventoryId,
         { shelfCount: { type: "Integer", value: count } },
         {
-            type: "InventoryItem",
+            type: "InventoryItem"
         },
         setAuthHeaders(req)
     );
@@ -1364,7 +1364,7 @@ const options = {
     url: UL_URL,
     qs: { k: UL_API_KEY, i: deviceId },
     headers: DUMMY_DEVICE_HTTP_HEADERS,
-    body: state,
+    body: state
 };
 
 request(options, (error) => {
