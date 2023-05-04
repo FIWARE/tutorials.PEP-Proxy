@@ -807,7 +807,7 @@ curl -X DELETE \
 
 ```yaml
 orion-proxy:
-    image: fiware/pep-proxy
+    image: quay.io/fiware/pep-proxy
     container_name: fiware-orion-proxy
     hostname: orion-proxy
     networks:
@@ -875,7 +875,7 @@ Proxy にリクエストを行います。すべてのリクエストに追加 �
 
 ```yaml
 tutorial-app:
-    image: fiware/tutorials.context-provider
+    image: quay.io/fiware/tutorials.context-provider
     hostname: iot-sensors-app
     container_name: tutorial-app
     depends_on:
@@ -1158,7 +1158,7 @@ async function buyItem(req, res) {
 
 ```yaml
 iot-agent-proxy:
-    image: fiware/pep-proxy
+    image: quay.io/fiware/pep-proxy
     container_name: fiware-iot-agent-proxy
     hostname: iot-agent-proxy
     networks:
@@ -1228,7 +1228,7 @@ Agent** の前にある 2 番目の **Wilma** PEP Proxy にリクエストしま
 
 ```yaml
 tutorial-app:
-    image: fiware/tutorials.context-provider
+    image: quay.io/fiware/tutorials.context-provider
     hostname: iot-sensors-app
     container_name: tutorial-app
     depends_on:
@@ -1411,7 +1411,7 @@ request(options, (error) => {
 iot-agent:
     labels:
       org.fiware: 'tutorial'
-    image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
+    image: quay.io/fiware/iotagent-ul:${ULTRALIGHT_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
