@@ -140,7 +140,7 @@ tutorial:
 
 ## :arrow_forward: Video : Introduction to Wilma PEP Proxy
 
-[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=8tGbUI18udM "Introduction")
+[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=8tGbUI18udM 'Introduction')
 
 Click on the image above to see an introductory video
 
@@ -418,7 +418,7 @@ accounts can be created by using either the Keyrock GUI or by using the REST API
 
 ## :arrow_forward: Video : Wilma PEP Proxy Configuration
 
-[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=b4sYU78skrw "PEP Proxy Configuration")
+[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=b4sYU78skrw 'PEP Proxy Configuration')
 
 Click on the image above to see a video about configuring the Wilma PEP Proxy using the **Keyrock** GUI
 
@@ -692,9 +692,9 @@ orion-proxy:
     depends_on:
         - keyrock
     ports:
-        - "1027:1027"
+        - '1027:1027'
     expose:
-        - "1027"
+        - '1027'
     environment:
         - PEP_PROXY_APP_HOST=orion
         - PEP_PROXY_APP_PORT=1026
@@ -760,21 +760,21 @@ tutorial-app:
             aliases:
                 - tutorial
     expose:
-        - "3000"
-        - "3001"
+        - '3000'
+        - '3001'
     ports:
-        - "3000:3000"
-        - "3001:3001"
+        - '3000:3000'
+        - '3001:3001'
     environment:
-        - "WEB_APP_PORT=3000"
-        - "SECURE_ENDPOINTS=true"
-        - "CONTEXT_BROKER=http://orion-proxy:1027/v2"
-        - "KEYROCK_URL=http://localhost"
-        - "KEYROCK_IP_ADDRESS=http://172.18.1.5"
-        - "KEYROCK_PORT=3005"
-        - "KEYROCK_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp"
-        - "KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret"
-        - "CALLBACK_URL=http://localhost:3000/login"
+        - 'WEB_APP_PORT=3000'
+        - 'SECURE_ENDPOINTS=true'
+        - 'CONTEXT_BROKER=http://orion-proxy:1027/v2'
+        - 'KEYROCK_URL=http://localhost'
+        - 'KEYROCK_IP_ADDRESS=http://172.18.1.5'
+        - 'KEYROCK_PORT=3005'
+        - 'KEYROCK_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp'
+        - 'KEYROCK_CLIENT_SECRET=tutorial-dckr-site-0000-clientsecret'
+        - 'CALLBACK_URL=http://localhost:3000/login'
 ```
 
 All of the `tutorial` container settings have been described in previous tutorials. One important change is necessary
@@ -802,7 +802,7 @@ To start the system with a PEP Proxy protecting access to **Orion**, run the fol
 
 ### :arrow_forward: Video : Securing A REST API
 
-[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=coxFQEY0_So "Securing a REST API")
+[![](https://fiware.github.io/tutorials.Step-by-Step/img/video-logo.png)](https://www.youtube.com/watch?v=coxFQEY0_So 'Securing a REST API')
 
 Click on the image above to see a video about securing a REST API using the Wilma PEP Proxy
 
@@ -918,7 +918,7 @@ the User. The `access_token` is stored in session:
 
 ```javascript
 function userCredentialGrant(req, res) {
-    debug("userCredentialGrant");
+    debug('userCredentialGrant');
 
     const email = req.body.email;
     const password = req.body.password;
@@ -936,7 +936,7 @@ For each subsequent request, the `access_token` is supplied in the `X-Auth-Token
 function setAuthHeaders(req) {
     const headers = {};
     if (req.session.access_token) {
-        headers["X-Auth-Token"] = req.session.access_token;
+        headers['X-Auth-Token'] = req.session.access_token;
     }
     return headers;
 }
@@ -950,8 +950,8 @@ async function buyItem(req, res) {
     const inventory = await retrieveEntity(
         req.params.inventoryId,
         {
-            options: "keyValues",
-            type: "InventoryItem"
+            options: 'keyValues',
+            type: 'InventoryItem'
         },
         setAuthHeaders(req)
     );
@@ -959,9 +959,9 @@ async function buyItem(req, res) {
 
     await updateExistingEntityAttributes(
         req.params.inventoryId,
-        { shelfCount: { type: "Integer", value: count } },
+        { shelfCount: { type: 'Integer', value: count } },
         {
-            type: "InventoryItem"
+            type: 'InventoryItem'
         },
         setAuthHeaders(req)
     );
@@ -991,14 +991,14 @@ kong-api-gateway:
         default:
             ipv4_address: 172.18.1.10
     ports:
-        - "8000:8000/tcp"
+        - '8000:8000/tcp'
     environment:
         - KONG_DATABASE=off
         - KONG_DECLARATIVE_CONFIG=/etc/kong/kong.yaml
         - KONG_PLUGINS=bundled,pep-plugin
         - KONG_PLUGINSERVER_NAMES= pep-plugin
-        - "KONG_PLUGINSERVER_PEP_PLUGIN_QUERY_CMD=/go-plugins/pep-plugin -dump"
-        - "KONG_PLUGINSERVER_PEP_PLUGIN_START_CMD=/go-plugins/pep-plugin"
+        - 'KONG_PLUGINSERVER_PEP_PLUGIN_QUERY_CMD=/go-plugins/pep-plugin -dump'
+        - 'KONG_PLUGINSERVER_PEP_PLUGIN_START_CMD=/go-plugins/pep-plugin'
         - KONG_LOG_LEVEL=debug
 ```
 
@@ -1007,8 +1007,8 @@ and port of the proxied broker (`orion`)
 
 ```yaml
 services:
-    - host: "orion"
-      name: "orion-oidc"
+    - host: 'orion'
+      name: 'orion-oidc'
       port: 1026
       protocol: http
       routes:
@@ -1170,9 +1170,9 @@ iot-agent-proxy:
     depends_on:
         - keyrock
     ports:
-        - "7897:7897"
+        - '7897:7897'
     expose:
-        - "7897"
+        - '7897'
     environment:
         - PEP_PROXY_APP_HOST=iot-agent
         - PEP_PROXY_APP_PORT=7896
@@ -1239,19 +1239,19 @@ tutorial-app:
             aliases:
                 - tutorial
     expose:
-        - "3000"
-        - "3001"
+        - '3000'
+        - '3001'
     ports:
-        - "3000:3000"
-        - "3001:3001"
+        - '3000:3000'
+        - '3001:3001'
     environment:
-        - "IOTA_HTTP_HOST=iot-agent-proxy"
-        - "IOTA_HTTP_PORT=7897"
-        - "DUMMY_DEVICES_PORT=3001" # Port used by the dummy IoT devices to receive commands
-        - "DUMMY_DEVICES_TRANSPORT=HTTP" # Default transport used by dummy IoT devices
-        - "DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov"
-        - "DUMMY_DEVICES_USER=iot_sensor_00000000-0000-0000-0000-000000000000"
-        - "DUMMY_DEVICES_PASSWORD=test"
+        - 'IOTA_HTTP_HOST=iot-agent-proxy'
+        - 'IOTA_HTTP_PORT=7897'
+        - 'DUMMY_DEVICES_PORT=3001' # Port used by the dummy IoT devices to receive commands
+        - 'DUMMY_DEVICES_TRANSPORT=HTTP' # Default transport used by dummy IoT devices
+        - 'DUMMY_DEVICES_API_KEY=4jggokgpepnvsb2uv4s40d59ov'
+        - 'DUMMY_DEVICES_USER=iot_sensor_00000000-0000-0000-0000-000000000000'
+        - 'DUMMY_DEVICES_PASSWORD=test'
 ```
 
 The `tutorial` container hosts the dummy Ultralight sensors. Rather than accessing the **IoT Agent** directly on port
@@ -1338,7 +1338,7 @@ curl -X POST \
 When an IoT Sensor starts up, it must log-in like any other user to obtain an access token:
 
 ```javascript
-const DUMMY_DEVICE_HTTP_HEADERS = { "Content-Type": "text/plain" };
+const DUMMY_DEVICE_HTTP_HEADERS = { 'Content-Type': 'text/plain' };
 ```
 
 ```javascript
@@ -1346,7 +1346,7 @@ function initSecureDevices() {
     Security.oa
         .getOAuthPasswordCredentials(process.env.DUMMY_DEVICES_USER, process.env.DUMMY_DEVICES_PASSWORD)
         .then((results) => {
-            DUMMY_DEVICE_HTTP_HEADERS["X-Auth-Token"] = results.access_token;
+            DUMMY_DEVICE_HTTP_HEADERS['X-Auth-Token'] = results.access_token;
             return;
         })
         .catch((error) => {
@@ -1360,7 +1360,7 @@ Each HTTP request thereafter includes the `X-Auth-Token` Header in the request i
 
 ```javascript
 const options = {
-    method: "POST",
+    method: 'POST',
     url: UL_URL,
     qs: { k: UL_API_KEY, i: deviceId },
     headers: DUMMY_DEVICE_HTTP_HEADERS,
@@ -1369,7 +1369,7 @@ const options = {
 
 request(options, (error) => {
     if (error) {
-        debug(debugText + " " + error.code);
+        debug(debugText + ' ' + error.code);
     }
 });
 ```
@@ -1386,7 +1386,7 @@ The `iot-agent` container is listening on port `4041`, it is configured to forwa
 ```yaml
 iot-agent:
     labels:
-        org.fiware: "tutorial"
+        org.fiware: 'tutorial'
     image: quay.io/fiware/iotagent-ul:${ULTRALIGHT_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent
@@ -1396,8 +1396,8 @@ iot-agent:
     networks:
         - default
     ports:
-        - "4041:4041"
-        - "7896:7896"
+        - '4041:4041'
+        - '7896:7896'
     environment:
         - IOTA_CB_HOST=orion-proxy
         - IOTA_CB_PORT=1027
