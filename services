@@ -231,8 +231,8 @@ case "${command}" in
 		export $(cat .env | grep "#" -v)
 		echo "Pulling Docker images"
 		docker pull -q quay.io/curl/curl
-		${dockerCmd} -f docker-compose/orion.yml  pull
-		${dockerCmd} -f docker-compose/kong.yml  pull
+		${dockerCmd} -f docker-compose/orion-wilma.yml  pull
+		${dockerCmd} -f docker-compose/orion-kong.yml  pull
 		;;
 	*)
 		echo "Command not Found."
