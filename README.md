@@ -1072,14 +1072,14 @@ If a request to the PEP Proxy is made without any access token as shown:
 
 ```console
 curl -X GET \
-  http://localhost:8000/orion/v2/entities/urn:ngsi-ld:Store:001?options=keyValues
+  'http://localhost:8000/orion/v2/entities/urn:ngsi-ld:Store:001?options=keyValues'
 ```
 
 #### Response:
 
 The response is a **401 Unauthorized** error code, with the following explanation:
 
-```
+```text
 Request forbidden by authorization service Keyrock.
 ```
 
@@ -1096,7 +1096,7 @@ curl -iX POST \
   -H 'Accept: application/json' \
   -H 'Authorization: Basic dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  --data "username=alice-the-admin@test.com&password=test&grant_type=password"
+  --data "username=bob-the-manager@test.com&password=test&grant_type=password"
 ```
 
 #### Response:
@@ -1125,7 +1125,7 @@ expected.
 
 ```console
 curl -X GET \
-  http://localhost:8000/orion/v2/entities/urn:ngsi-ld:Store:001?options=keyValues \
+  'http://localhost:8000/orion/v2/entities/urn:ngsi-ld:Store:001?options=keyValues' \
   -H 'Authorization: Bearer {{X-Access-token}}'
 ```
 
