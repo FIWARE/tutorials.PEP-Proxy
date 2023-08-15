@@ -1458,7 +1458,7 @@ can be used for device provisioning.
 
 ```console
 curl -X POST \
-  http://localhost:3005/oauth2/token \
+  'http://localhost:3005/oauth2/token' \
   -H 'Accept: application/json' \
   -H 'Authorization: Basic dHV0b3JpYWwtZGNrci1zaXRlLTAwMDAteHByZXNzd2ViYXBwOnR1dG9yaWFsLWRja3Itc2l0ZS0wMDAwLWNsaWVudHNlY3JldA==' \
   -d 'username=alice-the-admin@test.com&password=test&grant_type=password&scope=permanent'
@@ -1491,6 +1491,8 @@ been provisioned as shown:
 
 #### :two::one: Request:
 
+> **Note:** use the `access_token` from the previous request.
+
 ```console
 curl -iX PUT \
   'http://localhost:4041/iot/services?resource=/iot/d&apikey=1068318794' \
@@ -1499,7 +1501,7 @@ curl -iX PUT \
   -H 'fiware-servicepath: /' \
   -d '{
      "cbroker": "http://orion-proxy:1027",
-     "trust": "30a5ce4c71e416bd199dcdcb7f8bcd8d70e8bb5e"
+     "trust": "{{Access-token}}"
 }'
 ```
 
