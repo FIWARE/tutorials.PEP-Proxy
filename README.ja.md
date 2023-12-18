@@ -399,7 +399,7 @@ Super-User は、`alice-the-admin@test.com` と `test` の値を持っていま�
 
 次の例では、Admin Super-User を使用してログインします :
 
-#### :one: リクエスト:
+#### 1️⃣ リクエスト:
 
 ```console
 curl -iX POST \
@@ -452,7 +452,7 @@ Connection: keep-alive
 ることができます。`{{X-Auth-token}}` と `{{X-Subject-token}}` は、Alice が自分自
 身について問い合わせを行っている場合に同じ値に設定することができます。
 
-#### :two: リクエスト:
+#### 2️⃣ リクエスト:
 
 ```console
 curl -X GET \
@@ -542,7 +542,7 @@ curl -X GET \
 `/v1/applications/{{application-id}}/pep_proxies` エンドポイントに POST リクエス
 トを送信します。
 
-#### :three: リクエスト:
+#### 3️⃣ リクエスト:
 
 ```console
 curl -iX POST \
@@ -574,7 +574,7 @@ curl -iX POST \
 トを行うと、関連する PEP Proxy アカウントの詳細が返されます。`X-Auth-token` をヘ
 ッダに指定してしてください。
 
-#### :four: リクエスト:
+#### 4️⃣ リクエスト:
 
 ```console
 curl -X GET \
@@ -602,7 +602,7 @@ PEP Proxy アカウントのパスワードを更新するには
 クエストを実行し、関連する PEP Proxy アカウントの詳細が返されます
 。`X-Auth-token` をヘッダに指定してしてください。
 
-#### :five: リクエスト:
+#### 5️⃣ リクエスト:
 
 ```console
 curl -X PATCH \
@@ -629,7 +629,7 @@ curl -X PATCH \
 エンドポイントに DELETE リクエストを行うことで削除できます。`X-Auth-token` をヘ
 ッダに指定してしてください。
 
-#### :six: リクエスト:
+#### 6️⃣ リクエスト:
 
 ```console
 curl -X DELETE \
@@ -664,7 +664,7 @@ PEP Proxy 作成と同様に、サイン・インして、ユーザはアプリ�
 `/v1/applications/{{application-id}}/iot_agents` エンドポイントに POST リクエス
 トを送信します。
 
-#### :seven: リクエスト:
+#### 7️⃣  リクエスト:
 
 ```console
 curl -X POST \
@@ -696,7 +696,7 @@ GET リクエストを作成すると
 トは関連する IoT Agent アカウントの詳細を返します。`X-Auth-token` をヘッダに指定
 してしてください。
 
-#### :eight: リクエスト:
+#### 8️⃣  リクエスト:
 
 ```console
 curl -X GET \
@@ -723,7 +723,7 @@ curl -X GET \
 を実行することによって、アプリケーションに関連するすべての IoT Agents のリストを
 得ることができる。`X-Auth-token` をヘッダに指定してしてください。
 
-#### :nine: リクエスト:
+#### 9️⃣ リクエスト:
 
 ```console
 curl -X GET \
@@ -750,7 +750,7 @@ curl -X GET \
 
 ### IoT Agent のパスワードをリセット
 
-#### :one::zero: リクエスト:
+#### 1️⃣0️⃣ リクエスト:
 
 個々の IoT Agent アカウントのパスワードを更新するには
 、`/v1/applications/{{application-id}}//iot_agents/{{iot-agent-id}}` エンドポイ
@@ -783,7 +783,7 @@ curl -iX PATCH \
 トに DELETE リクエストを行うことで削除できます。`X-Auth-token` をヘッダに指定し
 てしてください。
 
-#### :one::one: リクエスト:
+#### 1️⃣1️⃣ リクエスト:
 
 ```console
 curl -X DELETE \
@@ -954,7 +954,7 @@ tutorial-app:
 Broker の前にあります。リクエストには、`X-Auth-Token` を含める必要があります。有
 効なトークンを提示できないと、アクセスが拒否されます。
 
-#### :one::two: リクエスト:
+#### 1️⃣2️⃣ リクエスト:
 
 以下のようにアクセス・トークンなしで PEP Proxy へのリクエストが行われた場合は :
 
@@ -975,7 +975,7 @@ Auth-token not found in request header
 
 ### Keyrock - ユーザによるアクセス・トークンの取得
 
-#### :one::three: リクエスト:
+#### 1️⃣3️⃣ リクエスト:
 
 ユーザ・クレデンシャルのフローを使用してアプリケーションにログインするには
 、`oauth2/token` エンドポイントを使用して、`grant_type=password` とともに
@@ -1016,7 +1016,7 @@ curl -iX POST \
 Proxy へのリクエストが行われた場合、そのリクエストは許可され、PEP Proxy の背後に
 あるサービス (この場合は Orion Context Broker) が期待通りにデータを返します。
 
-#### :one::four: リクエスト:
+#### 1️⃣4️⃣ リクエスト:
 
 ```console
 curl -X GET \
@@ -1051,7 +1051,7 @@ curl -X GET \
 標準の `Authorization: Bearer` ヘッダを使用してユーザを識別することもできます。承認されたユーザからのリクエストが許可
 され、PEP Proxy の背後にあるサービス (この場合は Orion Context Broker) が期待どおりにデータを返します。
 
-#### :one::five: リクエスト:
+#### 1️⃣5️⃣ リクエスト:
 
 ```console
 curl -X GET \
@@ -1303,7 +1303,7 @@ IoT センサとしてのログインは、ユーザと同じユーザ・クレ�
 POST リクエストを送ります :
 
 
-#### :one::five: リクエスト:
+#### 1️⃣5️⃣ リクエスト:
 
 ```console
 curl -iX POST \
@@ -1339,7 +1339,7 @@ Ultralight IoT Agent の前にある PEP Proxy への POST リクエストは、
 定値を渡します。`X-Auth-Token` ヘッダを追加すると、リクエスト元が Keyrock に登録
 されていると識別され、測定が IoT Agent 自体に正常に渡されます。
 
-#### :one::six: リクエスト:
+#### 1️⃣6️⃣ リクエスト:
 
 ```console
 curl -X POST \
@@ -1483,7 +1483,7 @@ Keyrock アプリケーションは、永久トークンを提供するように
 `scope=permanent` が追加され、利用可能な場合に永続トークンを取得します。レスポンスには、デバイスのプロビジョニングに
 使用できる `access_token` が含まれています。
 
-#### :one::seven: リクエスト:
+#### 1️⃣7️⃣  リクエスト:
 
 ```console
 curl -X POST \
@@ -1520,7 +1520,7 @@ curl -X POST \
 }
 ```
 
-#### :one::eight: リクエスト:
+#### 1️⃣8️⃣  リクエスト:
 
 ```console
 curl -iX PUT \
@@ -1542,7 +1542,7 @@ curl -iX PUT \
 
 信頼できるサービス・グループが作成されると、通常の方法でデバイスをプロビジョニングできます。
 
-#### :one::nine: リクエスト:
+#### 1️⃣9️⃣ リクエスト:
 
 ```console
 curl -iX POST \

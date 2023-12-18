@@ -330,7 +330,7 @@ and `test`. The URL `https://localhost:3443/v1/auth/tokens` should also work in 
 
 The following example logs in using the Admin Super-User:
 
-#### :one: Request:
+#### 1️⃣ Request:
 
 ```console
 curl -iX POST \
@@ -379,7 +379,7 @@ You can use the long-lasting `X-Auth-token=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa`
 tutorial. Both `{{X-Auth-token}}` and `{{X-Subject-token}}` can be set to the same value in the case that Alice is
 making an enquiry about herself.
 
-#### :two: Request:
+#### 2️⃣ Request:
 
 ```console
 curl -X GET \
@@ -452,7 +452,7 @@ To create a new PEP Proxy account within an application, send a POST request to 
 `/v1/applications/{{application-id}}/pep_proxies` endpoint along with the `X-Auth-token` header from a previously logged
 in administrative user.
 
-#### :three: Request:
+#### 3️⃣ Request:
 
 ```console
 curl -iX POST \
@@ -480,7 +480,7 @@ created with a unique `id` and `password` and the values will be returned in the
 Making a GET request to the `/v1/applications/{{application-id}}/pep_proxies` endpoint will return the details of the
 associated PEP Proxy Account. The `X-Auth-token` must be supplied in the headers.
 
-#### :four: Request:
+#### 4️⃣ Request:
 
 ```console
 curl -X GET \
@@ -505,7 +505,7 @@ To renew the password of a PEP Proxy Account, make a PATCH request to the
 `/v1/applications/{{application-id}}/pep_proxies` endpoint will return the details of the associated PEP Proxy Account.
 The `X-Auth-token` must be supplied in the headers.
 
-#### :five: Request:
+#### 5️⃣ Request:
 
 ```console
 curl -X PATCH \
@@ -529,7 +529,7 @@ The response returns a new password for the PEP Proxy Account
 An existing PEP Proxy Account can be deleted by making a DELETE request to the
 `/v1/applications/{{application-id}}/pep_proxies` endpoint. The `X-Auth-token` must be supplied in the headers.
 
-#### :six: Request:
+#### 6️⃣ Request:
 
 ```console
 curl -X DELETE \
@@ -558,7 +558,7 @@ To create a new IoT Agent account within an application, send a POST request to 
 `/v1/applications/{{application-id}}/iot_agents` endpoint along with the `X-Auth-token` header from a previously logged
 in administrative user.
 
-#### :seven: Request:
+#### 7️⃣  Request:
 
 ```console
 curl -X POST \
@@ -585,7 +585,7 @@ A new account will be created with a unique `id` and `password` and the values w
 Making a GET request the `/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` endpoint will return the
 details of the associated IoT Agent Account. The `X-Auth-token` must be supplied in the headers.
 
-#### :eight: Request:
+#### 8️⃣  Request:
 
 ```console
 curl -X GET \
@@ -609,7 +609,7 @@ curl -X GET \
 A list of all IoT Agents associated with an application can be obtained by making a GET request the
 `/v1/applications/{{application-id}}/iot_agents` endpoint. The `X-Auth-token` must be supplied in the headers.
 
-#### :nine: Request:
+#### 9️⃣ Request:
 
 ```console
 curl -X GET \
@@ -634,7 +634,7 @@ curl -X GET \
 
 ### Reset Password of an IoT Agent
 
-#### :one::zero: Request:
+#### 1️⃣0️⃣ Request:
 
 To renew the password of an individual IoT Agent Account, make a PATCH request to the
 `/v1/applications/{{application-id}}//iot_agents/{{iot-agent-id}}` endpoint. The `X-Auth-token` must be supplied in the
@@ -663,7 +663,7 @@ An existing IoT Agent Account can be deleted by making a DELETE request to the
 `/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` endpoint. The `X-Auth-token` must be supplied in the
 headers.
 
-#### :one::one: Request:
+#### 1️⃣1️⃣ Request:
 
 ```console
 curl -X DELETE \
@@ -814,7 +814,7 @@ Secured Access can be ensured by requiring all requests to the secured service a
 this case the PEP Proxy is found in front of the Context Broker). Requests must include an `X-Auth-Token`, failure to
 present a valid token results in a denial of access.
 
-#### :one::two: Request:
+#### 1️⃣2️⃣ Request:
 
 If a request to the PEP Proxy is made without any access token as shown:
 
@@ -833,7 +833,7 @@ Auth-token not found in request header
 
 ### Keyrock - User Obtains an Access Token
 
-#### :one::three: Request:
+#### 1️⃣3️⃣ Request:
 
 To log in to the application using the user-credentials flow send a POST request to **Keyrock** using the `oauth2/token`
 endpoint with the `grant_type=password`. For example to log-in as Alice the Admin:
@@ -869,7 +869,7 @@ If a request to the PEP Proxy is made including a valid access token in the `X-A
 is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
 expected.
 
-#### :one::four: Request:
+#### 1️⃣4️⃣ Request:
 
 ```console
 curl -X GET \
@@ -883,7 +883,7 @@ The standard `Authorization: Bearer` header can also be used to identity the use
 is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
 expected.
 
-#### :one::five: Request:
+#### 1️⃣5️⃣ Request:
 
 ```console
 curl -X GET \
@@ -1066,7 +1066,7 @@ this case Kong is acting as a PEP Proxy is found in front of the Context Broker)
 Successful requests must include an `Authentiction` header, failure to present a valid token results in a denial of
 access.
 
-#### :one::six: Request:
+#### 1️⃣6️⃣ Request:
 
 If a request to the PEP Proxy is made without any access token as shown:
 
@@ -1085,7 +1085,7 @@ Request forbidden by authorization service Keyrock.
 
 ### Keyrock - User Obtains an Access Token
 
-#### :one::seven: Request:
+#### 1️⃣7️⃣  Request:
 
 To log in to the application using the user-credentials flow send a POST request to **Keyrock** using the `oauth2/token`
 endpoint with the `grant_type=password`. For example to log-in as Alice the Admin:
@@ -1121,7 +1121,7 @@ If a request to the PEP Proxy is made including a valid access token in the `X-A
 is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
 expected.
 
-#### :one::eight: Request:
+#### 1️⃣8️⃣  Request:
 
 ```console
 curl -X GET \
@@ -1290,7 +1290,7 @@ Logging in as an IoT Sensor follows the same user-credentials flow as for a User
 `iot_sensor_00000000-0000-0000-0000-000000000000` with password `test` send a POST request to **Keyrock** using the
 `oauth2/token` endpoint with the `grant_type=password`:
 
-#### :one::five: Request:
+#### 1️⃣5️⃣ Request:
 
 ```console
 curl -iX POST \
@@ -1323,7 +1323,7 @@ The POST request to a PEP Proxy in front to the Ultralight IoT Agent identifies 
 the source of the request as being registered in Keyrock, and therefore the measurement will be successfully passed on
 to the IoT Agent itself.
 
-#### :one::nine: Request:
+#### 1️⃣9️⃣ Request:
 
 ```console
 curl -X POST \
@@ -1454,7 +1454,7 @@ The standard `Authorization: Basic` header holds the base 64 concatentation of t
 `scope=permanent` is added to retrieve permanent tokens when available. The response contains an `access_token` which
 can be used for device provisioning.
 
-#### :two::zero: Request:
+#### 2️⃣0️⃣ Request:
 
 ```console
 curl -X POST \
@@ -1489,7 +1489,7 @@ been provisioned as shown:
 }
 ```
 
-#### :two::one: Request:
+#### 2️⃣1️⃣ Request:
 
 > **Note:** use the `access_token` from the previous request.
 
@@ -1511,7 +1511,7 @@ The Motion sensor requests are now sent via the `orion-proxy` and identify thems
 
 Once a trusted service group has been created, a device can be provisioned in the usual manner
 
-#### :two::two: Request:
+#### 2️⃣2️⃣ Request:
 
 ```console
 curl -iX POST \
