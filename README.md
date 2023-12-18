@@ -230,7 +230,8 @@ git checkout NGSI-v2
 ./services create
 ```
 
-> **Note** The initial creation of Docker images can take up to three minutes
+> [!NOTE]
+> The initial creation of Docker images can take up to three minutes
 
 Thereafter, all services can be initialized from the command-line by running the
 [services](https://github.com/FIWARE/tutorials.PEP-PRoxy/blob/NGSI-v2/services) Bash script provided within the
@@ -1492,7 +1493,8 @@ been provisioned as shown:
 
 #### 2️⃣1️⃣ Request:
 
-> **Note:** use the `access_token` from the previous request.
+> [!NOTE]
+> Use the `access_token` from the previous request.
 
 ```console
 curl -iX PUT \
