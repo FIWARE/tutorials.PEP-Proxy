@@ -236,6 +236,7 @@ git checkout NGSI-v2
 ```
 
 > [!NOTE]
+>
 > The initial creation of Docker images can take up to three minutes
 
 Thereafter, all services can be initialized from the command-line by running the
@@ -249,6 +250,7 @@ repository:
 Where `<command>` will vary depending upon the exercise we wish to activate.
 
 > [!NOTE]
+>
 > If you want to clean up and start over again you can do so with the following command:
 >
 > ```console
@@ -565,7 +567,7 @@ To create a new IoT Agent account within an application, send a POST request to 
 `/v1/applications/{{application-id}}/iot_agents` endpoint along with the `X-Auth-token` header from a previously logged
 in administrative user.
 
-#### 7️⃣  Request:
+#### 7️⃣ Request:
 
 ```console
 curl -X POST \
@@ -592,7 +594,7 @@ A new account will be created with a unique `id` and `password` and the values w
 Making a GET request the `/v1/applications/{{application-id}}/iot_agents/{{iot-agent-id}}` endpoint will return the
 details of the associated IoT Agent Account. The `X-Auth-token` must be supplied in the headers.
 
-#### 8️⃣  Request:
+#### 8️⃣ Request:
 
 ```console
 curl -X GET \
@@ -1092,7 +1094,7 @@ Request forbidden by authorization service Keyrock.
 
 ### Keyrock - User Obtains an Access Token
 
-#### 1️⃣7️⃣  Request:
+#### 1️⃣7️⃣ Request:
 
 To log in to the application using the user-credentials flow send a POST request to **Keyrock** using the `oauth2/token`
 endpoint with the `grant_type=password`. For example to log-in as Alice the Admin:
@@ -1128,7 +1130,7 @@ If a request to the PEP Proxy is made including a valid access token in the `X-A
 is permitted and the service behind the PEP Proxy (in this case the Orion Context Broker) will return the data as
 expected.
 
-#### 1️⃣8️⃣  Request:
+#### 1️⃣8️⃣ Request:
 
 ```console
 curl -X GET \
@@ -1499,6 +1501,7 @@ been provisioned as shown:
 #### 2️⃣1️⃣ Request:
 
 > [!NOTE]
+>
 > Use the `access_token` from the previous request.
 
 ```console
