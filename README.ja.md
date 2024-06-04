@@ -34,7 +34,7 @@ Keyrock GUI と REST API の部分について詳しく説明します。
     -   [:arrow_forward: ビデオ : Wilma PEP Proxy の紹介](#arrow_forward-video--introduction-to-wilma-pep-proxy)
 -   [前提条件](#prerequisites)
     -   [Docker](#docker)
-    -   [Cygwin](#cygwin)
+    -   [WSL](#wsl)
 -   [アーキテクチャ](#architecture)
 -   [起動](#start-up)
     -   [登場人物 (Dramatis Personae)](#dramatis-personae)
@@ -192,12 +192,10 @@ application) のオブジェクトを保護することができます。
 は[ここ](https://docs.docker.com/compose/install/)に記載されている手順に従う必要
 があります。
 
-<a name="cygwin"></a>
-
-## Cygwin
+## WSL
 
 シンプルな bash スクリプトを使用してサービスを開始します。Windows ユーザは
-[cygwin](http://www.cygwin.com/) をダウンロードして、Windows 上の Linux ディスト
+[を使用して Windows に Linux をインストールする方法](https://learn.microsoft.com/ja-jp/windows/wsl/install) をダウンロードして、Windows 上の Linux ディスト
 リビューションと同様のコマンドライン機能を提供する必要があります。
 
 <a name="architecture"></a>
