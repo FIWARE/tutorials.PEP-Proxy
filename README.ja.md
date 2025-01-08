@@ -1580,4 +1580,4 @@ curl -iX POST \
 
 ## License
 
-[MIT](LICENSE) © 2018-2024 FIWARE Foundation e.V.
+[MIT](LICENSE) © 2018-2025 FIWARE Foundation e.V.
