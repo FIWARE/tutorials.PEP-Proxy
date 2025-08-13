@@ -67,6 +67,9 @@ services:
       - IOTA_MONGO_DB=iotagentul # The name of the database used in mongoDB
       - IOTA_HTTP_PORT=${IOTA_SOUTH_PORT} # The port used for device traffic over HTTP
       - IOTA_PROVIDER_URL=http://iot-agent:${IOTA_NORTH_PORT}
+      - IOTA_MULTI_CORE=true
+      - IOTA_AMQP_DISABLED=true
+      - IOTA_MQTT_DISABLED=true
     healthcheck:
       interval: 5s
 

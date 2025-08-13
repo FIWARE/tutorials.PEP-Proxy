@@ -77,6 +77,9 @@ services:
       - IOTA_AUTH_CLIENT_SECRET=tutorial-dckr-host-0000-clientsecret
       - IOTA_AUTH_PERMANENT_TOKEN=true
       - IOTA_AUTH_TOKEN_PATH=/oauth2/token
+      - IOTA_MULTI_CORE=true
+      - IOTA_AMQP_DISABLED=true
+      - IOTA_MQTT_DISABLED=true
 
     healthcheck:
       interval: 5s
