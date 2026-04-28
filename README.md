@@ -180,7 +180,7 @@ This application protects access to the existing Stock Management and Sensors-ba
 instances around the services created in previous tutorials and uses data pre-populated into the **MySQL** database used
 by **Keyrock**. It will make use of four FIWARE components - the
 [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/), the
-[IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/), the
+[IoT Agent for JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/), the
 [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) Generic enabler and adds one or two instances
 [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy dependent upon which interfaces are to be secured. Usage of the
 Orion Context Broker is sufficient for an application to qualify as _“Powered by FIWARE”_.
@@ -194,10 +194,10 @@ Therefore the overall architecture will consist of the following elements:
 
 -   The FIWARE [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) which will receive requests using
     [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2)
--   The FIWARE [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/) which will receive
+-   The FIWARE [IoT Agent for JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/) which will receive
     southbound requests using [NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) and convert them to
-    [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
-    commands for the devices
+    [JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual) commands
+    for the devices
 -   FIWARE [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) offer a complement Identity Management System
     including:
     -   An OAuth2 authentication system for Applications and Users
@@ -217,8 +217,7 @@ Therefore the overall architecture will consist of the following elements:
     -   Allows users to "buy" products and reduce the stock count.
     -   Allows authorized users into restricted areas
 -   A webserver acting as set of [dummy IoT devices](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2) using
-    the
-    [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+    the [JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
     protocol running over HTTP - access to certain resources is restricted.
 
 Since all interactions between the elements are initiated by HTTP requests, the entities can be containerized and run
@@ -1168,8 +1167,7 @@ curl -X GET \
 ## Securing an IoT Agent South Port - PEP Proxy Configuration
 
 The `iot-agent-proxy` container is an instance of FIWARE **Wilma** listening on port `7897`, it is configured to forward
-traffic to `iot-agent` on port `7896`, which is the default port that the Ultralight agent is listening to for HTTP
-Requests.
+traffic to `iot-agent` on port `7896`, which is the default port that the JSON agent is listening to for HTTP Requests.
 
 ```yaml
 iot-agent-proxy:
@@ -1232,9 +1230,9 @@ Level 3 - _Advanced Authorization_.
 ## Securing an IoT Agent South Port - Application Configuration
 
 The tutorial application also plays the role of providing data from our dummy IoT Sensors. The IoT Sensors are making
-HTTP request containing commands and measurements in Ultralight syntax. An IoT Sensor username and password have already
-been registered in **Keyrock**, programmatically each sensor must obtain an OAuth2 access token and will then make
-requests to a second **Wilma** PEP Proxy in front of the **IoT Agent**.
+HTTP request containing commands and measurements in JSON syntax. An IoT Sensor username and password have already been
+registered in **Keyrock**, programmatically each sensor must obtain an OAuth2 access token and will then make requests
+to a second **Wilma** PEP Proxy in front of the **IoT Agent**.
 
 ```yaml
 tutorial-app:
@@ -1266,20 +1264,20 @@ tutorial-app:
         - 'DUMMY_DEVICES_PASSWORD=test'
 ```
 
-The `tutorial` container hosts the dummy Ultralight sensors. Rather than accessing the **IoT Agent** directly on port
-`7896` as shown in all previous tutorials, all traffic is forwarded to `iot-agent-proxy` on port `7897`. Most of the
-relevant `tutorial` container settings have been described in previous tutorials, the `DUMMY_DEVICES_USER` and
+The `tutorial` container hosts the dummy JSON sensors. Rather than accessing the **IoT Agent** directly on port `7896`
+as shown in all previous tutorials, all traffic is forwarded to `iot-agent-proxy` on port `7897`. Most of the relevant
+`tutorial` container settings have been described in previous tutorials, the `DUMMY_DEVICES_USER` and
 `DUMMY_DEVICES_PASSWORD` are new additions.
 
-| Key                     | Value                                             | Description                                                                                                                        |
-| ----------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| IOTA_HTTP_HOST          | `iot-agent-proxy`                                 | The hostname of the Wilma PEP Proxy protecting the IoT Agent for UltraLight 2.0                                                    |
-| IOTA_HTTP_PORT          | `7896`                                            | The port that the Wilma PEP Proxy protecting the IoT Agent is listening on                                                         |
-| DUMMY_DEVICES_PORT      | `3001`                                            | Port used by the dummy IoT devices to receive commands                                                                             |
-| DUMMY_DEVICES_TRANSPORT | `HTTP`                                            | Default transport used by dummy IoT devices                                                                                        |
-| DUMMY_DEVICES_API_KEY   | `4jggokgpepnvsb2uv4s40d59ov`                      | Random security key used for UltraLight interactions - ensures the integrity of interactions between the devices and the IoT Agent |
-| DUMMY_DEVICES_USER      | `iot_sensor_00000000-0000-0000-0000-000000000000` | Username assigned to the device(s) in **Keyrock**                                                                                  |
-| DUMMY_DEVICES_PASSWORD  | `test`                                            | Password assigned to the device(s) in **Keyrock**                                                                                  |
+| Key                     | Value                                             | Description                                                                                                                  |
+| ----------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| IOTA_HTTP_HOST          | `iot-agent-proxy`                                 | The hostname of the Wilma PEP Proxy protecting the IoT Agent for JSON                                                        |
+| IOTA_HTTP_PORT          | `7896`                                            | The port that the Wilma PEP Proxy protecting the IoT Agent is listening on                                                   |
+| DUMMY_DEVICES_PORT      | `3001`                                            | Port used by the dummy IoT devices to receive commands                                                                       |
+| DUMMY_DEVICES_TRANSPORT | `HTTP`                                            | Default transport used by dummy IoT devices                                                                                  |
+| DUMMY_DEVICES_API_KEY   | `4jggokgpepnvsb2uv4s40d59ov`                      | Random security key used for JSON interactions - ensures the integrity of interactions between the devices and the IoT Agent |
+| DUMMY_DEVICES_USER      | `iot_sensor_00000000-0000-0000-0000-000000000000` | Username assigned to the device(s) in **Keyrock**                                                                            |
+| DUMMY_DEVICES_PASSWORD  | `test`                                            | Password assigned to the device(s) in **Keyrock**                                                                            |
 
 The `DUMMY_DEVICES_USER` and `DUMMY_DEVICES_PASSWORD` would usually be obtained by adding new entries to the application
 in **Keyrock**, however, in this tutorial, they have been predefined by populating the **MySQL** database with data on
@@ -1330,16 +1328,16 @@ The response returns an access code to identify the device:
 
 This example simulates a secured request coming from the device `motion001`
 
-The POST request to a PEP Proxy in front to the Ultralight IoT Agent identifies a previously provisioned resource
-`iot/d` endpoint and passes a measurement for device `motion001`. The addition of the `X-Auth-Token` Header identifies
-the source of the request as being registered in Keyrock, and therefore the measurement will be successfully passed on
-to the IoT Agent itself.
+The POST request to a PEP Proxy in front to the JSON IoT Agent identifies a previously provisioned resource `iot/d`
+endpoint and passes a measurement for device `motion001`. The addition of the `X-Auth-Token` Header identifies the
+source of the request as being registered in Keyrock, and therefore the measurement will be successfully passed on to
+the IoT Agent itself.
 
 #### 1️⃣9️⃣ Request:
 
 ```console
 curl -X POST \
-  'http://localhost:7897/iot/d?k=1068318794&i=motion001' \
+  'http://localhost:7897/iot/json?k=1068318794&i=motion001' \
   -H 'X-Auth-Token: {{X-Access-token}}' \
   -H 'Content-Type: text/plain' \
   -d 'c|1'
@@ -1399,7 +1397,7 @@ The `iot-agent` container is listening on port `4041`, it is configured to forwa
 iot-agent:
     labels:
         org.fiware: 'tutorial'
-    image: quay.io/fiware/iotagent-ul:${ULTRALIGHT_VERSION}
+    image: quay.io/fiware/iotagent-json:${JSON_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
@@ -1421,7 +1419,7 @@ iot-agent:
         - IOTA_AUTOCAST=true
         - IOTA_MONGO_HOST=mongo-db
         - IOTA_MONGO_PORT=27017
-        - IOTA_MONGO_DB=iotagentul
+        - IOTA_MONGO_DB=iotagentjson
         - IOTA_HTTP_PORT=7896
         - IOTA_PROVIDER_URL=http://iot-agent:4041
         - IOTA_AUTH_ENABLED=true
@@ -1497,7 +1495,7 @@ been provisioned as shown:
     "apikey": "1068318794",
     "cbroker": "http://orion:1026",
     "entity_type": "Motion",
-    "resource": "/iot/d"
+    "resource": "/iot/json"
 }
 ```
 
@@ -1509,7 +1507,7 @@ been provisioned as shown:
 
 ```console
 curl -iX PUT \
-  'http://localhost:4041/iot/services?resource=/iot/d&apikey=1068318794' \
+  'http://localhost:4041/iot/services?resource=/iot/json&apikey=1068318794' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -1529,7 +1527,7 @@ Once a trusted service group has been created, a device can be provisioned in th
 
 ```console
 curl -iX POST \
-  'http://localhost:4041/iot/devices' \
+  'http://localhost:4041/iot/jsonevices' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \

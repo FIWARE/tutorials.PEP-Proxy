@@ -207,7 +207,7 @@ Proxy** インスタンスを追加することで、既存の在庫管理、お
 プリケーションへのアクセスを保護し、**Keyrock** が使用する **MySQL** データベー
 スに事前入力されたデータを使用します
 。[Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/),
-[IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/),
+[IoT Agent for JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/),
 [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) Generic Enabler の 4 つ
 の FIWARE コンポーネントを使用し、[Wilma](https://fiware-pep-proxy.rtfd.io/)
 **PEP Proxy** の 1 つまたは 2 つのインスタンスを追加して、どのインタフェースを保
@@ -227,10 +227,10 @@ Orion Context Broker と IoT Agent はオープンソースの
     [Orion Context Broker](https://fiware-orion.readthedocs.io/en/latest/) は
     、[NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用して
     リクエストを受信します
--   [IoT Agent for UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/)
+-   [IoT Agent for JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/)
     は、[NGSI-v2](https://fiware.github.io/specifications/OpenAPI/ngsiv2) を使用し
     てサウスバウンド・リクエストを受信し、それをデバイスのために
-    [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+    [JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
     に変換します。
 -   FIWARE [Keyrock](https://fiware-idm.readthedocs.io/en/latest/) は、以下を含
     んだ、補完的な ID 管理システムを提供します :
@@ -254,7 +254,7 @@ Orion Context Broker と IoT Agent はオープンソースの
     -   ユーザが製品を"購入"して在庫数を減らすことができます
     -   許可されたユーザを制限されたエリアに入れることができます
 -   HTTP を介して実行されている
-    [UltraLight 2.0](https://fiware-iotagent-ul.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
+    [JSON](https://fiware-iotagent-json.readthedocs.io/en/latest/usermanual/index.html#user-programmers-manual)
     プロトコルを使用す
     る[ダミー IoT デバイス](https://github.com/FIWARE/tutorials.IoT-Sensors/tree/NGSI-v2)のセ
     ットとして機能する Web サーバ。特定のリソースへのアクセスが制限されています
@@ -1151,7 +1151,7 @@ async function buyItem(req, res) {
 
 `iot-agent-proxy` コンテナは FIWARE **Wilma** のインスタンスである、ポート
 `7897` で待機し、`iot-agent` のポート `7896` にトラフィックを転送するように設定
-され これは、Ultralight エージェントが、HTTP リクエストのために待機しているデフ
+され これは、JSON エージェントが、HTTP リクエストのために待機しているデフ
 ォルトのポートです。
 
 ```yaml
@@ -1218,7 +1218,7 @@ iot-agent-proxy:
 ## IoT Agent サウス・ポート の保護 - アプリケーションの設定
 
 このチュートリアル・アプリケーションは、ダミー IoT センサのデータを提供する役割
-も果たします。IoT センサは、Ultralight 構文でコマンドと測定値を含む HTTP リクエ
+も果たします。IoT センサは、JSON 構文でコマンドと測定値を含む HTTP リクエ
 ストを出しています。IoT センサのユーザ名とパスワードはすでに **Keyrock** に登録
 されていますが、プログラムごとに OAuth2 アクセス・トークンを取得し、**IoT
 Agent** の前にある 2 番目の **Wilma** PEP Proxy にリクエストします。
@@ -1254,7 +1254,7 @@ tutorial-app:
         - "DUMMY_DEVICES_PASSWORD=test"
 ```
 
-`tutorial` コンテナは、ダミー Ultralight センサをホストします。以前のすべてのチ
+`tutorial` コンテナは、ダミー JSON センサをホストします。以前のすべてのチ
 ュートリアルに示されているように、**IoT Agent** にポート `7896` で直接アクセスす
 るのではなく、すべてのトラフィックが、`iot-agent-proxy` の ポート `7897` に転送
 されます。関連する `tutorial` コンテナの設定のほとんどは、以前のチュートリアルで
@@ -1267,7 +1267,7 @@ tutorial-app:
 | IOTA_HTTP_PORT          | `7896`                                            | IoT Agent を保護する Wilma PEP Proxy がリスンしているポート                                                                       |
 | DUMMY_DEVICES_PORT      | `3001`                                            | ダミー IoT デバイスがコマンドを受信するために使用するポート                                                                       |
 | DUMMY_DEVICES_TRANSPORT | `HTTP`                                            | ダミー IoT デバイスによって使用されるデフォルトのトランスポート                                                                   |
-| DUMMY_DEVICES_API_KEY   | `4jggokgpepnvsb2uv4s40d59ov`                      | UltraLight インタラクションに使用されるランダムなセキュリティキー - デバイスと IoT Agent 間のインタラクションの完全性を保証します |
+| DUMMY_DEVICES_API_KEY   | `4jggokgpepnvsb2uv4s40d59ov`                      | JSON インタラクションに使用されるランダムなセキュリティキー - デバイスと IoT Agent 間のインタラクションの完全性を保証します |
 | DUMMY_DEVICES_USER      | `iot_sensor_00000000-0000-0000-0000-000000000000` | **Keyrock** のデバイスに割り当てられたユーザ名                                                                                    |
 | DUMMY_DEVICES_PASSWORD  | `test`                                            | **Keyrock** のデバイスに割り当てられたパスワード                                                                                  |
 
@@ -1332,7 +1332,7 @@ curl -iX POST \
 この例では、デバイス `motion001` からの保護されたリクエストをシミュレートします
 。
 
-Ultralight IoT Agent の前にある PEP Proxy への POST リクエストは、事前にプロビジ
+JSON IoT Agent の前にある PEP Proxy への POST リクエストは、事前にプロビジ
 ョニングされたリソース `iot/d` エンドポイントを識別し、デバイス `motion001` の測
 定値を渡します。`X-Auth-Token` ヘッダを追加すると、リクエスト元が Keyrock に登録
 されていると識別され、測定が IoT Agent 自体に正常に渡されます。
@@ -1341,7 +1341,7 @@ Ultralight IoT Agent の前にある PEP Proxy への POST リクエストは、
 
 ```console
 curl -X POST \
-  'http://localhost:7897/iot/d?k=1068318794&i=motion001' \
+  'http://localhost:7897/iot/json?k=1068318794&i=motion001' \
   -H 'X-Auth-Token: {{X-Access-token}}' \
   -H 'Content-Type: text/plain' \
   -d 'c|1'
@@ -1409,7 +1409,7 @@ request(options, (error) => {
 iot-agent:
     labels:
       org.fiware: 'tutorial'
-    image: quay.io/fiware/iotagent-ul:${ULTRALIGHT_VERSION}
+    image: quay.io/fiware/iotagent-json:${JSON_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
@@ -1431,7 +1431,7 @@ iot-agent:
         - IOTA_AUTOCAST=true
         - IOTA_MONGO_HOST=mongo-db
         - IOTA_MONGO_PORT=27017
-        - IOTA_MONGO_DB=iotagentul
+        - IOTA_MONGO_DB=iotagentjson
         - IOTA_HTTP_PORT=7896
         - IOTA_PROVIDER_URL=http://iot-agent:4041
         - IOTA_AUTH_ENABLED=true
@@ -1514,7 +1514,7 @@ curl -X POST \
     "apikey": "1068318794",
     "cbroker": "http://orion:1026",
     "entity_type": "Motion",
-    "resource": "/iot/d"
+    "resource": "/iot/json"
 }
 ```
 
@@ -1522,7 +1522,7 @@ curl -X POST \
 
 ```console
 curl -iX PUT \
-  'http://localhost:4041/iot/services?resource=/iot/d&apikey=1068318794' \
+  'http://localhost:4041/iot/services?resource=/iot/json&apikey=1068318794' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
@@ -1544,7 +1544,7 @@ curl -iX PUT \
 
 ```console
 curl -iX POST \
-  'http://localhost:4041/iot/devices' \
+  'http://localhost:4041/iot/jsonevices' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
