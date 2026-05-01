@@ -4,14 +4,14 @@
 [![License: MIT](https://img.shields.io/github/license/fiware/tutorials.PEP-Proxy.svg)](https://opensource.org/licenses/MIT)
 [![Support badge](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](https://stackoverflow.com/questions/tagged/fiware)
 
-This tutorial uses the FIWARE [Wilma](https://fiware-pep-proxy.rtfd.io/) PEP Proxy combined with **Keyrock** to secure
+This tutorial uses a PEP Proxy combined with an Identity Manager to secure
 access to endpoints exposed by FIWARE generic enablers. Users (or other actors) must log-in and use a token to gain
 access to services. The application code created in the
 [previous tutorial](https://github.com/FIWARE/tutorials.Securing-Access) is expanded to authenticate users throughout a
-distributed system. The design of FIWARE Wilma - a PEP Proxy is discussed, and the parts of the Keyrock GUI and REST API
+distributed system. The design of a PEP Proxy is discussed, and the GUI and REST API for the Identity Manager
 relevant to authenticating other services are described in detail.
 
-[cUrl](https://ec.haxx.se/) commands are used throughout to access the **Keyrock** and **Wilma** REST APIs -
+[cUrl](https://ec.haxx.se/) commands are used throughout to access the Identity Manager and PEP-Proxy REST APIs -
 [Postman documentation](https://www.postman.com/downloads/) for these calls is also available.
 
 # Start-Up
@@ -32,8 +32,6 @@ git checkout NGSI-v2
 | [![NGSI v2](https://img.shields.io/badge/NGSI-v2-5dc0cf.svg)](https://fiware-ges.github.io/orion/api/v2/stable/) | :books: [Documentation](https://github.com/FIWARE/tutorials.PEP-Proxy/tree/NGSI-v2) |  <img src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/postman.svg" height="15" width="15"> [Postman Collection](https://fiware.github.io/tutorials.PEP-Proxy/) |  ![](https://img.shields.io/github/last-commit/fiware/tutorials.PEP-Proxy/NGSI-v2)
 | --- | --- | --- | ---
 
-
-<!--
 ## NGSI-LD Smart Farm
 
 **NGSI-LD** offers JSON-LD based interoperability used for Federations and Data Spaces. To run this tutorial with **NGSI-LD**, use the `NGSI-LD` branch.
@@ -50,7 +48,6 @@ git checkout NGSI-LD
 | [![NGSI LD](https://img.shields.io/badge/NGSI-LD-d6604d.svg)](https://cim.etsi.org/NGSI-LD/official/front-page.html) | :books: [Documentation](https://github.com/FIWARE/tutorials.PEP-Proxy/tree/NGSI-LD) | <img  src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/postman.svg" height="15" width="15"> [Postman Collection](https://fiware.github.io/tutorials.PEP-Proxy/ngsi-ld.html) |  ![](https://img.shields.io/github/last-commit/fiware/tutorials.PEP-Proxy/NGSI-LD)
 | --- | --- | --- | ---
 
--->
 
 ---
 
