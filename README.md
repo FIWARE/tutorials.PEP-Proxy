@@ -82,9 +82,9 @@ relevant to authenticating other services are described in detail.
 
 # Securing Microservices with a PEP Proxy
 
-> "Oh, it's quite simple. If you are a friend, you speak the password, and the doors will open."
+> "Good fences make good neighbors."
 >
-> — Gandalf (The Fellowship of the Ring by J.R.R Tolkien)
+> — Robert Frost
 
 The [previous tutorial](https://github.com/FIWARE/tutorials.Securing-Access) demonstrated that it is possible to Permit
 or Deny access to resources based on an authenticated user identifying themselves within an application. It was simply a
