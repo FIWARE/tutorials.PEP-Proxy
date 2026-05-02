@@ -86,11 +86,10 @@ waitForIoTAgent () {
 
 waitForKeyrock () {
 	echo -e "⏳ Waiting for \033[1;31mKeyrock\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-keyrock` == "healthy" ]
+	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' fiware-keyrock 2>/dev/null)" == "healthy" ]
 	do
-		echo -e "\nKeyrock HTTP state: ${response} (waiting for 200)"
-		pause 9
-		getHeartbeat "${KEYROCK}"
+		echo -e "Keyrock health: $(docker inspect --format='{{.State.Health.Status}}' fiware-keyrock 2>/dev/null) (waiting for healthy)"
+		sleep 10
 	done
 }
 
@@ -110,13 +109,15 @@ loadData () {
 		--network fiware_default \
 		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
 		-e TUTORIAL_DATA_MODELS_CONTEXT=${CONTEXT} \
-		--entrypoint /bin/ash curlimages/curl import-data
+		--entrypoint /bin/sh \
+		python:3-alpine -c "apk add --no-cache curl && /import-data"
 	waitForIoTAgent
 	docker run --rm -v $(pwd)/provision-devices:/provision-devices \
 		--network fiware_default \
 		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
 		-e TUTORIAL_DATA_MODELS_CONTEXT=${CONTEXT} \
-		--entrypoint /bin/ash curlimages/curl provision-devices
+		--entrypoint /bin/sh \
+		python:3-alpine -c "apk add --no-cache curl && /provision-devices"
 	echo ""
 }
 
@@ -176,8 +177,21 @@ startContainers () {
 }
 
 stoppingContainers () {
-	echo "Stopping containers"
-	docker-compose --log-level ERROR -f docker-compose/southport.yml  -p fiware down -v --remove-orphans
+    CONTAINERS=$(docker ps --filter "label=org.fiware=tutorial" -aq)
+    if [[ -n $CONTAINERS ]]; then
+        echo "Stopping containers"
+        docker rm -f $CONTAINERS || true
+    fi
+    VOLUMES=$(docker volume ls -qf dangling=true)
+    if [[ -n $VOLUMES ]]; then
+        echo "Removing old volumes"
+        docker volume rm $VOLUMES || true
+    fi
+    NETWORKS=$(docker network ls --filter "label=org.fiware=tutorial" -q)
+    if [[ -n $NETWORKS ]]; then
+        echo "Removing tutorial networks"
+        docker network rm $NETWORKS || true
+    fi
 }
 
 command="$1"
@@ -239,7 +253,8 @@ case "${command}" in
 			--network fiware_default \
 			-e CONTEXT_BROKER=${CONTEXT_BROKER} \
 			-e TUTORIAL_DATA_MODELS_CONTEXT=${CONTEXT} \
-			--entrypoint /bin/ash curlimages/curl import-data
+			--entrypoint /bin/sh \
+			python:3-alpine -c "apk add --no-cache curl && /import-data"
 		waitForKeyrock
 		displayServices
 		echo

@@ -6,6 +6,9 @@
 
 set -e
 
+# Wait for services to fully bootstrap
+sleep 10
+
 echo -e "⏳ Loading context data in \033[1mNGSI-LD\033[0m format"
 echo -e "    - all entity data models are defined referencing the" 
 echo -e "      \033[1m"${TUTORIAL_DATA_MODELS_CONTEXT}"\033[0m JSON-LD context"
