@@ -5,7 +5,7 @@
 #  For this tutorial the commands are merely a convenience script to run docker-compose
 #
 
-set -e
+set -eo pipefail
 
 if (( $# != 1 )); then
     echo "Illegal number of parameters"
@@ -33,7 +33,7 @@ pause(){
 }
 
 getHeartbeat(){
-	eval "response=$(docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w "%{http_code}" "$1")"
+	response=$(docker run --network fiware_default --rm "quay.io/curl/curl:${CURL_VERSION}" -s -o /dev/null -w "%{http_code}" "$1")
 }
 
 waitForOrion () {
@@ -123,7 +123,7 @@ loadData () {
 
 waitForContext () {
 	echo -e "\n⏳ Waiting for \033[1m@context\033[0m to be available\n"
-	while [ `docker run --network fiware_default --rm curlimages/curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` -eq 000 ]
+	while [ `docker run --network fiware_default --rm quay.io/curl/curl:${CURL_VERSION} -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` -eq 000 ]
 	do
 	  echo -e "@context HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` " (waiting for 200)"
 	  sleep 1
@@ -138,7 +138,7 @@ displayServices () {
 
 addDatabaseIndex () {
 	printf "Adding appropriate \033[1mMongoDB\033[0m indexes for \033[1;34mOrion\033[0m  ..."
-	docker exec  db-mongo mongo --eval '
+	docker exec db-mongo mongosh --eval '
 	conn = new Mongo();db.createCollection("orion");
 	db = conn.getDB("orion");
 	db.createCollection("entities");
@@ -146,7 +146,7 @@ addDatabaseIndex () {
 	db.entities.createIndex({"_id.type": 1});
 	db.entities.createIndex({"_id.id": 1});' > /dev/null
 
-	docker exec  db-mongo mongo --eval '
+	docker exec db-mongo mongosh --eval '
 	conn = new Mongo();db.createCollection("orion-openiot");
 	db = conn.getDB("orion-openiot");
 	db.createCollection("entities");
@@ -156,7 +156,7 @@ addDatabaseIndex () {
 	echo -e " \033[1;32mdone\033[0m"
 
 	printf "Adding appropriate \033[1mMongoDB\033[0m indexes for \033[1;36mIoT-Agent\033[0m  ..."
-	docker exec  db-mongo mongo --eval '
+	docker exec db-mongo mongosh --eval '
 	conn = new Mongo();
 	db = conn.getDB("iotagentul");
 	db.createCollection("devices");
@@ -178,17 +178,17 @@ startContainers () {
 
 stoppingContainers () {
     CONTAINERS=$(docker ps --filter "label=org.fiware=tutorial" -aq)
-    if [[ -n $CONTAINERS ]]; then
+    if [[ -n "$CONTAINERS" ]]; then
         echo "Stopping containers"
         docker rm -f $CONTAINERS || true
     fi
     VOLUMES=$(docker volume ls -qf dangling=true)
-    if [[ -n $VOLUMES ]]; then
+    if [[ -n "$VOLUMES" ]]; then
         echo "Removing old volumes"
         docker volume rm $VOLUMES || true
     fi
     NETWORKS=$(docker network ls --filter "label=org.fiware=tutorial" -q)
-    if [[ -n $NETWORKS ]]; then
+    if [[ -n "$NETWORKS" ]]; then
         echo "Removing tutorial networks"
         docker network rm $NETWORKS || true
     fi
