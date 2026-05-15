@@ -18,9 +18,30 @@
 #
 version: "3.5"
 services:
+  ld-context:
+    labels:
+        org.fiware: 'tutorial'
+    image: httpd:alpine
+    hostname: context
+    container_name: fiware-ld-context
+    networks:
+        default:
+            ipv4_address: 172.18.1.7
+    ports:
+        - "3004:80"
+    volumes:
+        - data-models:/usr/local/apache2/htdocs/
+        - type: bind
+          source: ${PWD}/conf/mime.types
+          target: /usr/local/apache2/conf/mime.types
+          read_only: true
+    healthcheck:
+        test: (wget --server-response --spider --quiet http://context/ngsi-context.jsonld 2>&1 | awk 'NR==1{print $$2}' | grep -q -e "200") || exit 1
+
+
   # Orion is the context broker
   orion:
-    image: fiware/orion-ld:${ORION_LD_VERSION}
+    image: quay.io/fiware/orion-ld:${ORION_LD_VERSION}
     hostname: orion
     container_name: fiware-orion
     depends_on:
@@ -273,6 +294,18 @@ volumes:
   mysql-db: ~
   mongo-db: ~
   iot-agent: ~
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data
+  data-models:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data-models
 
 secrets:
   my_secret_data:

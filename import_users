@@ -1,0 +1,120 @@
+#!/bin/ash
+# shellcheck shell=ash
+#
+#  Populates the Keycloak farm-management realm with tutorial users.
+#  Runs inside a curl container on the fiware_default network after
+#  Keycloak reports healthy.
+
+set -e
+
+KC="http://${KEYCLOAK_HOST:-keycloak}:${KEYCLOAK_PORT:-8080}"
+REALM="farm-management"
+
+echo ""
+echo -e "⏳ Importing Keycloak users into realm \033[1;34m${REALM}\033[0m"
+
+# ── Obtain admin token from master realm (retry until ready) ─────────────────
+ADMIN_TOKEN=""
+RETRIES=20
+until [ -n "$ADMIN_TOKEN" ] || [ "$RETRIES" -eq 0 ]; do
+  ADMIN_TOKEN=$(curl -s -X POST "${KC}/realms/master/protocol/openid-connect/token" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    --data-urlencode "grant_type=password" \
+    --data-urlencode "client_id=admin-cli" \
+    --data-urlencode "username=admin" \
+    --data-urlencode "password=1234" \
+    | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))" 2>/dev/null || true)
+  if [ -z "$ADMIN_TOKEN" ]; then
+    RETRIES=$((RETRIES - 1))
+    echo "Waiting for Keycloak token endpoint... (${RETRIES} retries left)"
+    sleep 5
+  fi
+done
+
+if [ -z "$ADMIN_TOKEN" ]; then
+  echo "ERROR: could not obtain admin token after retries" >&2
+  exit 1
+fi
+
+echo "Admin token obtained"
+
+# ── Helper: create user ───────────────────────────────────────────────────────
+create_user () {
+  local USERNAME="$1"
+  local FIRST="$2"
+  local LAST="$3"
+  local EMAIL="$4"
+  local PASSWORD="$5"
+
+  curl -s -o /dev/null -X POST "${KC}/admin/realms/${REALM}/users" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    --data-raw "{
+      \"username\": \"${USERNAME}\",
+      \"firstName\": \"${FIRST}\",
+      \"lastName\": \"${LAST}\",
+      \"email\": \"${EMAIL}\",
+      \"enabled\": true,
+      \"credentials\": [{\"type\": \"password\", \"value\": \"${PASSWORD}\", \"temporary\": false}]
+    }"
+  echo "Created user: ${USERNAME}"
+}
+
+# ── Helper: assign user to group ─────────────────────────────────────────────
+assign_to_group () {
+  local USERNAME="$1"
+  local GROUP_NAME="$2"
+
+  USER_ID=$(curl -s "${KC}/admin/realms/${REALM}/users?username=${USERNAME}&exact=true" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    | python3 -c "import sys,json; d=json.load(sys.stdin); print(d[0]['id']) if d else sys.exit(1)")
+
+  GROUP_ID=$(curl -s "${KC}/admin/realms/${REALM}/groups?search=${GROUP_NAME}&exact=true" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    | python3 -c "import sys,json; d=json.load(sys.stdin); print(d[0]['id']) if d else sys.exit(1)")
+
+  curl -s -o /dev/null -X PUT \
+    "${KC}/admin/realms/${REALM}/users/${USER_ID}/groups/${GROUP_ID}" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}"
+  echo "Assigned ${USERNAME} → ${GROUP_NAME}"
+}
+
+# ── Helper: assign realm role directly to a user ─────────────────────────────
+assign_role () {
+  local USERNAME="$1"
+  local ROLE_NAME="$2"
+
+  USER_ID=$(curl -s "${KC}/admin/realms/${REALM}/users?username=${USERNAME}&exact=true" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    | python3 -c "import sys,json; d=json.load(sys.stdin); print(d[0]['id']) if d else sys.exit(1)")
+
+  ROLE_JSON=$(curl -s "${KC}/admin/realms/${REALM}/roles/${ROLE_NAME}" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}")
+
+  curl -s -o /dev/null -X POST \
+    "${KC}/admin/realms/${REALM}/users/${USER_ID}/role-mappings/realm" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "[${ROLE_JSON}]"
+  echo "Assigned role ${ROLE_NAME} → ${USERNAME}"
+}
+
+# ── Create users ──────────────────────────────────────────────────────────────
+create_user "alice"   "Alice"   "Administrator" "alice@fiware.farm"   "test"
+create_user "bob"     "Bob"     "Manager"       "bob@fiware.farm"     "test"
+create_user "carol"   "Carol"   "Livestock"     "carol@fiware.farm"   "test"
+create_user "jenny"   "Jenny"   "Consultant"    "jenny@fiware.farm"   "test"
+create_user "mallory" "Mallory" "Attacker"      "mallory@fiware.farm" "test"
+
+# ── Group assignments ─────────────────────────────────────────────────────────
+assign_to_group "bob"   "farm-management"
+assign_to_group "carol" "livestock-team"
+assign_to_group "jenny" "external-consultants"
+
+# ── Direct role assignments ───────────────────────────────────────────────────
+assign_role "bob"   "farm-manager"
+assign_role "carol" "livestock-supervisor"
+assign_role "jenny" "read-only-consultant"
+
+echo ""
+echo -e " \033[1;32mdone\033[0m"

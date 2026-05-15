@@ -1,0 +1,4 @@
+deployment:
+  role: standalone
+  role_standalone:
+    config_provider: yaml
