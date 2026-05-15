@@ -33,7 +33,7 @@ pause(){
 }
 
 getHeartbeat(){
-	response=$(docker run --network fiware_default --rm "quay.io/curl/curl:${CURL_VERSION}" -s -o /dev/null -w "%{http_code}" "$1")
+	response=$(docker run --network fiware_default --rm "quay.io/curl/curl:${CURL_VERSION}" -s -o /dev/null -w "%{http_code}" "$1") || true
 }
 
 waitForOrion () {
