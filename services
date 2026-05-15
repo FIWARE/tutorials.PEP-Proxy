@@ -38,7 +38,7 @@ getHeartbeat(){
 
 waitForOrion () {
 	echo -e "\n⏳ Waiting for \033[1;34mOrion-LD\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-orion` == "healthy" ]
+	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' fiware-orion)" == "healthy" ]
 	do
 		echo -e "\nContext Broker HTTP state: ${response} (waiting for 200)"
 		pause 6
@@ -66,7 +66,7 @@ waitForScorpio () {
 
 waitForContext () {
 	echo -e "\n⏳ Waiting for \033[1m@context\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent` == "healthy" ]
+	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent)" == "healthy" ]
 	do
 		echo -e "\n@context HTTP state: ${response} (waiting for 200)"
 		pause 3
@@ -76,7 +76,7 @@ waitForContext () {
 
 waitForIoTAgent () {
 	echo -e "\n⏳ Waiting for \033[1;36mIoT-Agent\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent` == "healthy" ]
+	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent)" == "healthy" ]
 	do
 		echo -e "\nIoT Agent HTTP state: ${response} (waiting for 200)"
 		pause 3
@@ -95,7 +95,7 @@ waitForKeyrock () {
 
 waitForMongo () {
 	echo -e "\n⏳ Waiting for \033[1mMongoDB\033[0m to be available\n"
-	while ! [ `docker inspect --format='{{.State.Health.Status}}' db-mongo` == "healthy" ]
+	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' db-mongo)" == "healthy" ]
 	do
 		sleep 1
 	done
@@ -123,9 +123,9 @@ loadData () {
 
 waitForContext () {
 	echo -e "\n⏳ Waiting for \033[1m@context\033[0m to be available\n"
-	while [ `docker run --network fiware_default --rm quay.io/curl/curl:${CURL_VERSION} -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` -eq 000 ]
+	while [ "$(docker run --network fiware_default --rm quay.io/curl/curl:${CURL_VERSION} -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld')" -eq 000 ]
 	do
-	  echo -e "@context HTTP state: " `curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld'` " (waiting for 200)"
+	  echo -e "@context HTTP state: " $(curl -s -o /dev/null -w %{http_code} 'http://context-provider:3000/data-models/ngsi-context.jsonld') " (waiting for 200)"
 	  sleep 1
 	done
 }
@@ -200,7 +200,7 @@ case "${command}" in
         echo "usage: services [create|orion|northport]"
         ;;
     "orion")
-		export $(cat .env | grep "#" -v)
+		set -a; source .env; set +a
 		stoppingContainers
 		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;31mKeyrock\033[0m, \033[1;31mWilma\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
@@ -218,7 +218,7 @@ case "${command}" in
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
 	"southport")
-		export $(cat .env | grep "#" -v)
+		set -a; source .env; set +a
 		stoppingContainers
 		echo -e "Starting eight containers \033[1;34mOrion\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;31mKeyrock\033[0m, \033[1;31mWilma\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
@@ -236,7 +236,7 @@ case "${command}" in
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
 	"northport")
-		export $(cat .env | grep "#" -v)
+		set -a; source .env; set +a
 		stoppingContainers
 		echo -e "Starting seven containers \033[1;34mOrion\033[0m, \033[1;36mIoT-Agent\033[0m, \033[1;31mKeyrock\033[0m, \033[1;31mWilma\033[0m, \033[1mTutorial\033[0m and \033[1mMongoDB\033[0m and \033[1mMySQL\033[0m databases."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
@@ -261,15 +261,15 @@ case "${command}" in
 		echo -e "Now open \033[4mhttp://localhost:3000\033[0m"
 		;;
 	"stop")
-		export $(cat .env | grep "#" -v)
+		set -a; source .env; set +a
 		stoppingContainers
 		;;
 	"start")
-		export $(cat .env | grep "#" -v)
+		set -a; source .env; set +a
 		./services orion
 		;;
 	"create")
-		export $(cat .env | grep "#" -v)
+		set -a; source .env; set +a
 		echo "Pulling Docker images"
 		docker-compose --log-level ERROR -f docker-compose/orion.yml -p fiware pull
 		;;
