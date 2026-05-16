@@ -1,0 +1,149 @@
+#!/bin/bash
+#
+# Smoke test: verify the full IoT device data path through APISIX + Keycloak
+#
+# Test flow:
+#   1. Obtain Bob's JWT from Keycloak (RBAC validation of the CB read path)
+#   2. Post a temperature sensor reading via the IoT Agent south port (JSON protocol)
+#      Device → IoT Agent → [trust token exchange] → APISIX /data/orion → Orion
+#   3. Confirm the temperature entity is updated in the Context Broker (via APISIX)
+#   4. Send an 'on' command to each water device via APISIX
+#      APISIX → Orion → IoT Agent (command) → iot-sensors simulator → IoT Agent → Orion
+#   5. Confirm on_status is updated in the Context Broker
+#
+# Runs inside the fiware_default Docker network — all hostnames are internal.
+
+set -eo pipefail
+
+export $(cat .env | grep "#" -v)
+
+NETWORK="fiware_default"
+CURL="docker run --rm --network ${NETWORK} quay.io/curl/curl:${CURL_VERSION}"
+KEYCLOAK="http://keycloak:8080/realms/farm-management/protocol/openid-connect/token"
+APISIX="http://apisix:${APISIX_PORT}"
+IOTA_SOUTH="http://iot-agent:${IOTA_SOUTH_PORT}"
+CONTEXT="http://context/ngsi-context.jsonld"
+TENANT="openiot"
+CLIENT_ID="ngsi-ld-farm"
+CLIENT_SECRET="1234"
+
+TEMP_DEVICES=("temperature001" "temperature002" "temperature003" "temperature004")
+WATER_DEVICES=("water001" "water002" "water003" "water004")
+# API key for TemperatureSensor service group (from provision-devices)
+TEMP_APIKEY="321701236"
+# API key for Water service group (from provision-devices)
+WATER_APIKEY="112903447"
+
+failures=0
+
+pass() { echo "  PASS: $*"; }
+fail() { echo "  FAIL: $*"; failures=$((failures + 1)); }
+
+assert_status() {
+    local label="$1"
+    local expected="$2"
+    local actual="$3"
+    if [ "${actual}" = "${expected}" ]; then
+        pass "${label} — HTTP ${actual}"
+    else
+        fail "${label} — expected HTTP ${expected}, got HTTP ${actual}"
+    fi
+}
+
+# ── Obtain Bob's access token (for reading from CB via APISIX) ────────────────
+
+echo ""
+echo "🔑 Obtaining access token for Bob (farm-manager)..."
+BOB_TOKEN=$(${CURL} -s -X POST "${KEYCLOAK}" \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    --data-urlencode 'grant_type=password' \
+    --data-urlencode "client_id=${CLIENT_ID}" \
+    --data-urlencode "client_secret=${CLIENT_SECRET}" \
+    --data-urlencode 'username=bob' \
+    --data-urlencode 'password=test' \
+    | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+
+if [ -z "${BOB_TOKEN}" ]; then
+    echo "FAIL: Could not obtain token for Bob — aborting smoke test"
+    exit 1
+fi
+pass "Bob token obtained"
+
+# ── Test 1: Post temperature readings via IoT Agent south port ────────────────
+
+echo ""
+echo "🌡️  Test 1: Posting temperature sensor readings via IoT Agent south port (JSON)"
+for device in "${TEMP_DEVICES[@]}"; do
+    STATUS=$(${CURL} -s -o /dev/null -w "%{http_code}" -X POST \
+        "${IOTA_SOUTH}/iot/json?k=${TEMP_APIKEY}&i=${device}" \
+        -H 'Content-Type: application/json' \
+        -H "NGSILD-Tenant: ${TENANT}" \
+        --data-raw '{"t":22}')
+    assert_status "POST temperature reading [${device}]" "200" "${STATUS}"
+done
+
+echo "Waiting 3s for IoT Agent to forward readings to Context Broker via APISIX..."
+sleep 3
+
+# ── Test 2: Verify temperature entities updated in Context Broker ─────────────
+
+echo ""
+echo "🔍 Test 2: Verifying temperature entities in Context Broker (via APISIX + Bob token)"
+for device in "${TEMP_DEVICES[@]}"; do
+    RESPONSE=$(${CURL} -s \
+        "${APISIX}/orion/ngsi-ld/v1/entities/urn:ngsi-ld:Device:${device}" \
+        -H "Authorization: Bearer ${BOB_TOKEN}" \
+        -H "NGSILD-Tenant: ${TENANT}" \
+        -H "Link: <${CONTEXT}>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"" \
+        -H 'Accept: application/json')
+    if echo "${RESPONSE}" | grep -q '"temperature"'; then
+        pass "Temperature attribute present in CB [${device}]"
+    else
+        fail "Temperature attribute missing from CB [${device}] — Response: ${RESPONSE}"
+    fi
+done
+
+# ── Test 3: Send 'on' command to each water device via APISIX ─────────────────
+
+echo ""
+echo "💧 Test 3: Sending 'on' command to water devices via APISIX"
+for device in "${WATER_DEVICES[@]}"; do
+    STATUS=$(${CURL} -s -o /dev/null -w "%{http_code}" -X PATCH \
+        "${APISIX}/orion/ngsi-ld/v1/entities/urn:ngsi-ld:Device:${device}/attrs/on" \
+        -H "Authorization: Bearer ${BOB_TOKEN}" \
+        -H "NGSILD-Tenant: ${TENANT}" \
+        -H 'Content-Type: application/json' \
+        -H "Link: <${CONTEXT}>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"" \
+        --data-raw '{"type":"Property","value":" "}')
+    assert_status "on command [${device}]" "204" "${STATUS}"
+done
+
+echo "Waiting 5s for command round-trip (Orion → IoT Agent → iot-sensors → IoT Agent → Orion)..."
+sleep 5
+
+# ── Test 4: Verify on_status updated in Context Broker ───────────────────────
+
+echo ""
+echo "🔍 Test 4: Verifying on_status in Context Broker after command round-trip"
+for device in "${WATER_DEVICES[@]}"; do
+    RESPONSE=$(${CURL} -s \
+        "${APISIX}/orion/ngsi-ld/v1/entities/urn:ngsi-ld:Device:${device}" \
+        -H "Authorization: Bearer ${BOB_TOKEN}" \
+        -H "NGSILD-Tenant: ${TENANT}" \
+        -H "Link: <${CONTEXT}>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"" \
+        -H 'Accept: application/json')
+    if echo "${RESPONSE}" | grep -q '"on_status"'; then
+        pass "on_status attribute present in CB [${device}]"
+    else
+        fail "on_status attribute missing from CB [${device}] — Response: ${RESPONSE}"
+    fi
+done
+
+# ── Summary ───────────────────────────────────────────────────────────────────
+
+echo ""
+if [ "${failures}" -gt 0 ]; then
+    echo "❌ IoT smoke test FAILED: ${failures} assertion(s) did not pass"
+    exit 1
+fi
+echo "✅ IoT smoke test PASSED: sensor readings and command round-trips confirmed through APISIX"

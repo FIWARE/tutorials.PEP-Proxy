@@ -1,4 +1,5 @@
 routes:
+  # ── User-facing routes — JWT validation + Keycloak RBAC (UMA) ──────────────
   - id: 1
     uri: /orion/*
     upstream_id: 1
@@ -62,6 +63,44 @@ routes:
         http_method_as_scope: true
         policy_enforcement_mode: "ENFORCING"
         ssl_verify: false
+
+  # ── IoT Agent data routes — JWT validation only (high-frequency writes) ─────
+  - id: 4
+    uri: /data/orion/*
+    upstream_id: 1
+    plugins:
+      proxy-rewrite:
+        regex_uri: ["^/data/orion(.*)", "$1"]
+      openid-connect:
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/openid-configuration"
+        realm: "farm-management"
+        bearer_only: true
+  - id: 5
+    uri: /data/scorpio/*
+    upstream_id: 2
+    plugins:
+      proxy-rewrite:
+        regex_uri: ["^/data/scorpio(.*)", "$1"]
+      openid-connect:
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/openid-configuration"
+        realm: "farm-management"
+        bearer_only: true
+  - id: 6
+    uri: /data/stellio/*
+    upstream_id: 3
+    plugins:
+      proxy-rewrite:
+        regex_uri: ["^/data/stellio(.*)", "$1"]
+      openid-connect:
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/openid-configuration"
+        realm: "farm-management"
+        bearer_only: true
 
 upstreams:
   - id: 1

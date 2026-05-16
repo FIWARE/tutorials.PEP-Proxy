@@ -117,7 +117,8 @@
       "enabled": true,
       "serviceAccountClientId": "ngsi-ld-farm",
       "realmRoles": [
-        "farm-manager"
+        "farm-manager",
+        "offline_access"
       ]
     }
   ]

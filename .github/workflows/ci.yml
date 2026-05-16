@@ -33,6 +33,10 @@ jobs:
       run: |
         chmod +x .github/test/rbac_smoke_test
         ./.github/test/rbac_smoke_test
+    - name: Run IoT Device Smoke Test
+      run: |
+        chmod +x .github/test/iot_device_smoke_test
+        ./.github/test/iot_device_smoke_test
     - name: Stop Services
       if: always()
       run: |

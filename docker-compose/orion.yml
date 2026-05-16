@@ -56,5 +56,4 @@ services:
 
     iot-agent:
         environment:
-            - IOTA_CB_HOST=orion
-            - IOTA_CB_PORT=${ORION_LD_PORT}
+            - IOTA_CB_PATH=/data/orion

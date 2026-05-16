@@ -158,6 +158,8 @@ loadData () {
 	docker run --rm \
 		--network fiware_default \
 		-v "$(pwd)/provision-devices:/provision-devices" \
+		-e IOTA_CB_PATH=${IOTA_CB_PATH} \
+		-e APISIX_PORT=${APISIX_PORT} \
 		--entrypoint /bin/ash \
 		"quay.io/curl/curl:${CURL_VERSION}" /provision-devices
 }
@@ -193,6 +195,7 @@ case "${command}" in
 		waitForOrion
 		waitForTutorial
 		export CONTEXT_BROKER=orion:1026
+		export IOTA_CB_PATH=/data/orion
 		loadData
 		echo -e "\033[1;34mKeycloak\033[0m is now running and exposed on localhost:${KEYCLOAK_PORT}"
 		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}\033[0m"
@@ -213,6 +216,7 @@ case "${command}" in
 		waitForScorpio
 		waitForTutorial
 		export CONTEXT_BROKER=scorpio:9090
+		export IOTA_CB_PATH=/data/scorpio
 		loadData
 		echo -e "\033[1;34mKeycloak\033[0m is now running and exposed on localhost:${KEYCLOAK_PORT}"
 		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}\033[0m"
@@ -233,6 +237,7 @@ case "${command}" in
 		waitForStellio
 		waitForTutorial
 		export CONTEXT_BROKER=stellio:8080
+		export IOTA_CB_PATH=/data/stellio
 		loadData
 		echo -e "\033[1;34mKeycloak\033[0m is now running and exposed on localhost:${KEYCLOAK_PORT}"
 		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}\033[0m"

@@ -47,8 +47,7 @@ services:
 
     iot-agent:
         environment:
-            - IOTA_CB_HOST=scorpio
-            - IOTA_CB_PORT=${SCORPIO_PORT}
+            - IOTA_CB_PATH=/data/scorpio
 
 volumes:
     postgres-db: ~

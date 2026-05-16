@@ -2,19 +2,50 @@
 #
 #  curl commands to reload the data from the previous tutorial
 #
-#
 
 set -e
 
+####################################################
+#
+# Fetch a Keycloak offline token for the IoT Agent service account.
+# This refresh_token (with offline_access scope) is used as the "trust"
+# field in each service group — the IoT Agent exchanges it for an
+# access_token before each request to the Context Broker via APISIX.
+#
+####################################################
 
+printf "⏳ Fetching Keycloak offline token for IoT Agent trust... "
 
+TOKEN_RESPONSE=$(curl -s -X POST \
+  'http://keycloak:8080/realms/farm-management/protocol/openid-connect/token' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'grant_type=client_credentials' \
+  --data-urlencode 'client_id=ngsi-ld-farm' \
+  --data-urlencode 'client_secret=1234' \
+  --data-urlencode 'scope=openid offline_access')
 
+TRUST_TOKEN=$(echo "${TOKEN_RESPONSE}" | grep -o '"refresh_token":"[^"]*"' | cut -d'"' -f4)
+
+if [ -z "${TRUST_TOKEN}" ]; then
+  printf "\n\033[1;31mERROR: Failed to obtain offline/refresh token from Keycloak\033[0m\n"
+  echo "Response: ${TOKEN_RESPONSE}"
+  exit 1
+fi
+
+printf "\033[1;32mdone\033[0m\n"
 
 printf "⏳ Provisioning IoT devices "
 
+#
+# IOTA_CB_PATH is set by the broker-specific docker-compose overlay (e.g. /data/orion).
+# The cbroker field in service groups must match the full APISIX URL for that broker.
+# We read it from the environment variable IOTA_CB_PATH, defaulting to /data/orion.
+#
+CB_PATH="${IOTA_CB_PATH:-/data/orion}"
+CBROKER="http://apisix:${APISIX_PORT:-9080}${CB_PATH}"
 
 #
-# Create a service groups for all UltraLight IoT devices
+# Create service groups for all IoT devices
 #
 
 curl -s -o /dev/null -X POST \
@@ -22,159 +53,166 @@ curl -s -o /dev/null -X POST \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
   -H 'fiware-servicepath: /' \
-  -d '{
- "services": [
+  -d "{
+ \"services\": [
    {
-     "apikey":      "321701236",
-     "cbroker":     "http://orion:1026",
-     "entity_type": "TemperatureSensor",
-     "resource":    "/iot/d",
-     "protocol":    "PDI-IoTA-UltraLight",
-     "transport":   "HTTP",
-     "timezone":    "Europe/Berlin",
-     "attributes": [
-       { "object_id": "t", "name":"temperature", "type": "Integer",
-         "metadata": {"unitCode": {"type": "Property","value": "CEL"}}
+     \"apikey\":      \"321701236\",
+     \"cbroker\":     \"${CBROKER}\",
+     \"trust\":       \"${TRUST_TOKEN}\",
+     \"entity_type\": \"TemperatureSensor\",
+     \"resource\":    \"/iot/json\",
+     \"protocol\":    \"PDI-IoTA-JSON\",
+     \"transport\":   \"HTTP\",
+     \"timezone\":    \"Europe/Berlin\",
+     \"attributes\": [
+       { \"object_id\": \"t\", \"name\":\"temperature\", \"type\": \"Integer\",
+         \"metadata\": {\"unitCode\": {\"type\": \"Property\",\"value\": \"CEL\"}}
        }
       ],
-      "static_attributes": [
-        {"name": "description", "type":"Property", "value": "Temperature Sensor"},
-        {"name": "category", "type":"Property", "value": ["sensor"]},
-        {"name": "controlledProperty", "type": "Property", "value": "temperature"},
-        {"name": "supportedProtocol", "type": "Property", "value": ["ul20"]}
+      \"static_attributes\": [
+        {\"name\": \"description\", \"type\":\"Property\", \"value\": \"Temperature Sensor\"},
+        {\"name\": \"category\", \"type\":\"Property\", \"value\": [\"sensor\"]},
+        {\"name\": \"controlledProperty\", \"type\": \"Property\", \"value\": \"temperature\"},
+        {\"name\": \"supportedProtocol\", \"type\": \"Property\", \"value\": [\"json\"]}
       ]
    },
    {
-     "apikey":      "548027571",
-     "cbroker":     "http://orion:1026",
-     "entity_type": "SoilSensor",
-     "resource":    "/iot/d",
-     "protocol":    "PDI-IoTA-UltraLight",
-     "transport":   "HTTP",
-     "timezone":    "Europe/Berlin",
-     "attributes": [
-       { "object_id": "h", "name":"humidity", "type": "Integer",
-         "metadata": {"unitCode": {"type": "Property","value": "P1"}}
+     \"apikey\":      \"548027571\",
+     \"cbroker\":     \"${CBROKER}\",
+     \"trust\":       \"${TRUST_TOKEN}\",
+     \"entity_type\": \"SoilSensor\",
+     \"resource\":    \"/iot/json\",
+     \"protocol\":    \"PDI-IoTA-JSON\",
+     \"transport\":   \"HTTP\",
+     \"timezone\":    \"Europe/Berlin\",
+     \"attributes\": [
+       { \"object_id\": \"h\", \"name\":\"humidity\", \"type\": \"Integer\",
+         \"metadata\": {\"unitCode\": {\"type\": \"Property\",\"value\": \"P1\"}}
        }
       ],
-      "static_attributes": [
-        {"name": "description", "type":"Property", "value": "Soil Humdity Sensor"},
-        {"name": "category", "type":"Property", "value": ["sensor"]},
-        {"name": "controlledProperty", "type": "Property", "value": "humidity"},
-        {"name": "supportedProtocol", "type": "Property", "value": ["ul20"]}
+      \"static_attributes\": [
+        {\"name\": \"description\", \"type\":\"Property\", \"value\": \"Soil Humidity Sensor\"},
+        {\"name\": \"category\", \"type\":\"Property\", \"value\": [\"sensor\"]},
+        {\"name\": \"controlledProperty\", \"type\": \"Property\", \"value\": \"humidity\"},
+        {\"name\": \"supportedProtocol\", \"type\": \"Property\", \"value\": [\"json\"]}
       ]
    },
    {
-     "apikey":      "854782081",
-     "cbroker":     "http://orion:1026",
-     "entity_type": "FillingLevelSensor",
-     "resource":    "/iot/d",
-     "protocol":    "PDI-IoTA-UltraLight",
-     "transport":   "HTTP",
-     "timezone":    "Europe/Berlin",
-     "attributes": [
-       { "object_id": "f", "name":"filling", "type": "Number",
-         "metadata": {"unitCode": {"type": "Property","value": "C62"}}
+     \"apikey\":      \"854782081\",
+     \"cbroker\":     \"${CBROKER}\",
+     \"trust\":       \"${TRUST_TOKEN}\",
+     \"entity_type\": \"FillingLevelSensor\",
+     \"resource\":    \"/iot/json\",
+     \"protocol\":    \"PDI-IoTA-JSON\",
+     \"transport\":   \"HTTP\",
+     \"timezone\":    \"Europe/Berlin\",
+     \"attributes\": [
+       { \"object_id\": \"f\", \"name\":\"filling\", \"type\": \"Number\",
+         \"metadata\": {\"unitCode\": {\"type\": \"Property\",\"value\": \"C62\"}}
        }
       ],
-      "commands": [
-        {"name": "add", "type": "command"},
-        {"name": "remove", "type": "command"}
+      \"commands\": [
+        {\"name\": \"add\", \"type\": \"command\"},
+        {\"name\": \"remove\", \"type\": \"command\"}
       ],
-      "static_attributes": [
-        {"name": "supportedProtocol", "type": "Property", "value": ["ul20"]},
-        {"name": "description", "type":"Property", "value": "Barn filling Sensor"},
-        {"name": "category", "type":"Property", "value": ["actuator", "sensor"]},
-        {"name": "controlledProperty", "type": "Property", "value": ["filling"]}
+      \"static_attributes\": [
+        {\"name\": \"supportedProtocol\", \"type\": \"Property\", \"value\": [\"json\"]},
+        {\"name\": \"description\", \"type\":\"Property\", \"value\": \"Barn filling Sensor\"},
+        {\"name\": \"category\", \"type\":\"Property\", \"value\": [\"actuator\", \"sensor\"]},
+        {\"name\": \"controlledProperty\", \"type\": \"Property\", \"value\": [\"filling\"]}
       ]
    },
    {
-     "apikey":      "110990",
-     "cbroker":     "http://orion:1026",
-     "entity_type": "Device",
-     "resource":    "/iot/d",
-     "protocol":    "PDI-IoTA-UltraLight",
-     "transport":   "HTTP",
-     "timezone":    "Europe/Berlin",
-     "attributes": [
-        {"object_id": "bpm","type": "Integer","name": "heartRate",
-        "metadata": {"unitCode": {"type": "Text","value": "5K"}}
+     \"apikey\":      \"110990\",
+     \"cbroker\":     \"${CBROKER}\",
+     \"trust\":       \"${TRUST_TOKEN}\",
+     \"entity_type\": \"Device\",
+     \"resource\":    \"/iot/json\",
+     \"protocol\":    \"PDI-IoTA-JSON\",
+     \"transport\":   \"HTTP\",
+     \"timezone\":    \"Europe/Berlin\",
+     \"attributes\": [
+        {\"object_id\": \"bpm\",\"type\": \"Integer\",\"name\": \"heartRate\",
+        \"metadata\": {\"unitCode\": {\"type\": \"Text\",\"value\": \"5K\"}}
         },
-        {"object_id": "d", "name": "statusDescription", "type": "Property"},
-        {"object_id": "s", "name": "status", "type": "Integer"},
-        {"object_id": "gps", "name": "location", "type": "geo:point"}
+        {\"object_id\": \"d\", \"name\": \"statusDescription\", \"type\": \"Property\"},
+        {\"object_id\": \"s\", \"name\": \"status\", \"type\": \"Integer\"},
+        {\"object_id\": \"gps\", \"name\": \"location\", \"type\": \"geo:point\"}
       ],
-      "static_attributes": [
-        {"name": "description", "type":"Property", "value": "Animal Collar"},
-        {"name": "category", "type":"Property", "value": ["sensor"]},
-        {"name": "controlledProperty", "type": "Property", "value": ["heartRate", "location", "status"]},
-        {"name": "supportedProtocol", "type": "Property", "value": ["ul20"]}
+      \"static_attributes\": [
+        {\"name\": \"description\", \"type\":\"Property\", \"value\": \"Animal Collar\"},
+        {\"name\": \"category\", \"type\":\"Property\", \"value\": [\"sensor\"]},
+        {\"name\": \"controlledProperty\", \"type\": \"Property\", \"value\": [\"heartRate\", \"location\", \"status\"]},
+        {\"name\": \"supportedProtocol\", \"type\": \"Property\", \"value\": [\"json\"]}
       ]
    },
    {
-     "apikey":      "98699",
-     "cbroker":     "http://orion:1026",
-     "entity_type": "Device",
-     "resource":    "/iot/d",
-     "protocol":    "PDI-IoTA-UltraLight",
-     "transport":   "HTTP",
-     "timezone":    "Europe/Berlin",
-     "attributes": [
-        {"object_id": "bpm","type": "Integer","name": "heartRate",
-        "metadata": {"unitCode": {"type": "Text","value": "5K"}}
+     \"apikey\":      \"98699\",
+     \"cbroker\":     \"${CBROKER}\",
+     \"trust\":       \"${TRUST_TOKEN}\",
+     \"entity_type\": \"Device\",
+     \"resource\":    \"/iot/json\",
+     \"protocol\":    \"PDI-IoTA-JSON\",
+     \"transport\":   \"HTTP\",
+     \"timezone\":    \"Europe/Berlin\",
+     \"attributes\": [
+        {\"object_id\": \"bpm\",\"type\": \"Integer\",\"name\": \"heartRate\",
+        \"metadata\": {\"unitCode\": {\"type\": \"Text\",\"value\": \"5K\"}}
         },
-        {"object_id": "s", "name": "status", "type": "Integer"},
-        {"object_id": "d", "name": "statusDescription", "type": "Property"},
-        {"object_id": "gps", "name": "location", "type": "geo:point"}
+        {\"object_id\": \"s\", \"name\": \"status\", \"type\": \"Integer\"},
+        {\"object_id\": \"d\", \"name\": \"statusDescription\", \"type\": \"Property\"},
+        {\"object_id\": \"gps\", \"name\": \"location\", \"type\": \"geo:point\"}
       ],
-      "static_attributes": [
-        {"name": "description", "type":"Property", "value": "Animal Collar"},
-        {"name": "category", "type":"Property", "value": ["sensor"]},
-        {"name": "controlledProperty", "type": "Property", "value": ["heartRate", "location", "status"]},
-        {"name": "function", "type": "Property", "value":["sensing"]},
-        {"name": "supportedProtocol", "type": "Property", "value": ["ul20"]}
+      \"static_attributes\": [
+        {\"name\": \"description\", \"type\":\"Property\", \"value\": \"Animal Collar\"},
+        {\"name\": \"category\", \"type\":\"Property\", \"value\": [\"sensor\"]},
+        {\"name\": \"controlledProperty\", \"type\": \"Property\", \"value\": [\"heartRate\", \"location\", \"status\"]},
+        {\"name\": \"function\", \"type\": \"Property\", \"value\":[\"sensing\"]},
+        {\"name\": \"supportedProtocol\", \"type\": \"Property\", \"value\": [\"json\"]}
       ]
    },
    {
-     "apikey":      "112903447",
-     "cbroker":     "http://orion:1026",
-     "entity_type": "Water",
-     "resource":    "/iot/d",
-     "protocol":    "PDI-IoTA-UltraLight",
-     "transport":   "HTTP",
-     "timezone":    "Europe/Berlin",
-     "commands": [
-        {"name": "on", "type": "command"},
-        {"name": "off", "type": "command"}
+     \"apikey\":      \"112903447\",
+     \"cbroker\":     \"${CBROKER}\",
+     \"trust\":       \"${TRUST_TOKEN}\",
+     \"entity_type\": \"Water\",
+     \"resource\":    \"/iot/json\",
+     \"protocol\":    \"PDI-IoTA-JSON\",
+     \"transport\":   \"HTTP\",
+     \"timezone\":    \"Europe/Berlin\",
+     \"commands\": [
+        {\"name\": \"on\", \"type\": \"command\"},
+        {\"name\": \"off\", \"type\": \"command\"}
       ],
-      "static_attributes": [
-        {"name": "description", "type":"Property", "value": "Irrigation System"},
-        {"name": "category", "type":"Property", "value": ["actuator"]},
-        {"name": "supportedProtocol", "type": "Property", "value": ["ul20"]}
+      \"static_attributes\": [
+        {\"name\": \"description\", \"type\":\"Property\", \"value\": \"Irrigation System\"},
+        {\"name\": \"category\", \"type\":\"Property\", \"value\": [\"actuator\"]},
+        {\"name\": \"supportedProtocol\", \"type\": \"Property\", \"value\": [\"json\"]}
       ]
    },
    {
-     "apikey":      "1067386313",
-     "cbroker":     "http://orion:1026",
-     "entity_type": "Tractor",
-     "resource":    "/iot/d",
-     "protocol":    "PDI-IoTA-UltraLight",
-     "transport":   "HTTP",
-     "timezone":    "Europe/Berlin",
-     "attributes": [
-        {"object_id": "s", "name": "status", "type": "Integer"},
-        {"object_id": "d", "name": "statusDescription", "type": "Property"},
-        {"object_id": "gps", "name": "location", "type": "geo:point"}
+     \"apikey\":      \"1067386313\",
+     \"cbroker\":     \"${CBROKER}\",
+     \"trust\":       \"${TRUST_TOKEN}\",
+     \"entity_type\": \"Tractor\",
+     \"resource\":    \"/iot/json\",
+     \"protocol\":    \"PDI-IoTA-JSON\",
+     \"transport\":   \"HTTP\",
+     \"timezone\":    \"Europe/Berlin\",
+     \"attributes\": [
+        {\"object_id\": \"s\", \"name\": \"status\", \"type\": \"Integer\"},
+        {\"object_id\": \"d\", \"name\": \"statusDescription\", \"type\": \"Property\"},
+        {\"object_id\": \"gps\", \"name\": \"location\", \"type\": \"geo:point\"}
       ],
-     "commands": [
-        {"name": "start", "type": "command"},
-        {"name": "stop", "type": "command"}
+     \"commands\": [
+        {\"name\": \"start\", \"type\": \"command\"},
+        {\"name\": \"stop\", \"type\": \"command\"}
       ],
-      "static_attributes": [
-        {"name": "description", "type":"Property", "value": "Tractor FMIS"},
-        {"name": "category", "type":"Property", "value": ["actuator", "sensor"]},
-        {"name": "controlledProperty", "type": "Property", "value": ["location", "status"]},
-        {"name": "supportedProtocol", "type": "Property", "value": ["ul20"]}
+      \"static_attributes\": [
+        {\"name\": \"description\", \"type\":\"Property\", \"value\": \"Tractor FMIS\"},
+        {\"name\": \"category\", \"type\":\"Property\", \"value\": [\"actuator\", \"sensor\"]},
+        {\"name\": \"controlledProperty\", \"type\": \"Property\", \"value\": [\"location\", \"status\"]},
+        {\"name\": \"supportedProtocol\", \"type\": \"Property\", \"value\": [\"json\"]}
       ]
    }
 
@@ -219,7 +257,7 @@ curl -s -o /dev/null -X POST \
         {"name": "controlledAsset", "type": "Relationship","value": "urn:ngsi-ld:Building:farm001"},
         {"name": "location", "type": "GeoProperty", "value": [13.3505, 52.5144]}
       ]
-    }, 
+    },
     {
       "device_id": "tractor001",
       "entity_name": "urn:ngsi-ld:Device:tractor001",
@@ -271,7 +309,7 @@ curl -s -o /dev/null -X POST \
         {"name": "controlledAsset", "type": "Relationship","value": "urn:ngsi-ld:Building:barn002"},
         {"name": "location", "type": "GeoProperty", "value": [13.3698, 52.5163]}
       ]
-    }, 
+    },
     {
       "device_id": "tractor002",
       "entity_name": "urn:ngsi-ld:Device:tractor002",
@@ -323,7 +361,7 @@ curl -s -o /dev/null -X POST \
         {"name": "controlledAsset", "type": "Relationship","value": "urn:ngsi-ld:Building:tower003"},
         {"name": "location", "type": "GeoProperty", "value": [13.3598, 52.5165]}
       ]
-    }, 
+    },
     {
       "device_id": "tractor003",
       "entity_name": "urn:ngsi-ld:Device:tractor003",
@@ -375,7 +413,7 @@ curl -s -o /dev/null -X POST \
         {"name": "controlledAsset", "type": "Relationship","value": "urn:ngsi-ld:Building:farm002"},
         {"name": "location", "type": "GeoProperty", "value": [13.3127, 52.4893]}
       ]
-    }, 
+    },
     {
       "device_id": "tractor004",
       "entity_name": "urn:ngsi-ld:Device:tractor004",

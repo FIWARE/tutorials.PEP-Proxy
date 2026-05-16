@@ -162,6 +162,17 @@ services:
             - IOTA_MULTI_CORE=true
             - IOTA_AMQP_DISABLED=true
             - IOTA_MQTT_DISABLED=true
+            # Route IoT Agent data through APISIX — broker-specific path set in broker overlay
+            - IOTA_CB_HOST=apisix
+            - IOTA_CB_PORT=${APISIX_PORT}
+            # Keycloak OAuth2 authentication (client_credentials grant via service account)
+            - IOTA_AUTH_ENABLED=true
+            - IOTA_AUTH_TYPE=oauth2
+            - IOTA_AUTH_HEADER=Authorization
+            - IOTA_AUTH_URL=http://keycloak:8080
+            - IOTA_AUTH_CLIENT_ID=ngsi-ld-farm
+            - IOTA_AUTH_CLIENT_SECRET=1234
+            - IOTA_AUTH_TOKEN_PATH=/realms/farm-management/protocol/openid-connect/token
         healthcheck:
             interval: 30s
 
