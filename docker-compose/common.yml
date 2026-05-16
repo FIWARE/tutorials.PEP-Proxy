@@ -110,8 +110,8 @@ services:
             - DEBUG=devices:*
             - WEB_APP_HOST=tutorial
             - WEB_APP_PORT=${TUTORIAL_APP_PORT}
-            - IOTA_HTTP_HOST=iot-agent
-            - IOTA_HTTP_PORT=${IOTA_SOUTH_PORT}
+            - IOTA_HTTP_HOST=apisix
+            - IOTA_HTTP_PORT=${APISIX_PORT}
             - IOTA_DEFAULT_RESOURCE=/iot/json
             - PIG_COUNT=${PIG_COUNT}
             - COW_COUNT=${COW_COUNT}
@@ -224,8 +224,8 @@ services:
         environment:
             - DEBUG=tutorial:*
             - WEB_APP_PORT=${TUTORIAL_APP_PORT}
-            - IOTA_HTTP_HOST=iot-agent
-            - IOTA_HTTP_PORT=${IOTA_SOUTH_PORT}
+            - IOTA_HTTP_HOST=apisix
+            - IOTA_HTTP_PORT=${APISIX_PORT}
             - IOTA_DEFAULT_RESOURCE=/iot/json
             - DUMMY_DEVICES=http://iot-sensors:3001
             - DUMMY_DEVICES_PORT=${TUTORIAL_DUMMY_DEVICE_PORT}

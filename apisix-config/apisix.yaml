@@ -102,6 +102,18 @@ routes:
         realm: "farm-management"
         bearer_only: true
 
+  # ── IoT Agent South Port route — JWT validation for device writes ───────────
+  - id: 7
+    uri: /iot/*
+    upstream_id: 4
+    plugins:
+      openid-connect:
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/openid-configuration"
+        realm: "farm-management"
+        bearer_only: true
+
 upstreams:
   - id: 1
     type: roundrobin
@@ -115,4 +127,8 @@ upstreams:
     type: roundrobin
     nodes:
       "stellio:8080": 1
+  - id: 4
+    type: roundrobin
+    nodes:
+      "iot-agent:7896": 1
 #END
