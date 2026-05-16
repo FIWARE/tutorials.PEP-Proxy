@@ -1,0 +1,145 @@
+version: "3.8"
+services:
+    api-gateway:
+        container_name: stellio-api-gateway
+        hostname: stellio
+        labels:
+            org.fiware: tutorial
+        image: quay.io/fiware/stellio-api-gateway:${STELLIO_DOCKER_TAG}
+        environment:
+            - SPRING_PROFILES_ACTIVE=docker
+        ports:
+            - "${STELLIO_PORT}:${STELLIO_PORT}"
+        networks:
+            - default
+
+    search-service:
+        container_name: stellio-search-service
+        labels:
+            org.fiware: tutorial
+        image: quay.io/fiware/stellio-search-service:${STELLIO_DOCKER_TAG}
+        environment:
+            - SPRING_PROFILES_ACTIVE=docker
+            - SPRING_R2DBC_URL=r2dbc:postgresql://postgres-stellio/stellio_search
+            - SPRING_FLYWAY_URL=jdbc:postgresql://postgres-stellio/stellio_search
+            - SPRING_R2DBC_USERNAME=stellio
+            - SPRING_R2DBC_PASSWORD=stellio_password
+            - APPLICATION_AUTHENTICATION_ENABLED=false
+            - APPLICATION_TENANTS_0_NAME=urn:ngsi-ld:tenant:default
+            - APPLICATION_TENANTS_0_ISSUER=https://sso.stellio.io/auth/realms/default
+            - APPLICATION_TENANTS_0_DBSCHEMA=public
+            - APPLICATION_TENANTS_1_NAME=openiot
+            - APPLICATION_TENANTS_1_ISSUER=https://sso.stellio.io/auth/realms/openiot
+            - APPLICATION_TENANTS_1_DBSCHEMA=openiot
+            - APPLICATION_PAGINATION_LIMIT-DEFAULT=30
+            - APPLICATION_PAGINATION_LIMIT-MAX=1000
+        ports:
+            - "8083:8083"
+        networks:
+            - default
+        restart: always
+        depends_on:
+            postgres-stellio:
+                condition: service_healthy
+            kafka:
+                condition: service_started
+
+    subscription-service:
+        container_name: stellio-subscription-service
+        labels:
+            org.fiware: tutorial
+        image: quay.io/fiware/stellio-subscription-service:${STELLIO_DOCKER_TAG}
+        environment:
+            - SPRING_PROFILES_ACTIVE=docker
+            - SPRING_R2DBC_URL=r2dbc:postgresql://postgres-stellio/stellio_subscription
+            - SPRING_FLYWAY_URL=jdbc:postgresql://postgres-stellio/stellio_subscription
+            - SPRING_R2DBC_USERNAME=stellio
+            - SPRING_R2DBC_PASSWORD=stellio_password
+            - APPLICATION_AUTHENTICATION_ENABLED=false
+            - APPLICATION_TENANTS_0_NAME=urn:ngsi-ld:tenant:default
+            - APPLICATION_TENANTS_0_ISSUER=https://sso.stellio.io/auth/realms/default
+            - APPLICATION_TENANTS_0_DBSCHEMA=public
+            - APPLICATION_TENANTS_1_NAME=openiot
+            - APPLICATION_TENANTS_1_ISSUER=https://sso.stellio.io/auth/realms/openiot
+            - APPLICATION_TENANTS_1_DBSCHEMA=openiot
+            - APPLICATION_PAGINATION_LIMIT-DEFAULT=30
+            - APPLICATION_PAGINATION_LIMIT-MAX=1000
+        ports:
+            - "8085:8084"
+        networks:
+            - default
+        restart: always
+        depends_on:
+            postgres-stellio:
+                condition: service_healthy
+            kafka:
+                condition: service_started
+
+    kafka:
+        labels:
+            org.fiware: tutorial
+        image: confluentinc/cp-kafka:7.6.0
+        container_name: kafka
+        ports:
+            - "29092:29092"
+        networks:
+            - default
+        restart: always
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_PROCESS_ROLES: 'broker,controller'
+            KAFKA_NODE_ID: 1
+            KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+            KAFKA_LISTENERS: CONTROLLER://kafka:29093,PLAINTEXT://kafka:9092,PLAINTEXT_HOST://0.0.0.0:29092
+            KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+            KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+            KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+            CLUSTER_ID: NjExODZhMWVjMzllMTFlZm
+
+    postgres-stellio:
+        labels:
+            org.fiware: tutorial
+        image: stellio/stellio-timescale-postgis:${STELLIO_TIMESCALE_POSTGIS}
+        hostname: postgres-stellio
+        container_name: db-postgres-stellio
+        environment:
+            - POSTGRES_USER=stellio
+            - POSTGRES_PASS=stellio_password
+            - POSTGRES_DBNAME=stellio_search,stellio_subscription
+            - POSTGRES_MULTIPLE_EXTENSIONS=postgis,timescaledb,pgcrypto
+            - ACCEPT_TIMESCALE_TUNING=TRUE
+        ports:
+            - "5432"
+        networks:
+            - default
+        volumes:
+            - postgres-db-stellio:/var/lib/postgresql
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -h localhost -U stellio"]
+            interval: 10s
+            timeout: 5s
+            retries: 20
+            start_period: 10s
+
+    farmer:
+        environment:
+            - CONTEXT_BROKER=http://apisix:${APISIX_PORT}/stellio
+
+    devices:
+        environment:
+            - CONTEXT_BROKER=http://apisix:${APISIX_PORT}/stellio
+
+    tutorial:
+        environment:
+            - CONTEXT_BROKER=http://apisix:${APISIX_PORT}/stellio/ngsi-ld/v1
+
+    iot-agent:
+        environment:
+            - IOTA_CB_HOST=stellio
+            - IOTA_CB_PORT=${STELLIO_PORT}
+
+volumes:
+    postgres-db-stellio: ~

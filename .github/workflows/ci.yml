@@ -1,4 +1,4 @@
-  
+
 name: "CI"
 on:
   push:
@@ -26,6 +26,14 @@ jobs:
     - name: Build Images
       run: |
         ./services create || true
-    - name: Run Script
+    - name: Start Services
       run: |
-        ./services start && ./services stop
+        ./services start
+    - name: Run RBAC Smoke Test
+      run: |
+        chmod +x .github/test/rbac_smoke_test
+        ./.github/test/rbac_smoke_test
+    - name: Stop Services
+      if: always()
+      run: |
+        ./services stop

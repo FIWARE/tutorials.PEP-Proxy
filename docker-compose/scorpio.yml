@@ -1,0 +1,54 @@
+version: "3.8"
+services:
+    # Scorpio is the context broker
+    scorpio:
+        labels:
+            org.fiware: tutorial
+        image: quay.io/fiware/scorpio:java-${SCORPIO_VERSION}
+        hostname: scorpio
+        container_name: fiware-scorpio
+        networks:
+            - default
+        ports:
+            - "${SCORPIO_PORT}:${SCORPIO_PORT}"
+        depends_on:
+            - postgres
+
+    postgres:
+        labels:
+            org.fiware: tutorial
+        image: postgis/postgis
+        hostname: postgres
+        container_name: db-postgres
+        networks:
+            - default
+        ports:
+            - "5432"
+        environment:
+            POSTGRES_USER: ngb
+            POSTGRES_PASSWORD: ngb
+            POSTGRES_DB: ngb
+        logging:
+            driver: none
+        volumes:
+            - postgres-db:/var/lib/postgresql/data
+
+    farmer:
+        environment:
+            - CONTEXT_BROKER=http://apisix:${APISIX_PORT}/scorpio
+
+    devices:
+        environment:
+            - CONTEXT_BROKER=http://apisix:${APISIX_PORT}/scorpio
+
+    tutorial:
+        environment:
+            - CONTEXT_BROKER=http://apisix:${APISIX_PORT}/scorpio/ngsi-ld/v1
+
+    iot-agent:
+        environment:
+            - IOTA_CB_HOST=scorpio
+            - IOTA_CB_PORT=${SCORPIO_PORT}
+
+volumes:
+    postgres-db: ~

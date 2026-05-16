@@ -1,0 +1,79 @@
+routes:
+  - id: 1
+    uri: /orion/*
+    upstream_id: 1
+    plugins:
+      proxy-rewrite:
+        regex_uri: ["^/orion(.*)", "$1"]
+      openid-connect:
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/openid-configuration"
+        realm: "farm-management"
+        scope: "openid profile email"
+        bearer_only: true
+      authz-keycloak:
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/uma2-configuration"
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        permissions: ["Entity Collection"]
+        http_method_as_scope: true
+        policy_enforcement_mode: "ENFORCING"
+        ssl_verify: false
+  - id: 2
+    uri: /scorpio/*
+    upstream_id: 2
+    plugins:
+      proxy-rewrite:
+        regex_uri: ["^/scorpio(.*)", "$1"]
+      openid-connect:
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/openid-configuration"
+        realm: "farm-management"
+        scope: "openid profile email"
+        bearer_only: true
+      authz-keycloak:
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/uma2-configuration"
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        permissions: ["Entity Collection"]
+        http_method_as_scope: true
+        policy_enforcement_mode: "ENFORCING"
+        ssl_verify: false
+  - id: 3
+    uri: /stellio/*
+    upstream_id: 3
+    plugins:
+      proxy-rewrite:
+        regex_uri: ["^/stellio(.*)", "$1"]
+      openid-connect:
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/openid-configuration"
+        realm: "farm-management"
+        scope: "openid profile email"
+        bearer_only: true
+      authz-keycloak:
+        discovery: "http://keycloak:8080/realms/farm-management/.well-known/uma2-configuration"
+        client_id: "ngsi-ld-farm"
+        client_secret: "1234"
+        permissions: ["Entity Collection"]
+        http_method_as_scope: true
+        policy_enforcement_mode: "ENFORCING"
+        ssl_verify: false
+
+upstreams:
+  - id: 1
+    type: roundrobin
+    nodes:
+      "orion:1026": 1
+  - id: 2
+    type: roundrobin
+    nodes:
+      "scorpio:9090": 1
+  - id: 3
+    type: roundrobin
+    nodes:
+      "stellio:8080": 1
+#END

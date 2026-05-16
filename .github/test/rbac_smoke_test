@@ -1,0 +1,140 @@
+#!/bin/bash
+#
+# Smoke test: Verify Keycloak RBAC enforcement via APISIX
+#
+# This test checks that:
+#   1. A user WITH a role (Bob / farm-manager) can perform GET and POST operations
+#      against the Context Broker via APISIX.
+#   2. A user WITHOUT a role (Mallory) is denied access with 403 Forbidden.
+#   3. An unauthenticated request is denied with 401 Unauthorized.
+#
+# Tests are executed inside the fiware_default Docker network using the
+# quay.io/curl/curl image to match the CI environment exactly.
+
+set -eo pipefail
+
+export $(cat .env | grep "#" -v)
+
+NETWORK="fiware_default"
+CURL="docker run --rm --network ${NETWORK} quay.io/curl/curl:${CURL_VERSION}"
+KEYCLOAK="http://keycloak:8080/realms/farm-management/protocol/openid-connect/token"
+APISIX="http://apisix:${APISIX_PORT}"
+CONTEXT="http://context/ngsi-context.jsonld"
+CLIENT_ID="ngsi-ld-farm"
+CLIENT_SECRET="1234"
+
+failures=0
+
+pass() { echo "  PASS: $*"; }
+fail() { echo "  FAIL: $*"; failures=$((failures + 1)); }
+
+assert_status() {
+    local label="$1"
+    local expected="$2"
+    local actual="$3"
+    if [ "${actual}" = "${expected}" ]; then
+        pass "${label} — HTTP ${actual}"
+    else
+        fail "${label} — expected HTTP ${expected}, got HTTP ${actual}"
+    fi
+}
+
+# ── Obtain Keycloak tokens ─────────────────────────────────────────────────────
+
+echo ""
+echo "🔑 Obtaining access token for Bob (farm-manager)..."
+BOB_TOKEN=$(${CURL} -s -X POST "${KEYCLOAK}" \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    --data-urlencode 'grant_type=password' \
+    --data-urlencode "client_id=${CLIENT_ID}" \
+    --data-urlencode "client_secret=${CLIENT_SECRET}" \
+    --data-urlencode 'username=bob' \
+    --data-urlencode 'password=test' \
+    | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+
+if [ -z "${BOB_TOKEN}" ]; then
+    echo "FAIL: Could not obtain token for Bob — aborting smoke test"
+    exit 1
+fi
+pass "Bob token obtained"
+
+echo ""
+echo "🔑 Obtaining access token for Mallory (no role)..."
+MALLORY_TOKEN=$(${CURL} -s -X POST "${KEYCLOAK}" \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    --data-urlencode 'grant_type=password' \
+    --data-urlencode "client_id=${CLIENT_ID}" \
+    --data-urlencode "client_secret=${CLIENT_SECRET}" \
+    --data-urlencode 'username=mallory' \
+    --data-urlencode 'password=test' \
+    | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+
+if [ -z "${MALLORY_TOKEN}" ]; then
+    echo "FAIL: Could not obtain token for Mallory — aborting smoke test"
+    exit 1
+fi
+pass "Mallory token obtained"
+
+# ── Test 1: Unauthenticated request should be blocked (401) ───────────────────
+
+echo ""
+echo "🧪 Test 1: Unauthenticated GET is blocked by APISIX"
+STATUS=$(${CURL} -s -o /dev/null -w "%{http_code}" -X GET \
+    "${APISIX}/orion/ngsi-ld/v1/entities/?type=Animal" \
+    -H "NGSILD-Tenant: farmer" \
+    -H "Link: <${CONTEXT}>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"")
+assert_status "Unauthenticated GET /orion/ngsi-ld/v1/entities" "401" "${STATUS}"
+
+# ── Test 2: Mallory (no role) — GET should be denied (403) ───────────────────
+
+echo ""
+echo "🧪 Test 2: Mallory (no role) is denied read access by Keycloak RBAC"
+STATUS=$(${CURL} -s -o /dev/null -w "%{http_code}" -X GET \
+    "${APISIX}/orion/ngsi-ld/v1/entities/?type=Animal" \
+    -H "Authorization: Bearer ${MALLORY_TOKEN}" \
+    -H "NGSILD-Tenant: farmer" \
+    -H "Link: <${CONTEXT}>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"")
+assert_status "Mallory GET /orion/ngsi-ld/v1/entities" "403" "${STATUS}"
+
+# ── Test 3: Mallory (no role) — POST should be denied (403) ──────────────────
+
+echo ""
+echo "🧪 Test 3: Mallory (no role) is denied write access by Keycloak RBAC"
+STATUS=$(${CURL} -s -o /dev/null -w "%{http_code}" -X POST \
+    "${APISIX}/orion/ngsi-ld/v1/entities/" \
+    -H "Authorization: Bearer ${MALLORY_TOKEN}" \
+    -H "NGSILD-Tenant: farmer" \
+    -H 'Content-Type: application/json' \
+    -H "Link: <${CONTEXT}>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"" \
+    --data-raw '{"id":"urn:ngsi-ld:Animal:test001","type":"Animal"}')
+assert_status "Mallory POST /orion/ngsi-ld/v1/entities" "403" "${STATUS}"
+
+# ── Test 4: Bob (farm-manager) — GET via APISIX (200) ────────────────────────
+
+echo ""
+echo "🧪 Test 4: Bob (farm-manager) can read entities via APISIX"
+STATUS=$(${CURL} -s -o /dev/null -w "%{http_code}" -X GET \
+    "${APISIX}/orion/ngsi-ld/v1/entities/?type=Animal" \
+    -H "Authorization: Bearer ${BOB_TOKEN}" \
+    -H "NGSILD-Tenant: openiot" \
+    -H "Link: <${CONTEXT}>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"")
+assert_status "Bob GET /orion/ngsi-ld/v1/entities" "200" "${STATUS}"
+
+# ── Test 5: Bob — GET a specific entity via the farmer forwarder ──────────────
+
+echo ""
+echo "🧪 Test 5: Bob can retrieve a specific entity via the farmer forwarder"
+STATUS=$(${CURL} -s -o /dev/null -w "%{http_code}" -X GET \
+    "http://farmer/ngsi-ld/v1/entities/urn:ngsi-ld:Animal:cow001" \
+    -H "Authorization: Bearer ${BOB_TOKEN}" \
+    -H "Link: <${CONTEXT}>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"")
+assert_status "Bob GET urn:ngsi-ld:Animal:cow001 via farmer forwarder" "200" "${STATUS}"
+
+# ── Summary ───────────────────────────────────────────────────────────────────
+
+echo ""
+if [ "${failures}" -gt 0 ]; then
+    echo "❌ Smoke test FAILED: ${failures} assertion(s) did not pass"
+    exit 1
+fi
+echo "✅ Smoke test PASSED: Keycloak RBAC is correctly enforced by APISIX"

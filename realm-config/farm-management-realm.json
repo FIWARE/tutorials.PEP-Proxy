@@ -97,7 +97,7 @@
             }
           },
           {
-            "name": "All authenticated users can read entities",
+            "name": "Users with a role can read entities",
             "type": "scope",
             "logic": "POSITIVE",
             "decisionStrategy": "AFFIRMATIVE",

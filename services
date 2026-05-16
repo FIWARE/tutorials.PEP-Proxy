@@ -9,12 +9,17 @@
 #
 #  if you start up with the following command:
 #
-#  ./services start legacy
+#  ./services orion legacy
 #
 # This will force the script to use docker-compose which may be more reliable in
 # some cases (or if an older version of Docker is being used)
 
 set -eo pipefail
+
+SCORPIO="http://scorpio:9090/scorpio/"
+ORION="http://orion:1026/version"
+STELLIO="http://stellio:8080/actuator/health"
+CONTEXT="http://context/ngsi-context.jsonld"
 
 dockerCmd="docker compose"
 if (( $# == 2 )); then
@@ -23,9 +28,26 @@ fi
 
 if (( $# < 1 )); then
 	echo "Illegal number of parameters"
-	echo "usage: services [create|start|stop]"
+	echo "usage: services [create|orion|scorpio|stellio|stop]"
 	exit 1
 fi
+
+pause(){
+	printf " "
+	count="$1"
+	[ "$count" -gt 59 ] && printf "Waiting one minute " || printf " Waiting a few seconds ";
+	while [ "$count" -gt 0 ]
+	do
+		printf "."
+		sleep 3
+		count=$((count - 3))
+	done
+	echo ""
+}
+
+getHeartbeat(){
+	response=$(docker run --network fiware_default --rm "quay.io/curl/curl:${CURL_VERSION}" -s -o /dev/null -w "%{http_code}" "$1") || true
+}
 
 displayServices () {
 	echo ""
@@ -71,6 +93,37 @@ waitForOrion () {
 	echo -e " \033[1;32mdone\033[0m"
 }
 
+waitForScorpio () {
+	echo -e "\n⏳ Waiting for \033[1;34mScorpio\033[0m to respond\n"
+	getHeartbeat "${SCORPIO}"
+	while [ "${response}" -eq 000 ]
+	do
+		echo -e "Context Broker HTTP state: ${response} (waiting for 500)"
+		pause 6
+		getHeartbeat "${SCORPIO}"
+	done
+	echo -e " \033[1;32mdone\033[0m"
+}
+
+waitForStellio () {
+	echo -e "\n⏳ Waiting for \033[1;34mStellio\033[0m to respond\n"
+	waitSeconds=30
+	while [ "$(docker run --network fiware_default --rm quay.io/curl/curl:${CURL_VERSION} -s -o /dev/null -w %{http_code} 'http://stellio:8080/ngsi-ld/v1/entities/?type=X')" -eq 000 ]
+	do 
+	  echo -e "Context Broker HTTP state: " $(curl -s -o /dev/null -w %{http_code} 'http://localhost:8080/ngsi-ld/v1/entities/?type=X') " (waiting for 500)"
+	  echo -e "Waiting for ${waitSeconds} seconds ..."
+	  sleep ${waitSeconds}
+	done
+	echo -e "\n⏳ Waiting for all \033[1;34mStellio\033[0m services to be available\n"
+	while [ "$(docker run --network fiware_default --rm quay.io/curl/curl:${CURL_VERSION} -s -o /dev/null -w %{http_code} 'http://stellio:8080/ngsi-ld/v1/entities/?type=X')" -eq 500 ]
+	do 
+	  echo -e "Context Broker HTTP state: " $(curl -s -o /dev/null -w %{http_code} 'http://localhost:8080/ngsi-ld/v1/entities/?type=X') " (waiting for 200)"
+	  echo -e "Waiting for ${waitSeconds} seconds ..."
+	  sleep ${waitSeconds}
+	done
+	echo -e " \033[1;32mdone\033[0m"
+}
+
 waitForTutorial () {
 	echo -e "\n⏳ Waiting for \033[1mTutorial\033[0m to be available\n"
 	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' fiware-tutorial 2>/dev/null)" == "healthy" ]
@@ -96,7 +149,7 @@ loadData () {
 		--network fiware_default \
 		-v "$(pwd)/import-data:/import-data" \
 		-v "$(pwd)/data:/home/curl_user/data" \
-		-e CONTEXT_BROKER=orion:1026 \
+		-e CONTEXT_BROKER=${CONTEXT_BROKER} \
 		-e IOT_DEVICES=http://iot-sensors:3001 \
 		-e TUTORIAL_DATA_MODELS_CONTEXT=http://context/ngsi-context.jsonld \
 		--entrypoint /bin/ash \
@@ -122,23 +175,64 @@ loadUsers () {
 command="$1"
 case "${command}" in
 	"help")
-		echo "usage: services [create|start|stop]"
+		echo "usage: services [create|orion|scorpio|stellio|stop]"
 		;;
-	"start")
+	"orion")
 		set -a; source .env; set +a
 		stoppingContainers
-		echo -e "Starting containers: \033[1;34mKeycloak\033[0m, \033[1;34mOrion-LD\033[0m, \033[1mnginx\033[0m, \033[1mAuth-Service\033[0m, a \033[1mTutorial\033[0m application, a \033[1mContext\033[0m server, \033[1mPostgreSQL\033[0m and \033[1mMongoDB\033[0m databases."
+		echo -e "Starting containers: \033[1;34mKeycloak\033[0m, \033[1;34mOrion-LD\033[0m, \033[1mAPISix\033[0m, a \033[1mTutorial\033[0m application, a \033[1mContext\033[0m server, \033[1mPostgreSQL\033[0m and \033[1mMongoDB\033[0m databases."
 		echo -e "- \033[1;34mKeycloak\033[0m is the Identity and Access Management server"
 		echo -e "- \033[1;34mOrion-LD\033[0m is the NGSI-LD context broker"
-		echo -e "- \033[1mnginx\033[0m is a PEP Proxy around \033[1;34mOrion-LD\033[0m"
+		echo -e "- \033[1mAPISix\033[0m is a API Gateway around \033[1;34mOrion-LD\033[0m"
 		echo -e "- \033[1mTutorial\033[0m is the farm management web application"
 		echo ""
-		${dockerCmd} -f docker-compose/orion.yml -p fiware up -d --remove-orphans
-		displayServices fiware
+		${dockerCmd} -f docker-compose/common.yml -f docker-compose/orion.yml -p fiware up -d --remove-orphans --renew-anon-volumes
+		displayServices "orion|fiware"
 		waitForKeycloak
 		loadUsers
 		waitForOrion
 		waitForTutorial
+		export CONTEXT_BROKER=orion:1026
+		loadData
+		echo -e "\033[1;34mKeycloak\033[0m is now running and exposed on localhost:${KEYCLOAK_PORT}"
+		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}\033[0m"
+		;;
+	"scorpio")
+		set -a; source .env; set +a
+		stoppingContainers
+		echo -e "Starting containers: \033[1;34mKeycloak\033[0m, \033[1;34mScorpio\033[0m, \033[1mAPISix\033[0m, a \033[1mTutorial\033[0m application, a \033[1mContext\033[0m server, \033[1mPostgreSQL\033[0m and \033[1mMongoDB\033[0m databases."
+		echo -e "- \033[1;34mKeycloak\033[0m is the Identity and Access Management server"
+		echo -e "- \033[1;34mScorpio\033[0m is the NGSI-LD context broker"
+		echo -e "- \033[1mAPISix\033[0m is a API Gateway around \033[1;34mScorpio\033[0m"
+		echo -e "- \033[1mTutorial\033[0m is the farm management web application"
+		echo ""
+		${dockerCmd} -f docker-compose/common.yml -f docker-compose/scorpio.yml -p fiware up -d --remove-orphans --renew-anon-volumes
+		displayServices "scorpio|fiware"
+		waitForKeycloak
+		loadUsers
+		waitForScorpio
+		waitForTutorial
+		export CONTEXT_BROKER=scorpio:9090
+		loadData
+		echo -e "\033[1;34mKeycloak\033[0m is now running and exposed on localhost:${KEYCLOAK_PORT}"
+		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}\033[0m"
+		;;
+	"stellio")
+		set -a; source .env; set +a
+		stoppingContainers
+		echo -e "Starting containers: \033[1;34mKeycloak\033[0m, \033[1;34mStellio\033[0m, \033[1mKafka\033[0m, \033[1mAPISix\033[0m, a \033[1mTutorial\033[0m application, a \033[1mContext\033[0m server, \033[1mPostgreSQL\033[0m and \033[1mMongoDB\033[0m databases."
+		echo -e "- \033[1;34mKeycloak\033[0m is the Identity and Access Management server"
+		echo -e "- \033[1;34mStellio\033[0m is the NGSI-LD context broker"
+		echo -e "- \033[1mAPISix\033[0m is a API Gateway around \033[1;34mStellio\033[0m"
+		echo -e "- \033[1mTutorial\033[0m is the farm management web application"
+		echo ""
+		${dockerCmd} -f docker-compose/common.yml -f docker-compose/stellio.yml -p fiware up -d --remove-orphans --renew-anon-volumes
+		displayServices "stellio|fiware"
+		waitForKeycloak
+		loadUsers
+		waitForStellio
+		waitForTutorial
+		export CONTEXT_BROKER=stellio:8080
 		loadData
 		echo -e "\033[1;34mKeycloak\033[0m is now running and exposed on localhost:${KEYCLOAK_PORT}"
 		echo -e "Now open \033[4mhttp://localhost:${TUTORIAL_APP_PORT}\033[0m"
@@ -147,17 +241,19 @@ case "${command}" in
 		set -a; source .env; set +a
 		stoppingContainers
 		;;
+	"start")
+		set -a; source .env; set +a
+		./services orion $2
+		;;
 	"create")
 		set -a; source .env; set +a
 		echo "Pulling Docker images"
 		docker pull -q "quay.io/curl/curl:${CURL_VERSION}"
-		${dockerCmd} -f docker-compose/orion.yml -p fiware pull --ignore-pull-failures
-		echo "Building auth-service Docker image"
-		${dockerCmd} -f docker-compose/orion.yml -p fiware build auth-service --no-cache
+		${dockerCmd} -f docker-compose/common.yml -f docker-compose/orion.yml -f docker-compose/scorpio.yml -f docker-compose/stellio.yml -p fiware pull --ignore-pull-failures
 		;;
 	*)
 		echo "Command not Found."
-		echo "usage: services [create|start|stop]"
+		echo "usage: services [create|orion|scorpio|stellio|stop]"
 		exit 127;
 		;;
 esac
