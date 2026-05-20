@@ -19,7 +19,9 @@ printf "⏳ Fetching Keycloak offline token for IoT Agent trust... "
 TOKEN_RESPONSE=$(curl -s -X POST \
   'http://keycloak:8080/realms/farm-management/protocol/openid-connect/token' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  --data-urlencode 'grant_type=client_credentials' \
+  --data-urlencode 'grant_type=password' \
+  --data-urlencode 'username=bob' \
+  --data-urlencode 'password=test' \
   --data-urlencode 'client_id=ngsi-ld-farm' \
   --data-urlencode 'client_secret=1234' \
   --data-urlencode 'scope=openid offline_access')
@@ -217,7 +219,7 @@ curl -s -o /dev/null -X POST \
    }
 
  ]
-}'
+}"
 
 ####################################################
 #
