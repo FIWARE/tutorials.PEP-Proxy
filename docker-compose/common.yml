@@ -165,6 +165,7 @@ services:
             # Route IoT Agent data through APISIX — broker-specific path set in broker overlay
             - IOTA_CB_HOST=apisix
             - IOTA_CB_PORT=${APISIX_PORT}
+            - IOTA_CB_URL=http://apisix:${APISIX_PORT}/data/orion
             # Keycloak OAuth2 authentication (client_credentials grant via service account)
             - IOTA_AUTH_ENABLED=true
             - IOTA_AUTH_TYPE=oauth2
