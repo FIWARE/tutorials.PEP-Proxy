@@ -136,9 +136,9 @@ waitForTutorial () {
 
 waitForIoTAgent () {
 	echo -e "\n⏳ Waiting for \033[1;36mIoT-Agent\033[0m to be available\n"
-	while [ "$(docker run --network fiware_default --rm "quay.io/curl/curl:${CURL_VERSION}" -s -o /dev/null -w '%{http_code}' 'http://iot-agent:4041/version')" -eq 000 ]
+	while ! [ "$(docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent 2>/dev/null)" == "healthy" ]
 	do
-		echo -e "IoT Agent HTTP state: 000 (waiting for 200)"
+		echo -e "IoT Agent health: $(docker inspect --format='{{.State.Health.Status}}' fiware-iot-agent 2>/dev/null) (waiting for healthy)"
 		sleep 6
 	done
 	echo -e " \033[1;32mdone\033[0m"
