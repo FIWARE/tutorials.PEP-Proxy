@@ -2,7 +2,7 @@
 set -e
 
 echo -e "⏳ Obtaining Keycloak token for ngsi-ld-farm"
-TOKEN=$(curl -s -X POST 'http://keycloak:8080/realms/farm-management/protocol/openid-connect/token' \
+TOKEN=$(curl -sS -X POST 'http://keycloak:8080/realms/farm-management/protocol/openid-connect/token' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   --data-urlencode 'grant_type=client_credentials' \
   --data-urlencode 'client_id=ngsi-ld-farm' \
@@ -18,7 +18,7 @@ echo -e "⏳ Loading context data in \033[1mNGSI-LD\033[0m format"
 echo -e "    - all entity data models are defined referencing the" 
 echo -e "      \033[1m"${TUTORIAL_DATA_MODELS_CONTEXT}"\033[0m JSON-LD context"
 echo -e "\nCreating buildings for the farm ..."
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -F "file=@./data/building.csv" http://tutorial:3000/csv/Building
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -F "file=@./data/building.csv" http://tutorial:3000/csv/Building
 
 curl -H "Authorization: Bearer ${TOKEN}" -H "NGSILD-Tenant: farmer"  -iX POST 'http://'"${CONTEXT_BROKER}"'/ngsi-ld/v1/entityOperations/upsert' \
 -H 'Content-Type: application/json' \
@@ -34,7 +34,7 @@ curl -H "Authorization: Bearer ${TOKEN}" -H "NGSILD-Tenant: farmer"  -iX POST 'h
 sleep 3
 
 
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: openiot"  -iX POST 'http://'"${CONTEXT_BROKER}"'/ngsi-ld/v1/entityOperations/upsert' \
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: openiot"  -iX POST 'http://'"${CONTEXT_BROKER}"'/ngsi-ld/v1/entityOperations/upsert' \
 -H 'Content-Type: application/json' \
 -H 'Link: <'"${TUTORIAL_DATA_MODELS_CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
 -H 'Accept: application/ld+json' \
@@ -50,30 +50,30 @@ sleep 3
 
 
 echo -e "\nCreating animals for the farm ..."
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: openiot" -F "file=@./data/cow.csv" http://tutorial:3000/csv/Animal
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: openiot" -F "file=@./data/pig.csv" http://tutorial:3000/csv/Animal
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: openiot" -F "file=@./data/cow.csv" http://tutorial:3000/csv/Animal
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: openiot" -F "file=@./data/pig.csv" http://tutorial:3000/csv/Animal
 
 echo -e "Creating devices for the animals ..."
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: openiot" -F "file=@./data/device.csv" http://tutorial:3000/csv/Device
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: openiot" -F "file=@./data/device.csv" http://tutorial:3000/csv/Device
 
 echo -e "Creating agri-data for the farmer ..."
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-parcel.csv" http://tutorial:3000/csv/AgriParcel
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-crop.csv" http://tutorial:3000/csv/AgriCrop
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-farm.csv" http://tutorial:3000/csv/AgriFarm
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-pest.csv" http://tutorial:3000/csv/AgriPest
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-soil.csv" http://tutorial:3000/csv/AgriSoil
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-parcel.csv" http://tutorial:3000/csv/AgriParcel
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-crop.csv" http://tutorial:3000/csv/AgriCrop
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-farm.csv" http://tutorial:3000/csv/AgriFarm
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-pest.csv" http://tutorial:3000/csv/AgriPest
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/agri-soil.csv" http://tutorial:3000/csv/AgriSoil
 
 echo -e "Creating personnel for the farm ..."
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/person.csv" http://tutorial:3000/csv/Person
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -H "NGSILD-Tenant: farmer" -F "file=@./data/person.csv" http://tutorial:3000/csv/Person
 
 echo -e "Creating weather observations readings ..."
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -F "file=@./data/weather.csv" http://tutorial:3000/csv/Weather
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -F "file=@./data/weather.csv" http://tutorial:3000/csv/Weather
 
 
 
 echo -e "\nRegistering Farmer as data source ...\n"
 
-curl -s -H "Authorization: Bearer ${TOKEN}" -iX POST 'http://'"${CONTEXT_BROKER}"'/ngsi-ld/v1/csourceRegistrations/' \
+curl -sS -H "Authorization: Bearer ${TOKEN}" -iX POST 'http://'"${CONTEXT_BROKER}"'/ngsi-ld/v1/csourceRegistrations/' \
 -H 'Link: <http://context/user-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
 -H 'Content-Type: application/json' \
 -d '{
@@ -99,7 +99,7 @@ curl -s -H "Authorization: Bearer ${TOKEN}" -iX POST 'http://'"${CONTEXT_BROKER}
 
 
 echo -e "\nRegistering Devices as data source ...\n"
-curl -s -H "Authorization: Bearer ${TOKEN}" -iX POST 'http://'"${CONTEXT_BROKER}"'/ngsi-ld/v1/csourceRegistrations/' \
+curl -sS -H "Authorization: Bearer ${TOKEN}" -iX POST 'http://'"${CONTEXT_BROKER}"'/ngsi-ld/v1/csourceRegistrations/' \
 -H "NGSILD-Tenant: farmer" \
 -H 'Link: <http://context/user-context.jsonld>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
 -H 'Content-Type: application/json' \
@@ -121,7 +121,7 @@ curl -s -H "Authorization: Bearer ${TOKEN}" -iX POST 'http://'"${CONTEXT_BROKER}
 
 
 echo -e "\nInitialising devices readings ... \n"
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -iX PUT --location ''"${IOT_DEVICES}"'/devices' \
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -iX PUT --location ''"${IOT_DEVICES}"'/devices' \
 -H 'Content-Type: application/json' \
 -d '{
   "cow001": "o|1|hide|o,x|d|AT_REST|bpm|51|gps|13.3497,52.5113|s|0",
@@ -206,7 +206,7 @@ curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -iX PUT --location ''"$
   "pig040": "d|AT_REST|bpm|64|gps|13.3503,52.5188|s|0"
 }'
 
-curl -s -H "Authorization: Bearer ${TOKEN}" -o /dev/null -X POST 'http://'"${CONTEXT_BROKER}"'/ngsi-ld/v1/entityOperations/upsert' \
+curl -sS -H "Authorization: Bearer ${TOKEN}" -o /dev/null -X POST 'http://'"${CONTEXT_BROKER}"'/ngsi-ld/v1/entityOperations/upsert' \
     -H 'Content-Type: application/json' \
     -H 'Link: <'"${TUTORIAL_DATA_MODELS_CONTEXT}"'>; rel="http://www.w3.org/ns/json-ld#context"; type="application/ld+json"' \
     -H 'NGSILD-Tenant: openiot' \

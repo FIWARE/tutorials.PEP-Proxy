@@ -16,7 +16,7 @@ set -e
 
 printf "⏳ Fetching Keycloak offline token for IoT Agent trust... "
 
-TOKEN_RESPONSE=$(curl -s -X POST \
+TOKEN_RESPONSE=$(curl -sS -X POST \
   'http://keycloak:8080/realms/farm-management/protocol/openid-connect/token' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   --data-urlencode 'grant_type=password' \
@@ -50,7 +50,7 @@ CBROKER="http://apisix:${APISIX_PORT:-9080}${CB_PATH}"
 # Create service groups for all IoT devices
 #
 
-curl -sf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
+curl -sSf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
   'http://iot-agent:4041/iot/services' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -226,7 +226,7 @@ curl -sf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
 # Provision actuators for Farm 001
 #
 
-curl -sf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
+curl -sSf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
   'http://iot-agent:4041/iot/devices' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -282,7 +282,7 @@ curl -sf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
 # Provision actuators for Farm 002
 #
 
-curl -sf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
+curl -sSf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
   'http://iot-agent:4041/iot/devices' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -338,7 +338,7 @@ curl -sf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
 # Provision actuators for Farm 003
 #
 
-curl -sf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
+curl -sSf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
   'http://iot-agent:4041/iot/devices' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
@@ -394,7 +394,7 @@ curl -sf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
 # Provision actuators for Farm 004
 #
 
-curl -sf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
+curl -sSf -o /dev/null --retry 10 --retry-all-errors --retry-delay 10 -X POST \
   'http://iot-agent:4041/iot/devices' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \

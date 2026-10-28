@@ -14,7 +14,7 @@ printf "⏳ Provisioning IoT Service Groups "
 # Create a service groups for all UltraLight IoT devices
 #
 
-curl -s -o /dev/null -X POST \
+curl -sS -o /dev/null -X POST \
   'http://iot-agent:4041/iot/services' \
   -H 'Content-Type: application/json' \
   -H 'fiware-service: openiot' \
